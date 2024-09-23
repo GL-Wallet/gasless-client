@@ -1,0 +1,1 @@
+export { cloudStorageService } from './service';
