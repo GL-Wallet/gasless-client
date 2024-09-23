@@ -1,29 +1,40 @@
-import { SeedPhraseConfirmationPage } from '@/pages/(wallet)/setup/(wallet-creation)/SeedPhraseConfirmationPage';
-import { WalletCreationSuccessPage } from '@/pages/(wallet)/setup/(wallet-creation)/WalletCreationSuccessPage';
-import { WalletCustomizationPage } from '@/pages/(wallet)/setup/(wallet-creation)/WalletCustomizationPage';
-import { TransactionResultPage } from '@/pages/(wallet)/(transaction)/TransactionResultPage';
-import { TransactionInProgress } from '@/pages/(wallet)/(transaction)/TransactionInProgress';
-import { WalletImportPage } from '@/pages/(wallet)/setup/(wallet-import)/WalletImportPage';
-import { SeedPhrasePage } from '@/pages/(wallet)/setup/(wallet-creation)/SeedPhrasePage';
-import { PasscodeStartupPage } from '@/pages/(app)/(passcode)/PasscodeStartupPage';
-import { PasscodeRequestPage } from '@/pages/(app)/(passcode)/PasscodeRequestPage';
-import { TransactionsPage } from '@/pages/(wallet)/(transaction)/TransactionsPage';
-import { PasscodeUpdatePage } from '@/pages/(app)/(passcode)/PasscodeUpdatePage';
-import { TransactionPage } from '@/pages/(wallet)/(transaction)/TransactionPage';
-import { WalletExchangePage } from '@/pages/(wallet)/actions/WalletExchangePage';
-import { PasscodeSetupPage } from '@/pages/(app)/(passcode)/PasscodeSetupPage';
-import { WalletTransferPage } from '@/pages/(wallet)/actions/WalletTransferPage';
-import { WalletUpdatePage } from '@/pages/(wallet)/update/WalletUpdatePage';
-import { AppSettingsPage } from '@/pages/(app)/(settings)/AppSettingsPage';
-import { WalletSetupPage } from '@/pages/(wallet)/setup/WalletSetupPage';
-import { PageLoader } from '@/shared/ui/page-loader';
-import { ROUTES } from '@/shared/constants/routes';
-import { HomePage } from '@/pages/(app)/HomePage';
-import { withWallet } from '@/entities/wallet';
-import { withAuth } from '@/kernel/auth';
-import { Route, Switch } from 'wouter';
 import { Suspense } from 'react';
+import { Route, Switch } from 'wouter';
+
+import { withWallet } from '@/entities/wallet';
+import { withOnboarding } from '@/features/app-settings';
+import { withAuth } from '@/kernel/auth';
+import { OnboardingPage } from '@/pages/(app)/(onboarding)/OnboardingPage';
+import { PasscodeRequestPage } from '@/pages/(app)/(passcode)/PasscodeRequestPage';
+import { PasscodeSetupPage } from '@/pages/(app)/(passcode)/PasscodeSetupPage';
+import { PasscodeStartupPage } from '@/pages/(app)/(passcode)/PasscodeStartupPage';
+import { PasscodeUpdatePage } from '@/pages/(app)/(passcode)/PasscodeUpdatePage';
 import { ReferralPage } from '@/pages/(app)/(referral)/ReferralPage';
+import { AppSettingsPage } from '@/pages/(app)/(settings)/AppSettingsPage';
+import { HomePage } from '@/pages/(app)/HomePage';
+import { BackupMnemonic } from '@/pages/(wallet)/(backup)/BackupMnemonic';
+import { BackupPrivateKey } from '@/pages/(wallet)/(backup)/BackupPrivateKey';
+import { TransactionInProgress } from '@/pages/(wallet)/(transaction)/TransactionInProgress';
+import { TransactionPage } from '@/pages/(wallet)/(transaction)/TransactionPage';
+import { TransactionResultPage } from '@/pages/(wallet)/(transaction)/TransactionResultPage';
+import { TransactionsPage } from '@/pages/(wallet)/(transaction)/TransactionsPage';
+import { WalletExchangePage } from '@/pages/(wallet)/actions/WalletExchangePage';
+import { WalletTransferPage } from '@/pages/(wallet)/actions/WalletTransferPage';
+import {
+	SeedPhraseConfirmationPage
+} from '@/pages/(wallet)/setup/(wallet-creation)/SeedPhraseConfirmationPage';
+import { SeedPhrasePage } from '@/pages/(wallet)/setup/(wallet-creation)/SeedPhrasePage';
+import {
+	WalletCreationSuccessPage
+} from '@/pages/(wallet)/setup/(wallet-creation)/WalletCreationSuccessPage';
+import {
+	WalletCustomizationPage
+} from '@/pages/(wallet)/setup/(wallet-creation)/WalletCustomizationPage';
+import { WalletImportPage } from '@/pages/(wallet)/setup/(wallet-import)/WalletImportPage';
+import { WalletSetupPage } from '@/pages/(wallet)/setup/WalletSetupPage';
+import { WalletUpdatePage } from '@/pages/(wallet)/update/WalletUpdatePage';
+import { ROUTES } from '@/shared/constants/routes';
+import { PageLoader } from '@/shared/ui/page-loader';
 
 export const Routes = () => {
   return (
@@ -32,7 +43,10 @@ export const Routes = () => {
         {/* Home page */}
         <Route
           path={ROUTES.HOME}
-          component={withWallet(withAuth(HomePage, { actionType: 'startup' }), ROUTES.WALLET_SETUP)}
+          component={withOnboarding(
+            withWallet(withAuth(HomePage, { actionType: 'startup' }), ROUTES.WALLET_SETUP),
+            <OnboardingPage />
+          )}
         />
 
         {/* App settings */}
@@ -79,6 +93,10 @@ export const Routes = () => {
 
         {/* Referral */}
         <Route path={ROUTES.REFERRAL} component={ReferralPage} />
+
+        {/* Backup */}
+        <Route path={ROUTES.BACKUP_MNEMONIC} component={BackupMnemonic} />
+        <Route path={ROUTES.BACKUP_PRIVATE_KEY} component={BackupPrivateKey} />
       </Suspense>
     </Switch>
   );

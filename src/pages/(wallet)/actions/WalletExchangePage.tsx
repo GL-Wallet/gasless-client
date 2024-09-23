@@ -1,4 +1,4 @@
-import { WalletExchangeForm } from '@/features/wallet-actions';
+import { WalletExchangeForm } from '@/features/exchange';
 import AnimatedShinyText from '@/shared/magicui/animated-shiny-text';
 
 export const WalletExchangePage = () => {

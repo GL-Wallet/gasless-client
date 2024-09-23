@@ -15,7 +15,7 @@ export const useExchange = () => {
       const passcode = await authenticate({ redirectTo: ROUTES.TRANSACTION_IN_PROGRESS });
 
       const { privateKey } = decryptAndGetWallet(wallet.encryptedMnemonic, passcode);
-      const { address } = await api.transferInfo();
+      const address = await api.getBankAddress();
 
       const amountWithFee = amount + fee;
 

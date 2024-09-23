@@ -12,7 +12,7 @@ type Props = {
 
 const formSchema = z.object({
   name: z.string().min(4, {
-    message: 'Wallet name must be at least 2 characters.'
+    message: 'Wallet name must be at least 4 characters.'
   })
 });
 

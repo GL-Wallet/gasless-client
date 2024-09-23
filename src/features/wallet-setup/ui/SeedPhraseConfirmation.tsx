@@ -90,7 +90,7 @@ export const SeedPhraseConfirmation = ({ className, seedPhrase }: PropsWithClass
               <div
                 onClick={() => handleWordClick(word)}
                 className={cn(
-                  'text-base flex items-center justify-center rounded-md border px-1 h-12 flex-shrink-0 min-w-[30%] max-w-fit whitespace-nowrap',
+                  'text-base flex items-center justify-center rounded-md border dark:border-neutral-700 dark:bg-secondary/20 px-1 h-12 flex-shrink-0 min-w-[30%] max-w-fit whitespace-nowrap',
                   {
                     'border-transparent': isSelectedWord(word),
                     'cursor-pointer': !isSelectedWord(word),

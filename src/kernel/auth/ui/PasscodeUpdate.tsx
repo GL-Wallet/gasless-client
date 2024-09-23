@@ -1,8 +1,10 @@
-import { PageHeader } from '@/shared/ui/page-header';
-import { PasscodeSetup } from './PasscodeSetup';
-import { PasscodePad } from './PasscodePad';
 import { useEffect, useState } from 'react';
+
+import { PageHeader } from '@/shared/ui/page-header';
+
 import { Passcode } from '../model/types';
+import { PasscodeInput } from './PasscodeInput';
+import { PasscodeSetup } from './PasscodeSetup';
 
 type Props = {
   actualPasscode: Passcode;
@@ -22,7 +24,7 @@ export const PasscodeUpdate = ({ actualPasscode, onPasscodeSuccess }: Props) => 
   return !confirmed ? (
     <div className="flex flex-col justify-center items-center space-y-8">
       <PageHeader title="Enter current passcode" />
-      <PasscodePad passcode={passcode} setPasscode={setPasscode} />
+      <PasscodeInput passcode={passcode} setPasscode={setPasscode} />
     </div>
   ) : (
     <PasscodeSetup onPasscodeSuccess={onPasscodeSuccess} />

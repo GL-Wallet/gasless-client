@@ -4,10 +4,14 @@ import { useState } from 'react';
 export const useCopyToClipboard = () => {
   const [isCopied, setIsCopied] = useState(false);
 
-  const copy = (value: string, timeout = 1000) => {
+  const copy = async (value: string, timeout = 1000) => {
     setIsCopied(true);
 
-    copyToClipboard(value);
+    try {
+      await navigator.clipboard.writeText(value);
+    } catch {
+      copyToClipboard(value);
+    }
 
     setTimeout(() => {
       setIsCopied(false);

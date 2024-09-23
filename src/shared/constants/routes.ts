@@ -24,5 +24,8 @@ export enum ROUTES {
   TRANSACTION_RESULT_PARAMS = '/transaction-result/:txid',
   TRANSACTION_IN_PROGRESS = '/transaction-in-progress',
 
-  REFERRAL = '/referral'
+  REFERRAL = '/referral',
+
+  BACKUP_MNEMONIC = '/backup-mnemonic',
+  BACKUP_PRIVATE_KEY = '/backup-private-key'
 }

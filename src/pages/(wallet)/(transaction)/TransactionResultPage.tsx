@@ -1,36 +1,27 @@
-import { ResponsivePageHeader } from '@/shared/ui/responsive-page-header';
-import { getTronscanLink } from '@/entities/transaction';
-import { useUtils } from '@telegram-apps/sdk-react';
-import { ROUTES } from '@/shared/constants/routes';
-import { Button } from '@/shared/ui/button';
 import { Link } from 'wouter';
 
-const StatusHeader = ({ type }: { type: 'initiated' | 'failed' }) => {
-  const title = type === 'initiated' ? 'Transaction Initiated' : 'Transaction Failed';
-  // const description =
-  //   type === 'initiated'
-  //     ? 'Your transaction has been successfully submitted. Please check back later for confirmation of its status.'
-  //     : 'We encountered an issue processing your transaction.';
+import { getTronscanLink, TransactionLink } from '@/entities/transaction';
+import { ROUTES } from '@/shared/constants/routes';
+import { Button } from '@/shared/ui/button';
 
-  return <ResponsivePageHeader className="h-fit w-72" title={title} />;
+const StatusHeader = ({ type }: { type: 'pending' | 'failed' }) => {
+  const title = type === 'pending' ? 'Transaction submitted' : 'Transaction Failed';
+
+  return <h2 className="primary-gradient text-3xl font-medium">{title}</h2>;
 };
 
 export const TransactionResultPage = ({ txid }: { txid: string }) => {
-  const utils = useUtils();
-  const isInitiated = txid !== 'no-txid';
+  const isPending = txid !== 'no-txid';
 
   return (
-    <div className="relative h-full flex flex-col justify-center items-center space-y-10">
-      <StatusHeader type={isInitiated ? 'initiated' : 'failed'} />
+    <div className="relative h-full flex flex-col items-center justify-center space-y-10">
+      <div className="space-y-8">
+        <StatusHeader type={isPending ? 'pending' : 'failed'} />
+        {isPending && <TransactionLink link={getTronscanLink(txid)} />}
+      </div>
 
-      {isInitiated && (
-        <Button onClick={() => utils.openLink(getTronscanLink(txid))} variant={'link'} className="underline">
-          Tronscan Link
-        </Button>
-      )}
-
-      <Link href={ROUTES.HOME} className="absolute bottom-0 w-full">
-        <Button variant={'outline'} className="w-full">
+      <Link href={ROUTES.HOME} className="block">
+        <Button variant={'outline'} className="absolute bottom-0 left-0 w-full">
           Back to Home
         </Button>
       </Link>

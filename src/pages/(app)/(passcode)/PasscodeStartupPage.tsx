@@ -1,24 +1,19 @@
-import { AnimatedSubscribeButton } from '@/shared/magicui/animated-subscribe-button';
 import { CheckIcon, ChevronRightIcon } from 'lucide-react';
-import { PasscodeRequired, useAuth } from '@/kernel/auth';
 import { navigate } from 'wouter/use-browser-location';
+
+import { useAppSettingsStore } from '@/entities/app-settings';
 import { useSignOut } from '@/features/wallet-setup';
+import { PasscodeRequired, useAuth } from '@/kernel/auth';
 import { ROUTES } from '@/shared/constants/routes';
-import { useSettingsStore } from '@/entities/settings';
-import { Button } from '@/shared/ui/button';
+import { AnimatedSubscribeButton } from '@/shared/magicui/animated-subscribe-button';
 import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger
+	AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
+	AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger
 } from '@/shared/ui/alert-dialog';
+import { Button } from '@/shared/ui/button';
 
 export const PasscodeStartupPage = () => {
-  const isBiometryEnabled = useSettingsStore((store) => store.isBiometryEnabled);
+  const isBiometryEnabled = useAppSettingsStore((store) => store.isBiometryEnabled);
   const { _actualPasscode, _onPasscodeSuccess } = useAuth();
 
   const { signOut } = useSignOut();
@@ -33,7 +28,7 @@ export const PasscodeStartupPage = () => {
   };
 
   return (
-    <div className="relative h-full flex flex-col justify-center items-center space-y-8">
+    <div className="relative h-full flex flex-col justify-between items-center space-y-8">
       <PasscodeRequired
         isBiometryEnabled={isBiometryEnabled}
         actualPasscode={_actualPasscode}

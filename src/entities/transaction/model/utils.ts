@@ -41,6 +41,6 @@ export const extractTransactionData = (response: TrxResponse | UsdtResponse): Tr
   }
 };
 
-export const getTronscanLink = (txid: string) => {
+export const getTronscanLink = (txid: string | undefined) => {
   return [TRONSCAN_TRANSACTION_BASE_URL, txid].join('/');
 };

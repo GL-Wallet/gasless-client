@@ -1,11 +1,11 @@
 import { useAuthStore } from '@/kernel/auth/model/store';
 import { useBiometry } from '@/shared/hooks/useBiometry';
-import { useSettingsStore } from '@/entities/settings';
+import { useAppSettingsStore } from '@/entities/app-settings';
 
 export const useSettingsItems = () => {
   const { isEnabled, requestAccess, updateToken } = useBiometry();
 
-  const { isBiometryEnabled, updateSettings } = useSettingsStore((store) => ({
+  const { isBiometryEnabled, updateSettings } = useAppSettingsStore((store) => ({
     isBiometryEnabled: store.isBiometryEnabled,
     updateSettings: store.updateSettings
   }));

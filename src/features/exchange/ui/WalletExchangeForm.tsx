@@ -1,29 +1,32 @@
-import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/shared/ui/drawer';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/shared/ui/form';
-import { Alert, AlertDescription, AlertTitle } from '@/shared/ui/alert';
 import { ArrowDown, Check, ChevronRight, Wallet2 } from 'lucide-react';
-import { truncateString } from '@/shared/utils/truncateString';
-import { FormattedNumber } from '@/shared/ui/formatted-number';
-import { AVAILABLE_TOKENS } from '@/shared/enums/tokens';
-import { useForm, UseFormReturn } from 'react-hook-form';
-import { api, ExchangeInfoResponse } from '@/kernel/api';
-import ShinyButton from '@/shared/magicui/shiny-button';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { SubmitButton } from '../../ui/SubmitButton';
-import { useExchange } from '../model/useExchange';
-import { Separator } from '@/shared/ui/separator';
-import { useWallet } from '@/entities/wallet';
 import { useEffect, useState } from 'react';
-import { Button } from '@/shared/ui/button';
-import { Input } from '@/shared/ui/input';
-import { Balances } from '@/kernel/tron';
+import { useForm, UseFormReturn } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { z } from 'zod';
+
+import { useWallet } from '@/entities/wallet';
+import { api, ExchangeInfoResponse } from '@/kernel/api';
+import { Balances } from '@/kernel/tron';
+import { AVAILABLE_TOKENS } from '@/shared/enums/tokens';
+import ShinyButton from '@/shared/magicui/shiny-button';
+import { Alert, AlertDescription, AlertTitle } from '@/shared/ui/alert';
+import { Button } from '@/shared/ui/button';
+import {
+	Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle
+} from '@/shared/ui/drawer';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/shared/ui/form';
+import { FormattedNumber } from '@/shared/ui/formatted-number';
+import { Input } from '@/shared/ui/input';
+import { Separator } from '@/shared/ui/separator';
+import { truncateString } from '@/shared/utils/truncateString';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+import { useExchange } from '../model/useExchange';
 
 const formSchema = z.object({
   amount: z.coerce
     .number()
-    .min(10, { message: 'You must enter at least 10 token to send.' })
+    .min(0.1, { message: 'You must enter at least 10 token to send.' })
     .positive({ message: 'Amount must be a positive number.' })
 });
 
@@ -112,7 +115,9 @@ export function WalletExchangeForm() {
           </div>
         </div>
 
-        <SubmitButton>Buy</SubmitButton>
+        <Button className="dark:text-white bg-secondary/80 dark:border-neutral-500" variant={'outline'} type="submit">
+          Buy
+        </Button>
 
         <TransactionDrawer
           handleSign={handleSign}
@@ -254,7 +259,7 @@ const TransactionDrawer = ({
           </h3>
           <ArrowDown />
           <h3 className="flex items-center font-bold text-xl mt-2 space-x-2">
-            <p>{values?.amount && exchangeInfo ? values.amount * exchangeInfo.rate : 0}</p>
+            <p>{values?.amount && exchangeInfo ? <FormattedNumber number={values.amount * exchangeInfo.rate} /> : 0}</p>
             <span>{AVAILABLE_TOKENS.TRX}</span>
           </h3>
         </div>

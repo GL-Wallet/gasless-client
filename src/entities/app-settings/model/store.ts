@@ -1,7 +1,9 @@
+import { create } from 'zustand';
+
 import { cloudStorageService } from '@/kernel/cloud-storage';
+
 import { USER_STORAGE_KEY } from '../constants';
 import { settingsSchema } from './schema';
-import { create } from 'zustand';
 import { Settings } from './types';
 
 type State = Settings;
@@ -13,10 +15,11 @@ type Actions = {
 };
 
 const initialState: State = {
-  isBiometryEnabled: false
+  isBiometryEnabled: false,
+  isNewest: true
 };
 
-export const useSettingsStore = create<State & Actions>((set) => ({
+export const useAppSettingsStore = create<State & Actions>((set) => ({
   ...initialState,
 
   async loadSettings() {
@@ -40,6 +43,6 @@ export const useSettingsStore = create<State & Actions>((set) => ({
   }
 }));
 
-useSettingsStore.subscribe(async (state) => {
+useAppSettingsStore.subscribe(async (state) => {
   await cloudStorageService.set(USER_STORAGE_KEY, state);
 });

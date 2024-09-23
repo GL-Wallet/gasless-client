@@ -1,10 +1,12 @@
+import { useEffect, useState } from 'react';
+
+import { useWallet } from '@/entities/wallet';
 import { AVAILABLE_TOKENS } from '@/shared/enums/tokens';
-import { TransactionListItem } from './TransactionListItem';
+import { Skeleton } from '@/shared/ui/skeleton';
+
 import { fetchTransactionList } from '../model/queries';
 import { useTransactionStore } from '../model/store';
-import { Skeleton } from '@/shared/ui/skeleton';
-import { useWallet } from '@/entities/wallet';
-import { useEffect, useState } from 'react';
+import { TransactionListItem } from './TransactionListItem';
 
 interface TransactionListProps {
   token: AVAILABLE_TOKENS;

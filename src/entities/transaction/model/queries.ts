@@ -1,8 +1,10 @@
-import { Transaction, TrxResponse, UsdtResponse } from './types';
-import { AVAILABLE_TOKENS } from '@/shared/enums/tokens';
-import { extractTransactionData } from './utils';
 import axios from 'axios';
+
 import { TRONGRID_BASE_API_URL } from '@/shared/constants';
+import { AVAILABLE_TOKENS } from '@/shared/enums/tokens';
+
+import { Transaction, TrxResponse, UsdtResponse } from './types';
+import { extractTransactionData } from './utils';
 
 const buildUrl = (address: string, tokenType: AVAILABLE_TOKENS): string => {
   const baseUrl = `${TRONGRID_BASE_API_URL}/v1/accounts/${address}/transactions`;

@@ -1,7 +1,8 @@
+import { ChevronRight } from 'lucide-react';
+
+import { Button } from '@/shared/ui/button';
 import { CopyToClipboard } from '@/shared/ui/copy-to-clipboard';
 import { useUtils } from '@telegram-apps/sdk-react';
-import { Button } from '@/shared/ui/button';
-import { ChevronRight } from 'lucide-react';
 
 type Props = {
   userId: string | undefined;
@@ -13,7 +14,7 @@ export const ReferralCard = ({ userId }: Props) => {
   const shareUrl = `${import.meta.env.VITE_APP_SHARE_LINK}?startapp=${userId}`;
 
   const handleShareInvite = () => {
-    utils.shareURL(shareUrl, 'Hello everyone!');
+    utils.shareURL(shareUrl, 'Join Gasless Wallet - a decentralized wallet on Tron that reduces gas fees by up to 40%');
   };
 
   return (
@@ -24,7 +25,7 @@ export const ReferralCard = ({ userId }: Props) => {
     >
       <div>
         <h4 className="text-lg font-bold primary-gradient">Invite a friend</h4>
-        <p className="text-md primary-gradient">+10% friends savings for you</p>
+        <p className="text-sm primary-gradient">+10% friends' transaction fees for you</p>
       </div>
 
       <div className="flex items-center space-x-2">

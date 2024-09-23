@@ -1,10 +1,12 @@
+import { UserIcon } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
-import { Skeleton } from '@/shared/ui/skeleton';
-import { Badge } from '@/shared/ui/badge';
-import { UserIcon } from 'lucide-react';
+
 import { User } from '@/entities/user';
 import { api } from '@/kernel/api';
+import { Badge } from '@/shared/ui/badge';
+import { FormattedNumber } from '@/shared/ui/formatted-number';
+import { Skeleton } from '@/shared/ui/skeleton';
 
 export const ReferralList = () => {
   const [referrals, setReferrals] = useState<User[]>([]);
@@ -76,11 +78,13 @@ const ReferralItem: React.FC<ReferralItemProps> = ({ user }) => {
         </div>
         <div className="flex flex-col">
           <span>{name}</span>
-          <span className="text-sm text-muted-foreground">Total reward: {totalPartnerReward || totalReward}</span>
+          <span className="text-sm text-muted-foreground">
+            Total reward: <FormattedNumber number={user.isPartner ? totalPartnerReward : totalReward} />
+          </span>
         </div>
       </div>
       <Badge className="border-neutral-600" variant="outline">
-        +{currentPartnerReward || currentReward}
+        +<FormattedNumber number={user.isPartner ? currentPartnerReward : currentReward} />
       </Badge>
     </div>
   );

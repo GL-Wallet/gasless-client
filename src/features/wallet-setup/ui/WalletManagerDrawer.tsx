@@ -1,20 +1,16 @@
-import AnimatedShinyText from '@/shared/magicui/animated-shiny-text';
 import { Check, ChevronDown, Wallet2, X } from 'lucide-react';
-import { useWalletStore, Wallet } from '@/entities/wallet';
-import { AddWalletDrawer } from './AddWalletDrawer';
-import { Separator } from '@/shared/ui/separator';
-import { Avatar } from '@/shared/ui/avatar';
-import { cn } from '@/shared/lib/utils';
 import { useState } from 'react';
+
+import { useWalletStore, Wallet } from '@/entities/wallet';
+import { cn } from '@/shared/lib/utils';
+import AnimatedShinyText from '@/shared/magicui/animated-shiny-text';
+import { Avatar } from '@/shared/ui/avatar';
 import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger
+	Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger
 } from '@/shared/ui/drawer';
+import { Separator } from '@/shared/ui/separator';
+
+import { AddWalletDrawer } from './AddWalletDrawer';
 
 export const WalletManagerDrawer = () => {
   const [isOpened, setIsOpened] = useState(false);
@@ -36,7 +32,7 @@ export const WalletManagerDrawer = () => {
 
   return (
     <Drawer open={isOpened} onOpenChange={setIsOpened}>
-      <DrawerTrigger onClick={handleOpenDrawer}>
+      <DrawerTrigger onClick={handleOpenDrawer} className='outline-none'>
         <div
           className={cn(
             'group rounded-full bg-transparent border border-neutral-300 dark:border-input dark:bg-card/40 text-md transition-all ease-in hover:cursor-pointer hover:bg-neutral-200 dark:border-white/5 dark:bg-neutral-900 dark:hover:bg-neutral-800'
@@ -52,7 +48,7 @@ export const WalletManagerDrawer = () => {
         </div>
       </DrawerTrigger>
 
-      <DrawerContent className="min-h-[50%] px-4 pb-8">
+      <DrawerContent className="min-h-[50%] px-4 pb-8#37373790">
         <DrawerClose className="absolute top-4 right-4" asChild onClick={handleCloseDrawer}>
           <X className="text-muted-foreground" />
         </DrawerClose>

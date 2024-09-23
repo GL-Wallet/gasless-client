@@ -1,6 +1,6 @@
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { SplashScreen } from '@/shared/ui/splash-screen';
-import { useSettingsStore } from '@/entities/settings';
+import { useAppSettingsStore } from '@/entities/app-settings';
 import { useInitData } from '@telegram-apps/sdk-react';
 import { useWalletStore } from '@/entities/wallet';
 import { useUserStore } from '@/entities/user';
@@ -11,7 +11,7 @@ export const Loaders = (props: PropsWithChildren) => {
 
   const userLoader = useUserStore((store) => store.loadUser);
   const walletLoader = useWalletStore((store) => store.loadWallets);
-  const settingsLoader = useSettingsStore((store) => store.loadSettings);
+  const settingsLoader = useAppSettingsStore((store) => store.loadSettings);
 
   useEffect(() => {
     if (!initData?.user) return;

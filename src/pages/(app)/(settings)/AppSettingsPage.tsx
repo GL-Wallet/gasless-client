@@ -20,7 +20,7 @@ export const AppSettingsPage = () => {
   return (
     <div className="h-full flex flex-col justify-between">
       <AppSettingsItems />
-      <Button onClick={handleRemoveWallet} variant={'outline'} className='bg-secondary dark:bg-transparent'>
+      <Button onClick={handleRemoveWallet} variant={'outline'} className='bg-transparent'>
         Sign out of the <span className="underline font-fold ml-1">{wallet.name}</span>
       </Button>
     </div>

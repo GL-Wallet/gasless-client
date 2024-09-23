@@ -1,10 +1,12 @@
-import { useEffectOnce } from '@/shared/hooks/useEffectOnce';
 import { useCallback, useEffect, useState } from 'react';
+
 import { useBiometry } from '@/shared/hooks/useBiometry';
-import { PageHeader } from '@/shared/ui/page-header';
+import { useEffectOnce } from '@/shared/hooks/useEffectOnce';
 import { decrypt } from '@/shared/lib/crypto-js';
-import { PasscodePad } from '../ui/PasscodePad';
+import { PageHeader } from '@/shared/ui/page-header';
+
 import { Passcode } from '../model/types';
+import { PasscodeInput } from './PasscodeInput';
 
 type Props = {
   isBiometryEnabled: boolean;
@@ -39,7 +41,8 @@ export const PasscodeRequired = ({ isBiometryEnabled, actualPasscode, onPasscode
   return (
     <div className="grow flex flex-col justify-center items-center space-y-8">
       <PageHeader title={'Enter passcode'} />
-      <PasscodePad
+
+      <PasscodeInput
         isBiometryEnabled={isBiometryEnabled}
         handleBiometry={requestBiometry}
         setPasscode={setEnteredPasscode}

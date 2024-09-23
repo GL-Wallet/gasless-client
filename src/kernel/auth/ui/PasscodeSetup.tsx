@@ -1,8 +1,10 @@
-import { useCloudStorage } from '@telegram-apps/sdk-react';
-import { PageHeader } from '@/shared/ui/page-header';
-import { PasscodePad } from '../ui/PasscodePad';
 import { useEffect, useState } from 'react';
+
+import { PageHeader } from '@/shared/ui/page-header';
+import { useCloudStorage } from '@telegram-apps/sdk-react';
+
 import { Passcode } from '../model/types';
+import { PasscodeInput } from './PasscodeInput';
 
 type PasscodeSetupStatus = 'initial' | 'confirm';
 
@@ -37,7 +39,7 @@ export const PasscodeSetup = ({ onPasscodeSuccess }: Props) => {
   return (
     <div className="flex flex-col justify-center items-center space-y-8">
       <PageHeader title={statusTitles[setupStatus]} />
-      <PasscodePad passcode={passcode} setPasscode={setPasscode} />
+      <PasscodeInput passcode={passcode} setPasscode={setPasscode} />
     </div>
   );
 };

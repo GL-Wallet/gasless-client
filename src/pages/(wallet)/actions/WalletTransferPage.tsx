@@ -1,6 +1,6 @@
 import { Select, SelectContent, SelectItem, SelectTrigger } from '@/shared/ui/select';
 import AnimatedShinyText from '@/shared/magicui/animated-shiny-text';
-import { WalletTransferForm } from '@/features/wallet-actions';
+import { WalletTransferForm } from '@/features/transfer';
 import { AVAILABLE_TOKENS } from '@/shared/enums/tokens';
 import { useState } from 'react';
 

@@ -1,11 +1,12 @@
-import { useWallet, useWalletStore } from '@/entities/wallet';
-import { WalletManagerDrawer } from '@/features/wallet-setup';
-import { WalletActionsCard } from '@/features/wallet-actions';
-import { AppSettingsLink } from '@/features/app-settings';
-import PullToRefresh from 'react-simple-pull-to-refresh';
-import { WalletAssets } from '@/features/wallet-assets';
-import { ReferralLink } from '@/features/referral';
 import { useCallback, useEffect } from 'react';
+import PullToRefresh from 'react-simple-pull-to-refresh';
+
+import { useWallet, useWalletStore } from '@/entities/wallet';
+import { AppSettingsLink, FinishSettingUp } from '@/features/app-settings';
+import { ReferralLink } from '@/features/referral';
+import { WalletActionsCard } from '@/features/wallet-actions';
+import { WalletAssets } from '@/features/wallet-assets';
+import { WalletManagerDrawer } from '@/features/wallet-setup';
 import { ModeToggle } from '@/shared/ui/mode-toggle';
 
 export const HomePage = () => {
@@ -23,7 +24,7 @@ export const HomePage = () => {
   return (
     <PullToRefresh onRefresh={handleUpdateBalance} pullingContent="">
       <div className="relative h-full flex flex-col items-center">
-        <ModeToggle className='absolute top-1 left-0'/>
+        <ModeToggle className="absolute top-1 left-0" />
         <AppSettingsLink className="absolute top-1 right-0" />
         <WalletManagerDrawer />
 
@@ -31,6 +32,8 @@ export const HomePage = () => {
         <ReferralLink className="mt-2" />
 
         <WalletAssets className="mt-8" />
+
+        <FinishSettingUp className="mt-8" />
       </div>
     </PullToRefresh>
   );

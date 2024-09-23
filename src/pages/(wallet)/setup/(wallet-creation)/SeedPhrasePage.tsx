@@ -1,7 +1,16 @@
+import { CopyToClipboardButton } from '@/shared/ui/copy-to-clipboard-button';
 import { ResponsivePageHeader } from '@/shared/ui/responsive-page-header';
-import { SeedPhrase } from '@/features/wallet-setup';
+import { SeedPhrase, useSeedPhrase } from '@/features/wallet-setup';
+import ShinyButton from '@/shared/magicui/shiny-button';
+import { navigate } from 'wouter/use-browser-location';
+import { ROUTES } from '@/shared/constants/routes';
+import { useState } from 'react';
 
 export const SeedPhrasePage = () => {
+  const [isDisabled, setIsDisabled] = useState(true);
+
+  const seedPhrase = useSeedPhrase();
+
   return (
     <div className="h-full flex flex-col justify-between items-center space-y-3">
       <ResponsivePageHeader
@@ -10,7 +19,17 @@ export const SeedPhrasePage = () => {
         className="h-[25%]"
       />
 
-      <SeedPhrase />
+      <SeedPhrase seedPhrase={seedPhrase} onHideMask={() => setIsDisabled(false)} />
+
+      <CopyToClipboardButton value={seedPhrase?.join(' ')} disabled={isDisabled} />
+
+      <ShinyButton
+        onClick={() => navigate(ROUTES.SEED_PHRASE_CONFIRMATION)}
+        disabled={isDisabled}
+        animate={false}
+        text="Continue"
+        className="w-full"
+      />
     </div>
   );
 };

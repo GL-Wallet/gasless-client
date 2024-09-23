@@ -1,9 +1,10 @@
 import { PropsWithClassname } from '../types/react';
 import { cn } from '../lib/utils';
+import { ReactNode } from 'react';
 
 type Props = {
-  title?: string;
-  description?: string;
+  title?: ReactNode;
+  description?: ReactNode;
 };
 
 export const PageHeader = ({ title, description, className }: PropsWithClassname<Props>) => {

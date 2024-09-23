@@ -36,7 +36,9 @@ const BackButtonVisibleConfig: Record<ROUTES, boolean> = {
   [ROUTES.TRANSACTION_RESULT]: false,
   [ROUTES.TRANSACTION_RESULT_PARAMS]: false,
   [ROUTES.TRANSACTION_IN_PROGRESS]: false,
-  [ROUTES.REFERRAL]: true
+  [ROUTES.REFERRAL]: true,
+  [ROUTES.BACKUP_MNEMONIC]: true,
+  [ROUTES.BACKUP_PRIVATE_KEY]: true
 };
 
 const getColorBasedOnTheme = (theme: string): RGB => {

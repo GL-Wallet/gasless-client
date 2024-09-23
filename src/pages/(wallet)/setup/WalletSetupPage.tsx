@@ -35,7 +35,7 @@ export const WalletSetupPage = () => {
         <div className="space-y-3">
           <Button
             onClick={() => handleImportWallet()}
-            className="w-full max-w-sm font-bold bg-[#D7E4E3] dark:bg-transparent"
+            className="w-full"
             variant="outline"
           >
             Import Using Seed Phrase

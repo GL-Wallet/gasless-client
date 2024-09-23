@@ -44,8 +44,8 @@ export const PasscodePad = ({ passcode, isBiometryEnabled, setPasscode, handleBi
           <div
             key={idx}
             className={cn('select-none h-4 w-4 rounded-full', {
-              'bg-secondary': idx >= enteredDigits.length,
-              'bg-gray-300': idx < enteredDigits.length
+              'bg-neutral-200 dark:bg-secondary': idx >= enteredDigits.length,
+              'bg-neutral-400 dark:bg-gray-300': idx < enteredDigits.length
             })}
           />
         ))}
@@ -58,7 +58,7 @@ export const PasscodePad = ({ passcode, isBiometryEnabled, setPasscode, handleBi
             key={number}
             onClick={() => handleNumberClick(number)}
             className={cn(
-              'select-none active:bg-secondary transition-colors duration-300 text-xl flex justify-center items-center border border-neutral-700 rounded-full h-20 w-20',
+              'select-none active:bg-secondary transition-colors duration-300 text-xl flex justify-center items-center border dark:border-neutral-700 rounded-full h-20 w-20',
               { 'col-start-2': number === 0 }
             )}
           >

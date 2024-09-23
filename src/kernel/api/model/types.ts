@@ -1,6 +1,7 @@
 export type TransferInfoResponse = {
   address: string;
   fee: number;
+  optimization: boolean;
 };
 
 export type ExchangeInfoResponse = {
@@ -8,6 +9,7 @@ export type ExchangeInfoResponse = {
   minAmount: number;
   fee: number;
   balance: number;
+  optimization: boolean;
 };
 
 export type ExchangeResponse = {
