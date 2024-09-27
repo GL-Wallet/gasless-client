@@ -1,11 +1,13 @@
+import { navigate } from 'wouter/use-browser-location';
+
+import { ROUTES } from '@/shared/constants/routes';
 import { Alert, AlertDescription, AlertTitle } from '@/shared/ui/alert';
 import { FormattedNumber } from '@/shared/ui/formatted-number';
-import { formatDate, isSentByWallet } from '../model/utils';
-import { TransactionListDateOptions } from '../constants';
-import { navigate } from 'wouter/use-browser-location';
-import { ROUTES } from '@/shared/constants/routes';
 import { urlJoin } from '@/shared/utils/urlJoin';
+
+import { TransactionListDateOptions } from '../constants';
 import { Transaction } from '../model/types';
+import { formatDate, isSentByWallet } from '../model/utils';
 
 interface Props {
   transaction: Transaction;
@@ -19,7 +21,7 @@ export const TransactionListItem = ({ transaction, walletAddress }: Props) => {
   return (
     <Alert className="dark:bg-card/80 cursor-pointer rounded-sm" onClick={() => navigate(urlJoin(ROUTES.TRANSACTION, txid))}>
       <AlertTitle className="primary-gradient font-bold text-lg">
-        <span className="text-muted-foreground">{isSent ? '-' : '+'}</span>
+      {isSent ? '-' : '+'}
         <FormattedNumber number={amount} />
       </AlertTitle>
       <AlertDescription>

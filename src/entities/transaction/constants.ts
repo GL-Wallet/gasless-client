@@ -1,5 +1,4 @@
 export const TransactionListDateOptions: Intl.DateTimeFormatOptions = {
-  timeZone: 'Europe/Kiev',
   year: 'numeric',
   month: '2-digit',
   day: '2-digit',
@@ -10,7 +9,6 @@ export const TransactionListDateOptions: Intl.DateTimeFormatOptions = {
 };
 
 export const TransactionDateOptions: Intl.DateTimeFormatOptions = {
-  timeZone: 'Europe/Kiev',
   day: '2-digit',
   month: 'short',
   year: 'numeric',

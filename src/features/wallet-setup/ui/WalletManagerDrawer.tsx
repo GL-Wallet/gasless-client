@@ -32,7 +32,7 @@ export const WalletManagerDrawer = () => {
 
   return (
     <Drawer open={isOpened} onOpenChange={setIsOpened}>
-      <DrawerTrigger onClick={handleOpenDrawer} className='outline-none'>
+      <DrawerTrigger onClick={handleOpenDrawer} className='outline-nonew-fit'>
         <div
           className={cn(
             'group rounded-full bg-transparent border border-neutral-300 dark:border-input dark:bg-card/40 text-md transition-all ease-in hover:cursor-pointer hover:bg-neutral-200 dark:border-white/5 dark:bg-neutral-900 dark:hover:bg-neutral-800'

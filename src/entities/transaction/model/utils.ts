@@ -1,9 +1,11 @@
-import { Transaction, TrxResponse, UsdtResponse } from './types';
-import { AVAILABLE_TOKENS } from '@/shared/enums/tokens';
 import { TronWeb } from 'tronweb';
-import { TRONSCAN_TRANSACTION_BASE_URL } from '../constants';
 
-export const formatDate = (date: Date, options: Intl.DateTimeFormatOptions, locales = 'uk-UA') => {
+import { AVAILABLE_TOKENS } from '@/shared/enums/tokens';
+
+import { TRONSCAN_TRANSACTION_BASE_URL } from '../constants';
+import { Transaction, TrxResponse, UsdtResponse } from './types';
+
+export const formatDate = (date: Date, options: Intl.DateTimeFormatOptions, locales: string = navigator.language) => {
   const formatter = new Intl.DateTimeFormat(locales, options);
   return formatter.format(date);
 };
