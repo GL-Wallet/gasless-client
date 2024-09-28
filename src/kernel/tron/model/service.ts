@@ -1,8 +1,11 @@
-import { PrivateKey, WalletAddress, Amount, TransactionID, TransactionResponse, Balances } from './types';
-import { EVENT_SERVER, FULL_NODE, SOLIDITY_NODE, USDT_CONTRACT_ADDRESS } from '../config';
 import { TronWeb, Types } from 'tronweb';
+
+import { EVENT_SERVER, FULL_NODE, SOLIDITY_NODE, USDT_CONTRACT_ADDRESS } from '../config';
 import { usdtAbi } from '../usdt-abi';
 import { getTrxBalance } from './queries';
+import {
+	Amount, Balances, PrivateKey, TransactionID, TransactionResponse, WalletAddress
+} from './types';
 
 // Create a TronWeb instance
 const createTronWebInstance = (privateKey: PrivateKey): TronWeb =>
@@ -139,6 +142,49 @@ const getTransactionInfo = async (txid: string, privateKey: PrivateKey) => {
   }
 };
 
+// Get Bandwidth
+const getBandwidthByAddress = async (address: string, privateKey: string) => {
+  try {
+    const tronWeb = createTronWebInstance(privateKey);
+    return await tronWeb.trx.getBandwidth(address);
+  } catch (error) {
+    console.error('Error fetching bandwidth:', error);
+    throw error;
+  }
+};
+
+// Get TRC20 Transaction fee
+const getTrc20TransactionFee = async (address: string, privateKey: string) => {
+  const tronWeb = createTronWebInstance(privateKey);
+
+  const parameter = [
+    {
+      type: 'address',
+      value: tronWeb.address.toHex(address)
+    },
+    {
+      type: 'uint256',
+      value: 0
+    }
+  ];
+
+  const functionSelector = 'transfer(address,uint256)';
+
+  const energyEstimate = await tronWeb.transactionBuilder.estimateEnergy(
+    tronWeb.address.toHex(USDT_CONTRACT_ADDRESS),
+    functionSelector,
+    { feeLimit: 1_000_000, callValue: 0 },
+    parameter
+  );
+
+  const chainParams = await tronWeb.trx.getChainParameters();
+  const energyFee = chainParams.filter((item) => item.key === 'getEnergyFee')[0].value;
+  const feeLimit = tronWeb.fromSun(energyEstimate.energy_required * energyFee);
+
+  // temporary *2
+  return Number(feeLimit) * 2;
+};
+
 // Get Transaction Status
 async function getTransactionStatus(transactionId: string, privateKey: string): Promise<string> {
   try {
@@ -177,9 +223,11 @@ export const tronService = {
   createAndSignTrc20Transaction,
   createAndSignTrxTransaction,
   getBalances,
+  getBandwidthByAddress,
   getAccountEnergy,
   getTransactionInfo,
   getTransactionStatus,
+  getTrc20TransactionFee,
   createWallet,
   restoreWallet
 };

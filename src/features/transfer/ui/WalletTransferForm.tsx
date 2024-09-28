@@ -6,7 +6,7 @@ import { TronWeb } from 'tronweb';
 import { navigate } from 'wouter/use-browser-location';
 import { z } from 'zod';
 
-import { useWallet } from '@/entities/wallet';
+import { getPrivateKey, useWallet } from '@/entities/wallet';
 import { api, TransferInfoResponse } from '@/kernel/api';
 import { useAuth } from '@/kernel/auth';
 import { Balances } from '@/kernel/tron/model/types';
@@ -34,7 +34,8 @@ import { TrxPurchaseLink } from './TrxPurchaseLink';
 // Validation schema for form fields
 const tronAddressRegex = /^T[1-9A-HJ-NP-Za-km-z]{33}$/;
 
-const BANDWIDTH_COST = 0.345
+const BANDWIDTH_COST = 0.345;
+const TRANSACTION_FEE = 13.5;
 
 const formSchema = z.object({
   address: z
@@ -64,6 +65,7 @@ export const WalletTransferForm = ({ token }: Props) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [formValues, setFormValues] = useState<FormFields>();
   const [transferInfo, setTransferInfo] = useState<TransferInfoResponse | null>(null);
+  const [prevFee, setPrevFee] = useState<number | null>(null);
 
   const { authenticate } = useAuth();
   const wallet = useWallet();
@@ -83,14 +85,24 @@ export const WalletTransferForm = ({ token }: Props) => {
     setTransferInfo(res);
   }, []);
 
+  const fetchTransferPrevFee = useCallback(async (address: string) => {
+    const privateKey = getPrivateKey();
+    if (!privateKey) return;
+
+    const energyCount = await api.getEnergyCountByAddress(address);
+
+    setPrevFee(energyCount * TRANSACTION_FEE);
+  }, []);
+
   useEffect(() => {
     const { unsubscribe } = form.watch(({ address }) => {
       if (TronWeb.isAddress(address) && address !== receiver) {
         fetchTransferInfo(address!);
+        fetchTransferPrevFee(address!);
       }
     });
     return () => unsubscribe();
-  }, [fetchTransferInfo, form, receiver]);
+  }, [fetchTransferInfo, fetchTransferPrevFee, form, receiver]);
 
   const validateTransaction = useCallback(
     (values: FormFields): boolean => {
@@ -198,7 +210,9 @@ export const WalletTransferForm = ({ token }: Props) => {
 
     return (
       <div className="flex items-center space-x-1">
-        <span className="text-muted-foreground line-through text-md">?</span>
+        <span className="text-muted-foreground line-through text-md">
+          <FormattedNumber number={prevFee!} />
+        </span>
         <span className="flex text-md">
           <FormattedNumber number={transferInfo?.fee + BANDWIDTH_COST} /> {AVAILABLE_TOKENS.TRX}
         </span>

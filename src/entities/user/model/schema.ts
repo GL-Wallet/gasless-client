@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export const userSchema = z.object({
   id: z.string(),
+  userId: z.string(),
   userName: z.string(),
   referrerId: z.number().optional(),
   referrerPartnerId: z.number().optional(),

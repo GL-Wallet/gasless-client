@@ -25,9 +25,11 @@ export const ReferralPage = () => {
   const user = useUser();
 
   const handleClaimReward = async () => {
+    if (!user) return;
+
     try {
       setIsClaimLoading(true);
-      await api.claimReward({ address: wallet.address });
+      await api.claimReward(user.id, { address: wallet.address });
       await fetchReferralList();
       toast.success('Success!');
       setReward(0);
@@ -39,10 +41,12 @@ export const ReferralPage = () => {
   };
 
   useEffect(() => {
-    api.getTotalReward().then((res) => setReward(res));
-    api.getReferralsCount().then((res) => setReferralsCount(res));
+    if (!user) return;
+
+    api.getTotalReward(user.id).then((res) => setReward(res));
+    api.getReferralsCount(user.id).then((res) => setReferralsCount(res));
     fetchReferralList();
-  }, [fetchReferralList]);
+  }, [user, fetchReferralList]);
 
   const isZeroReward = reward === 0;
 

@@ -1,5 +1,6 @@
-import { TRONGRID_BASE_API_URL } from '@/shared/constants';
 import axios from 'axios';
+
+import { TRONGRID_BASE_API_URL } from '@/shared/constants';
 
 export const getTrxBalance = async (address: string): Promise<number> => {
   try {

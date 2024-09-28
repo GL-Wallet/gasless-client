@@ -1,7 +1,9 @@
-import { getPrivateKeyFromPasscode, useWallet } from '@/entities/wallet';
-import { tronService } from '@/kernel/tron';
 import { useCallback } from 'react';
+
+import { useUser } from '@/entities/user';
+import { getPrivateKeyFromPasscode, useWallet } from '@/entities/wallet';
 import { api } from '@/kernel/api';
+import { tronService } from '@/kernel/tron';
 
 type TransferTrc20Props = {
   recipientAddress: string;
@@ -13,6 +15,7 @@ type TransferTrc20Props = {
 };
 
 export const useTrc20Transfer = () => {
+  const user = useUser();
   const wallet = useWallet();
 
   const transferUsdt = useCallback(
@@ -24,6 +27,8 @@ export const useTrc20Transfer = () => {
       userPasscode,
       optimization
     }: TransferTrc20Props) => {
+      if (!user) return;
+
       try {
         const privateKey = getPrivateKeyFromPasscode(wallet.encryptedMnemonic, userPasscode);
         const accountEnergy = await tronService.getAccountEnergy(wallet.address, privateKey);
@@ -45,13 +50,13 @@ export const useTrc20Transfer = () => {
           privateKey
         );
 
-        return (await api.transfer({ signedTrxTransaction, signedUsdtTransaction })).txid;
+        return (await api.transfer(user.id, { signedTrxTransaction, signedUsdtTransaction })).txid;
       } catch (error) {
         console.error('Error transferring TRC-20 token:', error);
         throw error;
       }
     },
-    [wallet.address, wallet.encryptedMnemonic]
+    [wallet.address, wallet.encryptedMnemonic, user]
   );
 
   return {
