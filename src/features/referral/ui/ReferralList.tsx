@@ -46,7 +46,7 @@ interface ReferralItemProps {
 }
 
 const ReferralItem: React.FC<ReferralItemProps> = ({ user }) => {
-  const { name, currentReward, currentPartnerReward, totalReward, totalPartnerReward } = user;
+  const { userName, currentReward, currentPartnerReward, totalReward, totalPartnerReward } = user;
 
   return (
     <div className="flex items-center justify-between px-4 py-2 border dark:bg-inherit dark:border-neutral-600 rounded-lg">
@@ -55,7 +55,7 @@ const ReferralItem: React.FC<ReferralItemProps> = ({ user }) => {
           <UserIcon className="size-5" />
         </div>
         <div className="flex flex-col">
-          <span>{name}</span>
+          <span>@{userName}</span>
           <span className="text-sm text-muted-foreground">
             Total reward: <FormattedNumber number={user.isPartner ? totalPartnerReward : totalReward} />
           </span>

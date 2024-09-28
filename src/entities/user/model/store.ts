@@ -1,7 +1,9 @@
-import { createUser as createUserQuery, getUser as getUserQuery } from './queries';
-import { User as TelegramUser } from '@telegram-apps/sdk-react';
-import { CreateUser, User } from './types';
 import { create } from 'zustand';
+
+import { User as TelegramUser } from '@telegram-apps/sdk-react';
+
+import { createUser as createUserQuery, getUser as getUserQuery } from './queries';
+import { CreateUser, User } from './types';
 
 type State = {
   user: User | null;
@@ -31,7 +33,7 @@ export const useUserStore = create<State & Actions>((set) => ({
         set({ user: existingUser });
       } else {
         const newUserData: CreateUser = {
-          name: [telegramUser.firstName, telegramUser.lastName].join(' ').trim(),
+          userName: telegramUser.username!,
           referrerId
         };
         const newUser = await createUserQuery(newUserData);
