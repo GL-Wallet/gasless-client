@@ -1,36 +1,48 @@
-import { ReferralCard, ReferralClaimCard, ReferralList } from '@/features/referral';
+import { useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
+
 import { useUser } from '@/entities/user';
 import { useWallet } from '@/entities/wallet';
-import { useEffect, useState } from 'react';
-import { Badge } from '@/shared/ui/badge';
+import {
+	ReferralCard, ReferralClaimCard, ReferralList, useFetchReferrals
+} from '@/features/referral';
 import { api } from '@/kernel/api';
-import toast from 'react-hot-toast';
+import { Badge } from '@/shared/ui/badge';
 
 export const ReferralPage = () => {
   const [reward, setReward] = useState<number | null>(null);
   const [referralsCount, setReferralsCount] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isClaimLoading, setIsClaimLoading] = useState(false);
+
+  const currentPage = useRef<number>(1);
+  const limit = useRef<number>(4);
+
+  const { referralList, hasMoreReferrals, loadingReferrals, fetchReferralList, fetchNextReferrals } = useFetchReferrals(
+    { currentPage, pageSize: limit }
+  );
 
   const wallet = useWallet();
   const user = useUser();
 
-  useEffect(() => {
-    api.getTotalReward().then((res) => setReward(res));
-    api.getReferralsCount().then((res) => setReferralsCount(res));
-  }, []);
-
   const handleClaimReward = async () => {
     try {
-      setIsLoading(true);
+      setIsClaimLoading(true);
       await api.claimReward({ address: wallet.address });
+      await fetchReferralList();
       toast.success('Success!');
       setReward(0);
     } catch {
       toast.error('Something went wrong.');
     } finally {
-      setIsLoading(false);
+      setIsClaimLoading(false);
     }
   };
+
+  useEffect(() => {
+    api.getTotalReward().then((res) => setReward(res));
+    api.getReferralsCount().then((res) => setReferralsCount(res));
+    fetchReferralList();
+  }, [fetchReferralList]);
 
   const isZeroReward = reward === 0;
 
@@ -52,11 +64,16 @@ export const ReferralPage = () => {
         <ReferralClaimCard
           reward={reward}
           isZeroReward={isZeroReward}
-          isLoading={isLoading}
+          isLoading={isClaimLoading}
           handleClaimReward={handleClaimReward}
         />
 
-        <ReferralList />
+        <ReferralList
+          referrals={referralList}
+          isLoading={loadingReferrals}
+          hasMore={hasMoreReferrals}
+          fetchReferrals={fetchNextReferrals}
+        />
       </div>
     </div>
   );

@@ -34,6 +34,8 @@ import { TrxPurchaseLink } from './TrxPurchaseLink';
 // Validation schema for form fields
 const tronAddressRegex = /^T[1-9A-HJ-NP-Za-km-z]{33}$/;
 
+const BANDWIDTH_COST = 0.345
+
 const formSchema = z.object({
   address: z
     .string()
@@ -198,7 +200,7 @@ export const WalletTransferForm = ({ token }: Props) => {
       <div className="flex items-center space-x-1">
         <span className="text-muted-foreground line-through text-md">?</span>
         <span className="flex text-md">
-          <FormattedNumber number={transferInfo?.fee} /> {AVAILABLE_TOKENS.TRX}
+          <FormattedNumber number={transferInfo?.fee + BANDWIDTH_COST} /> {AVAILABLE_TOKENS.TRX}
         </span>
       </div>
     );

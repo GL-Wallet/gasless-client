@@ -1,41 +1,19 @@
 import { UserIcon } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 
 import { User } from '@/entities/user';
-import { api } from '@/kernel/api';
 import { Badge } from '@/shared/ui/badge';
 import { FormattedNumber } from '@/shared/ui/formatted-number';
 import { Skeleton } from '@/shared/ui/skeleton';
 
-export const ReferralList = () => {
-  const [referrals, setReferrals] = useState<User[]>([]);
-  const [hasMore, setHasMore] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+type Props = {
+  referrals: User[];
+  isLoading: boolean;
+  hasMore: boolean;
+  fetchReferrals(): Promise<void>
+};
 
-  const page = useRef<number>(1);
-  const limit = useRef<number>(4);
-
-  const fetchReferrals = useCallback(async () => {
-    setHasMore(false);
-    setIsLoading(true);
-
-    try {
-      const res = await api.getReferrals({ page: page.current, limit: limit.current });
-      setReferrals((prev) => [...prev, ...res]);
-      setHasMore(res.length === limit.current);
-      page.current++;
-    } catch (error) {
-      console.error('Failed to fetch referrals: ', error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchReferrals();
-  }, [fetchReferrals]);
-
+export const ReferralList = ({ referrals, isLoading, hasMore, fetchReferrals }: Props) => {
   if (referrals.length === 0 && !isLoading) {
     return (
       <div className="flex items-center justify-center w-full h-14 text-lg primary-gradient border dark:border-neutral-600 border-dashed rounded-lg">

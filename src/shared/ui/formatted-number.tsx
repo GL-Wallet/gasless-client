@@ -12,6 +12,7 @@ export const FormattedNumber = ({ number }: { number: string | number | undefine
       minimumFractionDigits={0}
       maximumFractionDigits={2}
       useGrouping={true}
+      roundingMode={'trunc'}
     />
   );
 };
