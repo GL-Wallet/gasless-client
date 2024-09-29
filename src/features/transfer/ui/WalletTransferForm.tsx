@@ -80,6 +80,9 @@ export const WalletTransferForm = ({ token }: Props) => {
 
   const receiver = form.getValues('address');
 
+  const isUsdtToken = token === AVAILABLE_TOKENS.USDT;
+  const isOptimizationEnabled = transferInfo?.optimization === true || transferInfo?.optimization === undefined;
+
   const fetchTransferInfo = useCallback(async (address: string) => {
     const res = await api.transferInfo(address);
     setTransferInfo(res);
@@ -119,7 +122,7 @@ export const WalletTransferForm = ({ token }: Props) => {
         return false;
       }
 
-      if (wallet.balances.TRX < transferInfo?.fee) {
+      if (isUsdtToken && wallet.balances.TRX < transferInfo?.fee) {
         toast.error('Insufficient TRX balance.');
         return false;
       }
@@ -133,7 +136,7 @@ export const WalletTransferForm = ({ token }: Props) => {
       form.clearErrors('amount');
       return true;
     },
-    [form, token, transferInfo?.fee, wallet]
+    [form, isUsdtToken, token, transferInfo?.fee, wallet]
   );
 
   const handleFormSubmit = useCallback(
@@ -200,9 +203,6 @@ export const WalletTransferForm = ({ token }: Props) => {
     }
   };
 
-  const isUsdtToken = token === AVAILABLE_TOKENS.USDT;
-  const isOptimizationEnabled = transferInfo?.optimization === true || transferInfo?.optimization === undefined;
-
   const renderReducedFee = () => {
     if (!transferInfo?.fee || !form.watch('address')) {
       return <span>-</span>;
@@ -229,7 +229,8 @@ export const WalletTransferForm = ({ token }: Props) => {
 
             <TokenAmountInput form={form} balances={wallet.balances} token={token} />
           </div>
-          <TrxPurchaseLink need={transferInfo?.fee} balances={wallet.balances} />
+
+          {isUsdtToken && <TrxPurchaseLink need={transferInfo?.fee} balances={wallet.balances} />}
 
           <div className="flex flex-col gap-4 py-4 px-3 bg-secondary/40 border dark:border-neutral-700 rounded-lg">
             <div className="flex items-center justify-between">
