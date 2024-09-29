@@ -26,6 +26,7 @@ import { useExchange } from '../model/useExchange';
 const formSchema = z.object({
   amount: z.coerce
     .number()
+    // temporary
     .min(0.1, { message: 'You must enter at least 10 token to send.' })
     .positive({ message: 'Amount must be a positive number.' })
 });
@@ -51,8 +52,11 @@ export function WalletExchangeForm() {
   }, []);
 
   const handleSubmit = (values: FormFields) => {
+    if (!exchangeInfo) return;
+
     const balance = wallet.balances[AVAILABLE_TOKENS.USDT as keyof typeof wallet.balances];
-    if (values.amount > balance) {
+
+    if (values.amount + exchangeInfo.fee > balance) {
       form.setError('amount', { type: 'manual', message: 'Insufficient balance.' });
       toast.error('Not enough balance.');
       return;
