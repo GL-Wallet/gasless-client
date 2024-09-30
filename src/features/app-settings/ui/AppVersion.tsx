@@ -1,6 +1,8 @@
 import eruda from 'eruda';
 import { useEffect, useState } from 'react';
 
+import { version } from '../../../../package.json';
+
 export const AppVersion = () => {
   const [count, setCount] = useState(0);
 
@@ -24,7 +26,7 @@ export const AppVersion = () => {
 
   return (
     <p onClick={() => setCount((prev) => prev + 1)} className="text-sm text-muted-foreground">
-      App version: {import.meta.env.VITE_APP_VERSION}
+      App version: {version}
     </p>
   );
 };
