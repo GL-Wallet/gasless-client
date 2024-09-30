@@ -116,7 +116,7 @@ export const WalletTransferForm = ({ token }: Props) => {
         return false;
       }
 
-      if (values.amount > balance) {
+      if (values.amount + BANDWIDTH_COST > balance) {
         form.setError('amount', { type: 'manual', message: 'Insufficient USDT balance.' });
         toast.error('Not enough balance.');
         return false;
