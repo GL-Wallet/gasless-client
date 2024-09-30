@@ -18,6 +18,7 @@ export const api = {
   claimReward: async <T>(id: string, data: T) =>
     (await axiosInstance.post(`/referral/claim/${id}`, data)).data as ClaimRewardResponse,
   getTotalReward: async (id: string) => (await axiosInstance.get(`/referral/rewards/${id}`)).data as number,
+  getRewardLimit: async () => (await axiosInstance.get(`/referral/limit`)).data as number,
 
   getReferrals: async (
     id: string,

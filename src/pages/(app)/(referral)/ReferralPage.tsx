@@ -13,6 +13,7 @@ export const ReferralPage = () => {
   const [reward, setReward] = useState<number | null>(null);
   const [referralsCount, setReferralsCount] = useState<number | null>(null);
   const [isClaimLoading, setIsClaimLoading] = useState(false);
+  const [minRewardLimit, setMinRewardLimit] = useState<number | null>(null);
 
   const currentPage = useRef<number>(1);
   const limit = useRef<number>(4);
@@ -25,7 +26,7 @@ export const ReferralPage = () => {
   const user = useUser();
 
   const handleClaimReward = async () => {
-    if (!user) return;
+    if (!user || !minRewardLimit || (reward && reward < minRewardLimit)) return;
 
     try {
       setIsClaimLoading(true);
@@ -45,6 +46,7 @@ export const ReferralPage = () => {
 
     api.getTotalReward(user.id).then((res) => setReward(res));
     api.getReferralsCount(user.id).then((res) => setReferralsCount(res));
+    api.getRewardLimit().then((res) => setMinRewardLimit(res));
     fetchReferralList();
   }, [user, fetchReferralList]);
 
@@ -67,6 +69,7 @@ export const ReferralPage = () => {
 
         <ReferralClaimCard
           reward={reward}
+          minRewardLimit={minRewardLimit}
           isZeroReward={isZeroReward}
           isLoading={isClaimLoading}
           handleClaimReward={handleClaimReward}
