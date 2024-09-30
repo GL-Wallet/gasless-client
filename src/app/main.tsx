@@ -1,11 +1,7 @@
-import { createRoot } from 'react-dom/client';
 import { Buffer } from 'buffer';
-import { App } from './App';
+import { createRoot } from 'react-dom/client';
 
-// temporary
-import('eruda').then((eruda) => {
-  eruda.default.init();
-});
+import { App } from './App';
 
 if (typeof globalThis.Buffer === 'undefined') {
   globalThis.Buffer = Buffer;
