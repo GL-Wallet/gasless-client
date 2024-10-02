@@ -1,12 +1,13 @@
-import AnimatedShinyText from '@/shared/magicui/animated-shiny-text';
-import { useAppSettingsStore } from '@/entities/app-settings';
-import ShinyButton from '@/shared/magicui/shiny-button';
-import { navigate } from 'wouter/use-browser-location';
-import BoxReveal from '@/shared/magicui/box-reveal';
-import { ROUTES } from '@/shared/constants/routes';
-import { useWallet } from '@/entities/wallet';
-import Stories from 'react-insta-stories';
 import { MouseEvent } from 'react';
+import Stories from 'react-insta-stories';
+import { navigate } from 'wouter/use-browser-location';
+
+import { useAppSettingsStore } from '@/entities/app-settings';
+import { useWallet } from '@/entities/wallet';
+import { ROUTES } from '@/shared/constants/routes';
+import AnimatedShinyText from '@/shared/magicui/animated-shiny-text';
+import BoxReveal from '@/shared/magicui/box-reveal';
+import ShinyButton from '@/shared/magicui/shiny-button';
 
 const FinalStory = () => {
   const wallet = useWallet();
@@ -66,7 +67,7 @@ const stories = [
 
           <BoxReveal boxColor={'#37373790'} duration={0.5}>
             <AnimatedShinyText className="inline-block pr-8 text-xl transition ease-out hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400">
-              ⚡️ Save up to 40% on fees! With our innovations, you can make transactions with minimal gas costs.
+              ⚡️ Save up to 50% on fees! With our innovations, you can make transactions with minimal gas costs.
             </AnimatedShinyText>
           </BoxReveal>
         </div>

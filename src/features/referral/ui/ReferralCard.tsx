@@ -14,7 +14,7 @@ export const ReferralCard = ({ userId }: Props) => {
   const shareUrl = `${import.meta.env.VITE_APP_SHARE_LINK}?startapp=${userId}`;
 
   const handleShareInvite = () => {
-    utils.shareURL(shareUrl, 'Join Gasless Wallet - a decentralized wallet on Tron that reduces gas fees by up to 40%');
+    utils.shareURL(shareUrl, 'Join Gasless Wallet - a decentralized wallet on Tron that reduces gas fees by up to 50%');
   };
 
   return (
