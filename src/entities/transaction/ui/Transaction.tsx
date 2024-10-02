@@ -1,15 +1,17 @@
-import { formatDate, getTronscanLink, isSentByWallet } from '../model/utils';
-import { Transaction as TransactionType } from '../model/types';
-import { truncateString } from '@/shared/utils/truncateString';
+import { useEffect, useState } from 'react';
+
+import { getPrivateKey } from '@/entities/wallet';
+import { tronService } from '@/kernel/tron';
 import { FormattedNumber } from '@/shared/ui/formatted-number';
+import { Skeleton } from '@/shared/ui/skeleton';
 import { capitalize } from '@/shared/utils/capitalize';
+import { truncateString } from '@/shared/utils/truncateString';
+
 import { TransactionDateOptions } from '../constants';
 import { useTransactionStore } from '../model/store';
+import { Transaction as TransactionType } from '../model/types';
+import { formatDate, getTronscanLink, isSentByWallet } from '../model/utils';
 import { TransactionLink } from './TransactionLink';
-import { getPrivateKey } from '@/entities/wallet';
-import { Skeleton } from '@/shared/ui/skeleton';
-import { useEffect, useState } from 'react';
-import { tronService } from '@/kernel/tron';
 
 export const Transaction = ({ txid, walletAddress }: { txid: string; walletAddress: string }) => {
   const [transaction, setTransaction] = useState<TransactionType | null>(null);

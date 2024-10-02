@@ -1,4 +1,4 @@
-import { AVAILABLE_TOKENS } from "@/shared/enums/tokens";
+import { AVAILABLE_TOKENS } from '@/shared/enums/tokens';
 
 export type TrxResponse = {
   txID: string;
@@ -37,7 +37,7 @@ export type UsdtResponse = {
 export type Transaction = {
   txid: string;
   token: AVAILABLE_TOKENS;
-  amount: string;
+  amount: number;
   from: string;
   to: string;
   timestamp: number;

@@ -14,11 +14,11 @@ export const isSentByWallet = (from: string, walletAddress: string): boolean => 
 
 export const extractTransactionData = (response: TrxResponse | UsdtResponse): Transaction | null => {
   if ('transaction_id' in response) {
-    const { transaction_id, block_timestamp, from, to, value, token_info } = response as UsdtResponse;
+    const { transaction_id, block_timestamp, from, to, value } = response as UsdtResponse;
     return {
       txid: transaction_id,
       token: AVAILABLE_TOKENS.USDT,
-      amount: (Number(value) / Math.pow(10, token_info.decimals)).toFixed(2),
+      amount: +value / 1e6,
       from,
       to,
       timestamp: block_timestamp
@@ -33,7 +33,7 @@ export const extractTransactionData = (response: TrxResponse | UsdtResponse): Tr
     return {
       txid: txID,
       token: AVAILABLE_TOKENS.TRX,
-      amount: (value / Math.pow(10, 6)).toFixed(2),
+      amount: value / 1e6,
       from,
       to,
       timestamp: block_timestamp

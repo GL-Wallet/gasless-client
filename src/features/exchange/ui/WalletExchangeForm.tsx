@@ -26,8 +26,7 @@ import { useExchange } from '../model/useExchange';
 const formSchema = z.object({
   amount: z.coerce
     .number()
-    // temporary
-    .min(0.1, { message: 'You must enter at least 10 token to send.' })
+    .min(10, { message: 'You must enter at least 10 token to send.' })
     .positive({ message: 'Amount must be a positive number.' })
 });
 
@@ -47,6 +46,9 @@ export function WalletExchangeForm() {
     }
   });
 
+  const receive =
+    exchangeInfo && form.watch('amount') > 0 ? (form.watch('amount') - exchangeInfo.fee) * exchangeInfo?.rate : 0;
+
   useEffect(() => {
     api.exchangeInfo().then((res) => setExchangeInfo(res));
   }, []);
@@ -56,7 +58,7 @@ export function WalletExchangeForm() {
 
     const balance = wallet.balances[AVAILABLE_TOKENS.USDT as keyof typeof wallet.balances];
 
-    if (values.amount + exchangeInfo.fee > balance) {
+    if (values.amount > balance) {
       form.setError('amount', { type: 'manual', message: 'Insufficient balance.' });
       toast.error('Not enough balance.');
       return;
@@ -70,7 +72,7 @@ export function WalletExchangeForm() {
     const amount = +form.getValues('amount');
     if (!exchangeInfo || amount < exchangeInfo?.minAmount) return;
 
-    await exchange(amount, exchangeInfo.fee);
+    await exchange(amount);
   };
 
   return (
@@ -85,13 +87,7 @@ export function WalletExchangeForm() {
             </div>
           </div>
 
-          <Receive
-            form={form}
-            label="Send"
-            balances={wallet.balances}
-            token={AVAILABLE_TOKENS.TRX}
-            rate={exchangeInfo?.rate}
-          />
+          <Receive balances={wallet.balances} token={AVAILABLE_TOKENS.TRX} receive={receive} />
 
           <div className="relative w-full flex flex-col justify-between gap-2 bg-secondary/50 border p-4 rounded-lg">
             <div className="w-full flex items-center justify-between">
@@ -111,9 +107,13 @@ export function WalletExchangeForm() {
             <div className="w-full flex items-center justify-between">
               <span className="text-lg">Total:</span>
               <span className="text-md">
-                {form.getValues('amount') > 0
-                  ? exchangeInfo && `${+form.watch('amount') + exchangeInfo.fee} ${AVAILABLE_TOKENS.USDT}`
-                  : '-'}
+                {form.getValues('amount') > 0 ? (
+                  <>
+                    {+form.watch('amount')} {AVAILABLE_TOKENS.USDT}
+                  </>
+                ) : (
+                  '-'
+                )}
               </span>
             </div>
           </div>
@@ -130,25 +130,14 @@ export function WalletExchangeForm() {
           values={{ amount: form.watch('amount') }}
           token={AVAILABLE_TOKENS.USDT}
           walletAddress={wallet.address}
-          exchangeInfo={exchangeInfo}
+          receive={receive}
         />
       </form>
     </Form>
   );
 }
 
-const Receive = ({
-  form,
-  balances,
-  token,
-  rate
-}: {
-  form: UseFormReturn<FormFields>;
-  label: string;
-  balances: Balances;
-  token: AVAILABLE_TOKENS;
-  rate: number | undefined;
-}) => {
+const Receive = ({ balances, token, receive }: { balances: Balances; token: AVAILABLE_TOKENS; receive: number }) => {
   return (
     <div className="w-full flex flex-col space-y-4 bg-secondary/50 border dark:border-neutral-600 p-4 pt-8 rounded-lg">
       <div className="space-y-4">
@@ -164,7 +153,7 @@ const Receive = ({
             <h3 className="text-center text-2xl primary-gradient">{token}</h3>
             <ChevronRight className="text-muted-foreground size-4" />
             <p className="pl-5 text-xl  truncate w-52">
-              <FormattedNumber number={rate && +form.watch('amount') * rate} />
+              <FormattedNumber number={receive} />
             </p>
           </div>
         </div>
@@ -239,7 +228,7 @@ const TransactionDrawer = ({
   values,
   walletAddress,
   handleSign,
-  exchangeInfo
+  receive
 }: {
   token: string;
   isOpen: boolean;
@@ -247,7 +236,7 @@ const TransactionDrawer = ({
   values?: FormFields;
   walletAddress: string;
   handleSign: () => void;
-  exchangeInfo: ExchangeInfoResponse | null;
+  receive: number;
 }) => (
   <Drawer open={isOpen} onClose={onClose}>
     <DrawerContent className="px-6 h-fit">
@@ -263,7 +252,7 @@ const TransactionDrawer = ({
           </h3>
           <ArrowDown />
           <h3 className="flex items-center font-bold text-xl mt-2 space-x-2">
-            <p>{values?.amount && exchangeInfo ? <FormattedNumber number={values.amount * exchangeInfo.rate} /> : 0}</p>
+            <span><FormattedNumber number={receive} /></span>
             <span>{AVAILABLE_TOKENS.TRX}</span>
           </h3>
         </div>
