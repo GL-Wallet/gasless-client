@@ -7,9 +7,8 @@ export type AuthContext = {
   authenticate(params?: AuthParams): Promise<string>;
   resetAuth(): void;
   passcode: Passcode;
-  encryptedPasscode: EncryptedPasscode;
   authenticated: boolean;
-  _actualPasscode: Passcode;
+  _passcodeHash: string | null;
   _onPasscodeSuccess(newPasscode: Passcode): void;
 };
 

@@ -1,6 +1,6 @@
+import { useAppSettingsStore } from '@/entities/app-settings';
 import { useAuthStore } from '@/kernel/auth/model/store';
 import { useBiometry } from '@/shared/hooks/useBiometry';
-import { useAppSettingsStore } from '@/entities/app-settings';
 
 export const useSettingsItems = () => {
   const { isEnabled, requestAccess, updateToken } = useBiometry();
@@ -10,12 +10,12 @@ export const useSettingsItems = () => {
     updateSettings: store.updateSettings
   }));
 
-  const { encryptedPasscode } = useAuthStore();
+  const { passcode } = useAuthStore();
 
   const handleSwitchBiometry = async (checked: boolean) => {
     if (!isEnabled) await requestAccess();
 
-    await updateToken(checked ? encryptedPasscode : null);
+    await updateToken(checked ? passcode : null);
 
     updateSettings({ isBiometryEnabled: checked });
   };

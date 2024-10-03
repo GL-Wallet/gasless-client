@@ -1,11 +1,11 @@
-import AnimatedShinyText from '@/shared/magicui/animated-shiny-text';
+import { useTheme } from '../theme-provider';
 
 export const SplashScreen = () => {
+  const { theme } = useTheme();
+
   return (
     <div className="relative h-full flex flex-col items-center justify-center">
-      <AnimatedShinyText className="text-4xl inline-flex items-center justify-center px-4 py-1 transition ease-out hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400">
-        <span>Gasless Wallet</span>
-      </AnimatedShinyText>
+      <img src={`/icons/logo-${theme}.svg`} className="size-96" />
     </div>
   );
 };

@@ -14,7 +14,7 @@ import { Button } from '@/shared/ui/button';
 
 export const PasscodeStartupPage = () => {
   const isBiometryEnabled = useAppSettingsStore((store) => store.isBiometryEnabled);
-  const { _actualPasscode, _onPasscodeSuccess } = useAuth();
+  const { _passcodeHash, _onPasscodeSuccess } = useAuth();
 
   const { signOut } = useSignOut();
 
@@ -31,7 +31,7 @@ export const PasscodeStartupPage = () => {
     <div className="relative h-full flex flex-col justify-between items-center space-y-8">
       <PasscodeRequired
         isBiometryEnabled={isBiometryEnabled}
-        actualPasscode={_actualPasscode}
+        passcodeHash={_passcodeHash}
         onPasscodeSuccess={handleSuccess}
       />
 

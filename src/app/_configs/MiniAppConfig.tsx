@@ -1,8 +1,12 @@
-import { initNavigator, postEvent, RGB, useBackButton, useSettingsButton } from '@telegram-apps/sdk-react';
-import { navigate, usePathname } from 'wouter/use-browser-location';
 import { PropsWithChildren, useEffect, useState } from 'react';
-import { useTheme } from '@/shared/ui/theme-provider';
+import { navigate, usePathname } from 'wouter/use-browser-location';
+
+import { useAuth } from '@/kernel/auth';
 import { ROUTES } from '@/shared/constants/routes';
+import { useTheme } from '@/shared/ui/theme-provider';
+import {
+	initNavigator, postEvent, RGB, useBackButton, useSettingsButton
+} from '@telegram-apps/sdk-react';
 
 const Config = {
   COLOR: { light: '#ffffff', dark: '#000000' },
@@ -49,6 +53,7 @@ export const MiniAppConfig = (props: PropsWithChildren) => {
   const [isLoading, setIsLoading] = useState(true);
   const pathname = usePathname();
   const { theme } = useTheme();
+  const { passcode } = useAuth();
 
   const navigator = initNavigator('app-navigator-state');
 
@@ -104,8 +109,14 @@ export const MiniAppConfig = (props: PropsWithChildren) => {
   }, [bb, pathname, navigator]);
 
   useEffect(() => {
-    sb.on('click', () => navigate(ROUTES.APP_SETTINGS));
-  }, [sb]);
+    sb.on('click', () => {
+      ![ROUTES.WALLET_SETUP, ROUTES.PASSCODE_SETUP, ROUTES.PASSCODE_STARTUP, ROUTES.PASSCODE_REQUEST].includes(
+        pathname as ROUTES
+      ) &&
+        passcode &&
+        navigate(ROUTES.APP_SETTINGS);
+    });
+  }, [passcode, pathname, sb]);
 
   return !isLoading && props.children;
 };

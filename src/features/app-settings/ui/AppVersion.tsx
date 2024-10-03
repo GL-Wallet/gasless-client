@@ -1,4 +1,3 @@
-import eruda from 'eruda';
 import { useEffect, useState } from 'react';
 
 import { version } from '../../../../package.json';
@@ -7,11 +6,11 @@ export const AppVersion = () => {
   const [count, setCount] = useState(0);
 
   const handleInitEruda = () => {
-    eruda.init();
+    import('eruda').then((eruda) => eruda.default.init());
   };
 
   const handleHideEruda = () => {
-    eruda.destroy();
+    import('eruda').then((eruda) => eruda.default.destroy());
   };
 
   useEffect(() => {

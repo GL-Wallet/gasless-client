@@ -1,9 +1,10 @@
 import { create } from 'zustand';
-import { EncryptedPasscode, Passcode } from './types';
+
+import { Passcode } from './types';
 
 type State = {
   passcode: Passcode;
-  encryptedPasscode: EncryptedPasscode;
+  passcodeHash: string | null;
   requiresSetup: boolean;
   isAuthenticated: boolean;
 };
@@ -15,7 +16,7 @@ type Actions = {
 
 const initialState: State = {
   passcode: null,
-  encryptedPasscode: null,
+  passcodeHash: null,
   requiresSetup: true,
   isAuthenticated: false
 };

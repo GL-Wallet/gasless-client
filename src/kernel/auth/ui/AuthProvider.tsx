@@ -1,18 +1,18 @@
-import { PropsWithChildren, useEffect, useRef, useCallback } from 'react';
-import { saveEncryptedPasscode } from '../utils/saveEncryptedPasscode';
-import { getEncryptedPasscode } from '../utils/getEncryptedPasscode';
-import { AuthPromiseCallback, AuthParams } from '../model/types';
+import { PropsWithChildren, useCallback, useEffect, useRef } from 'react';
 import { navigate } from 'wouter/use-browser-location';
+
 import { authContext } from '../model/auth-context';
-import { decrypt } from '@/shared/lib/crypto-js';
 import { useAuthStore } from '../model/store';
+import { AuthParams, AuthPromiseCallback } from '../model/types';
+import { getPasscodeHash } from '../utils/getPasscodeHash';
+import { savePasscodeHash } from '../utils/savePasscodeHash';
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const setAuthStore = useAuthStore((store) => store.set);
 
-  const { passcode, encryptedPasscode, requiresSetup, isAuthenticated, resetStore } = useAuthStore((store) => ({
+  const { passcode, passcodeHash, requiresSetup, isAuthenticated, resetStore } = useAuthStore((store) => ({
     passcode: store.passcode,
-    encryptedPasscode: store.encryptedPasscode,
+    passcodeHash: store.passcodeHash,
     requiresSetup: store.requiresSetup,
     isAuthenticated: store.isAuthenticated,
     resetStore: store.resetStore
@@ -40,10 +40,14 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const handlePasscodeSuccess = useCallback(
     async (enteredPasscode: string) => {
+      savePasscodeHash(enteredPasscode);
+      
       try {
-        const encryptedPasscode = await saveEncryptedPasscode(enteredPasscode);
-
-        setAuthStore({ requiresSetup: false, isAuthenticated: true, passcode: enteredPasscode, encryptedPasscode });
+        setAuthStore({
+          requiresSetup: false,
+          isAuthenticated: true,
+          passcode: enteredPasscode
+        });
 
         navigate(authConfigRef.current?.redirectTo ?? returnPathRef.current, { replace: true });
         authPromiseRef.current?.(enteredPasscode);
@@ -57,12 +61,10 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     const initializePasscode = async () => {
       try {
-        const encryptedPasscode = await getEncryptedPasscode();
+        const passcodeHash = await getPasscodeHash();
 
-        if (encryptedPasscode) {
-          const decryptedPasscode = decrypt(encryptedPasscode, import.meta.env.VITE_AUTH_SECRET);
-
-          setAuthStore({ passcode: decryptedPasscode, encryptedPasscode, requiresSetup: false });
+        if (passcodeHash) {
+          setAuthStore({ passcodeHash, requiresSetup: false });
         } else {
           setAuthStore({ requiresSetup: true });
         }
@@ -81,9 +83,8 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         authenticate,
         resetAuth: resetStore,
         passcode,
-        encryptedPasscode,
         authenticated: isAuthenticated,
-        _actualPasscode: passcode,
+        _passcodeHash: passcodeHash,
         _onPasscodeSuccess: handlePasscodeSuccess
       }}
     >
