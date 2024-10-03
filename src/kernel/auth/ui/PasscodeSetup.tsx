@@ -25,7 +25,7 @@ export const PasscodeSetup = ({ onPasscodeSuccess }: Props) => {
   const cloudStorage = useCloudStorage();
 
   useEffect(() => {
-    if (passcode) {
+    if (passcode?.length === 6) {
       if (setupStatus === 'initial') {
         setPasscode(null);
         setConfirmedPasscode(passcode);

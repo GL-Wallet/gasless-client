@@ -19,7 +19,7 @@ export const PasscodeOTP = ({ passcode, setPasscode }: Props) => {
     <InputOTP
       maxLength={6}
       pattern={REGEXP_ONLY_DIGITS}
-      value={passcode!}
+      value={passcode === null ? '' : passcode}
       onChange={handleChange}
       autoFocus
     >
