@@ -181,7 +181,7 @@ const getTrc20TransactionFee = async (address: string, privateKey: string) => {
   const energyFee = chainParams.filter((item) => item.key === 'getEnergyFee')[0].value;
   const feeLimit = tronWeb.fromSun(energyEstimate.energy_required * energyFee);
 
-  // temporary *2
+  // temporary 
   return Number(feeLimit) * 2;
 };
 

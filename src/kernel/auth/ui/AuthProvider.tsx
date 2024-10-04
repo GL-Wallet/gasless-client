@@ -4,7 +4,7 @@ import { navigate } from 'wouter/use-browser-location';
 import { authContext } from '../model/auth-context';
 import { useAuthStore } from '../model/store';
 import { AuthParams, AuthPromiseCallback } from '../model/types';
-import { getPasscodeHash } from '../utils/getPasscodeHash';
+import { getPasscodeHashFromStorage } from '../utils/getPasscodeHashFromStorage';
 import { savePasscodeHash } from '../utils/savePasscodeHash';
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
@@ -61,7 +61,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     const initializePasscode = async () => {
       try {
-        const passcodeHash = await getPasscodeHash();
+        const passcodeHash = await getPasscodeHashFromStorage();
 
         if (passcodeHash) {
           setAuthStore({ passcodeHash, requiresSetup: false });
