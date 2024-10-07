@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { navigate } from 'wouter/use-browser-location';
 
 import { useWallet, useWalletStore } from '@/entities/wallet';
@@ -7,6 +8,8 @@ import { Button } from '@/shared/ui/button';
 
 export const AppSettingsPage = () => {
   const wallet = useWallet();
+
+  const { t } = useTranslation();
 
   const { activeIndex, removeWallet } = useWalletStore((store) => ({
     activeIndex: store.activeIndex,
@@ -24,7 +27,7 @@ export const AppSettingsPage = () => {
 
       <div className="flex flex-col items-center space-y-3">
         <Button onClick={handleRemoveWallet} variant={'outline'} className="w-full bg-transparent">
-          Sign out of the <span className="underline font-fold ml-1">{wallet.name}</span>
+          {t('setting.signOut.button.signOutWallet')} <span className="underline font-fold ml-1">{wallet.name}</span>
         </Button>
         <AppVersion />
       </div>

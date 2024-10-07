@@ -1,3 +1,5 @@
+import '@/shared/lib/i18n';
+
 import { Buffer } from 'buffer';
 import { createRoot } from 'react-dom/client';
 

@@ -1,17 +1,21 @@
-import AnimatedShinyText from '@/shared/magicui/animated-shiny-text';
-import { WalletReceiveDrawer } from './WalletReceiveDrawer';
-import { truncateString } from '@/shared/utils/truncateString';
-import { CopyToClipboard } from '@/shared/ui/copy-to-clipboard';
-import { PropsWithClassname } from '@/shared/types/react';
 import { ArrowDownUp, ChevronRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { navigate } from 'wouter/use-browser-location';
-import { ROUTES } from '@/shared/constants/routes';
+
 import { useWallet } from '@/entities/wallet';
-import { Button } from '@/shared/ui/button';
+import { ROUTES } from '@/shared/constants/routes';
 import { cn } from '@/shared/lib/utils';
+import AnimatedShinyText from '@/shared/magicui/animated-shiny-text';
+import { PropsWithClassname } from '@/shared/types/react';
+import { Button } from '@/shared/ui/button';
+import { CopyToClipboard } from '@/shared/ui/copy-to-clipboard';
+import { truncateString } from '@/shared/utils/truncateString';
+
+import { WalletReceiveDrawer } from './WalletReceiveDrawer';
 
 export const WalletActionsCard = ({ className }: PropsWithClassname) => {
   const wallet = useWallet();
+  const { t } = useTranslation();
 
   return (
     <div
@@ -33,23 +37,23 @@ export const WalletActionsCard = ({ className }: PropsWithClassname) => {
 
       <div className="flex space-x-2">
         <Button
-          className="w-full space-x-2 dark:border border-neutral-600 dark:bg-transparent"
+          className="p-0 w-full space-x-2 dark:border border-neutral-600 dark:bg-transparent"
           variant={'ghost'}
           onClick={() => navigate(ROUTES.WALLET_TRANSFER)}
         >
-          <AnimatedShinyText className="text-black text-lg inline-flex items-center justify-center px-4 py-1 transition ease-out hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400">
-            <span>Send</span>
+          <AnimatedShinyText className="text-black text-sm inline-flex items-center justify-center py-1 transition ease-out hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400">
+            <span>{t('wallet.button.send')}</span>
             <ChevronRight className="ml-1 size-5 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
           </AnimatedShinyText>
         </Button>
 
         <Button
-          className="dark:border border-neutral-600 dark:bg-transparent"
+          className="p-0 w-full dark:border border-neutral-600 dark:bg-transparent"
           variant={'ghost'}
           onClick={() => navigate(ROUTES.WALLET_EXCHANGE)}
         >
-          <AnimatedShinyText className="text-black text-md inline-flex items-center justify-center transition ease-out hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400">
-            <span>Get TRX</span>
+          <AnimatedShinyText className="text-black text-sm inline-flex items-center justify-center transition ease-out hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400">
+            <span>{t('wallet.button.getTrx')}</span>
             <ArrowDownUp className="ml-1 size-4 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
           </AnimatedShinyText>
         </Button>

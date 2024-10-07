@@ -1,15 +1,21 @@
-import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerTitle, DrawerTrigger } from '@/shared/ui/drawer';
-import { CopyToClipboard } from '@/shared/ui/copy-to-clipboard';
-import { Button } from '@/shared/ui/button';
 import { QrCode } from 'lucide-react';
-import QRCode from 'react-qr-code';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import QRCode from 'react-qr-code';
+
+import { Button } from '@/shared/ui/button';
+import { CopyToClipboard } from '@/shared/ui/copy-to-clipboard';
+import {
+	Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerTitle, DrawerTrigger
+} from '@/shared/ui/drawer';
 
 interface WalletReceiveDrawerProps {
   address: string;
 }
 
 export const WalletReceiveDrawer: React.FC<WalletReceiveDrawerProps> = ({ address }) => {
+  const { t } = useTranslation();
+
   return (
     <Drawer>
       <DrawerTrigger asChild>
@@ -18,7 +24,7 @@ export const WalletReceiveDrawer: React.FC<WalletReceiveDrawerProps> = ({ addres
         </Button>
       </DrawerTrigger>
       <DrawerContent className="mt-6 flex flex-col items-center space-y-8 px-6 pb-6">
-        <DrawerTitle>Wallet Address</DrawerTitle>
+        <DrawerTitle>{t('receive.title')}</DrawerTitle>
         <div className="p-4 border border-input rounded-md bg-transparent">
           <QRCode value={address} size={200} />
         </div>
@@ -30,7 +36,7 @@ export const WalletReceiveDrawer: React.FC<WalletReceiveDrawerProps> = ({ addres
 
         <DrawerFooter className="w-full px-0">
           <DrawerClose asChild>
-            <Button variant="outline">Close</Button>
+            <Button variant="outline">{t('receive.button.close')}</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>

@@ -1,7 +1,7 @@
 {
   "name": "gaslesswallet",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -34,6 +34,7 @@
     "crypto-js": "^4.2.0",
     "eruda": "^3.2.3",
     "framer-motion": "^11.3.30",
+    "i18next-http-backend": "^2.6.2",
     "immer": "^10.1.1",
     "input-otp": "^1.2.4",
     "js-md5": "^0.8.3",
@@ -42,6 +43,7 @@
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.52.2",
     "react-hot-toast": "^2.4.1",
+    "react-i18next": "^15.0.2",
     "react-infinite-scroller": "^1.2.6",
     "react-insta-stories": "^2.7.0",
     "react-intl": "^6.6.8",

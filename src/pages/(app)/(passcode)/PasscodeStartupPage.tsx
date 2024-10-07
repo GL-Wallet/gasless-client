@@ -1,4 +1,5 @@
 import { CheckIcon, ChevronRightIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { navigate } from 'wouter/use-browser-location';
 
 import { useAppSettingsStore } from '@/entities/app-settings';
@@ -15,6 +16,8 @@ import { Button } from '@/shared/ui/button';
 export const PasscodeStartupPage = () => {
   const isBiometryEnabled = useAppSettingsStore((store) => store.isBiometryEnabled);
   const { _passcodeHash, _onPasscodeSuccess } = useAuth();
+
+  const { t } = useTranslation();
 
   const { signOut } = useSignOut();
 
@@ -38,18 +41,16 @@ export const PasscodeStartupPage = () => {
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button className="w-full" variant={'outline'}>
-            Sign Out
+            {t('setting.signOut.button.signOut')}
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent className="max-w-[90%] rounded-md">
           <AlertDialogHeader>
-            <AlertDialogTitle>Sign out of All Wallets?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This will erase keys to all wallets. Make sure you have backed up your recovery phrases.
-            </AlertDialogDescription>
+            <AlertDialogTitle>{t('setting.signOut.modal.title')}</AlertDialogTitle>
+            <AlertDialogDescription>{t('setting.signOut.modal.description')}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t('setting.signOut.modal.button.cancel')}</AlertDialogCancel>
 
             <AnimatedSubscribeButton
               buttonColor="#000000"
@@ -59,14 +60,14 @@ export const PasscodeStartupPage = () => {
               onClick={() => handleReset()}
               initialText={
                 <span className="group inline-flex items-center">
-                  Sign out{' '}
+                  {t('setting.signOut.modal.button.signOut.initial')}
                   <ChevronRightIcon className="ml-1 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </span>
               }
               changeText={
                 <span className="group inline-flex items-center">
                   <CheckIcon className="mr-2 h-4 w-4" />
-                  Signed Out{' '}
+                  {t('setting.signOut.modal.button.signOut.confirm')}
                 </span>
               }
             />

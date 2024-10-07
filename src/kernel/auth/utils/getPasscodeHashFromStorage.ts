@@ -10,8 +10,6 @@ export const getPasscodeHashFromStorage = async (): Promise<string | null> => {
     const encryptedPasscode = await cloudStorageService.get<string>(DEPRECATED_AUTH_STORAGE_KEY);
     const hashedPasscode = await cloudStorageService.get<string>(AUTH_STORAGE_KEY);
 
-    console.log('Retrieved from storage: ', { encryptedPasscode, hashedPasscode });
-
     if (encryptedPasscode) {
       const decryptedPasscode = decrypt(encryptedPasscode, import.meta.env.VITE_AUTH_SECRET);
       if (decryptedPasscode) {

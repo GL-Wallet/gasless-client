@@ -1,4 +1,5 @@
 import { ChevronRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { navigate } from 'wouter/use-browser-location';
 
 import { ROUTES } from '@/shared/constants/routes';
@@ -7,6 +8,8 @@ import AnimatedShinyText from '@/shared/magicui/animated-shiny-text';
 import { PropsWithClassname } from '@/shared/types/react';
 
 export const ReferralLink = ({ className }: PropsWithClassname) => {
+  const { t } = useTranslation();
+
   return (
     <div
       className={cn(
@@ -15,7 +18,7 @@ export const ReferralLink = ({ className }: PropsWithClassname) => {
       )}
       onClick={() => navigate(ROUTES.REFERRAL)}
     >
-      <AnimatedShinyText className="mx-0 text-[14px] text-nowrap">Get 10% of your friends transaction fees</AnimatedShinyText>
+      <AnimatedShinyText className="mx-0 text-[13px] text-wrap min-w-2/3">{t('referral.link')}</AnimatedShinyText>
       <ChevronRight className="size-7 text-muted-foreground" />
     </div>
   );

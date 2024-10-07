@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { PageHeader } from '@/shared/ui/page-header';
 
@@ -16,6 +17,8 @@ export const PasscodeUpdate = ({ passcodeHash, onPasscodeSuccess }: Props) => {
   const [passcode, setPasscode] = useState<Passcode>(null);
   const [confirmed, setConfirmed] = useState(false);
 
+  const { t } = useTranslation();
+
   useEffect(() => {
     if (passcodeHash && passcode === getHashedPasscode(passcodeHash)) {
       setConfirmed(true);
@@ -24,7 +27,7 @@ export const PasscodeUpdate = ({ passcodeHash, onPasscodeSuccess }: Props) => {
 
   return !confirmed ? (
     <div className="flex flex-col justify-center items-center space-y-8">
-      <PageHeader title="Enter current passcode" />
+      <PageHeader title={t('auth.update.title')} />
       <PasscodeInput passcode={passcode} setPasscode={setPasscode} />
     </div>
   ) : (

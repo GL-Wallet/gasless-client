@@ -1,4 +1,5 @@
 import { ChevronRight, Share } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { cn } from '@/shared/lib/utils';
 import { PropsWithClassname } from '@/shared/types/react';
@@ -12,10 +13,16 @@ type Props = {
 
 export const TransactionLink = ({ link, className }: PropsWithClassname<Props>) => {
   const utils = useUtils();
+  const { t } = useTranslation();
+
   return (
     <div className={cn('w-full flex items-center justify-between space-x-6', className)}>
-      <Button onClick={() => utils.openLink(link)} variant={'outline'} className="w-full space-x-1 dark:border-neutral-700">
-        <span>Open in TronScan</span>
+      <Button
+        onClick={() => utils.openLink(link)}
+        variant={'outline'}
+        className="w-full space-x-1 dark:border-neutral-700"
+      >
+        <span>{t('transaction.link')}</span>
         <ChevronRight className="size-5" />
       </Button>
 

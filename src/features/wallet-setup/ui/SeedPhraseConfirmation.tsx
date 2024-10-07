@@ -1,17 +1,22 @@
-import { generateUniqueRandomNumbers } from '../helpers/generateUniqueRandomNumbers';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { PropsWithClassname } from '@/shared/types/react';
-import ShinyButton from '@/shared/magicui/shiny-button';
+import { useTranslation } from 'react-i18next';
 import { navigate } from 'wouter/use-browser-location';
+
 import { ROUTES } from '@/shared/constants/routes';
+import { cn } from '@/shared/lib/utils';
+import ShinyButton from '@/shared/magicui/shiny-button';
+import { PropsWithClassname } from '@/shared/types/react';
 import { isEqual } from '@/shared/utils/isEqual';
 import { shuffle } from '@/shared/utils/shuffle';
-import { cn } from '@/shared/lib/utils';
+
+import { generateUniqueRandomNumbers } from '../helpers/generateUniqueRandomNumbers';
 
 export const SeedPhraseConfirmation = ({ className, seedPhrase }: PropsWithClassname<{ seedPhrase: string[] }>) => {
   const [selectedWords, setSelectedWords] = useState<string[]>([]);
   const [isPrevWordCorrect, setIsPrevWordCorrect] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+
+  const { t } = useTranslation();
 
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -106,7 +111,12 @@ export const SeedPhraseConfirmation = ({ className, seedPhrase }: PropsWithClass
         </div>
       </div>
 
-      <ShinyButton onClick={handleButtonClick} disabled={isButtonDisabled} animate={false} text="Continue" />
+      <ShinyButton
+        onClick={handleButtonClick}
+        disabled={isButtonDisabled}
+        animate={false}
+        text={t('wallet.setup.confirmSeedPhrase.button')}
+      />
     </div>
   );
 };

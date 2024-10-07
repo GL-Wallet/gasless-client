@@ -1,4 +1,5 @@
 import { ChevronRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/shared/ui/button';
 import { CopyToClipboard } from '@/shared/ui/copy-to-clipboard';
@@ -9,6 +10,7 @@ type Props = {
 };
 
 export const ReferralCard = ({ userId }: Props) => {
+  const { t } = useTranslation();
   const utils = useUtils();
 
   const shareUrl = `${import.meta.env.VITE_APP_SHARE_LINK}?startapp=${userId}`;
@@ -24,13 +26,13 @@ export const ReferralCard = ({ userId }: Props) => {
       }
     >
       <div>
-        <h4 className="text-lg font-bold primary-gradient">Invite a friend</h4>
-        <p className="text-sm primary-gradient">+10% friends' transaction fees for you</p>
+        <h4 className="text-lg font-bold primary-gradient">{t('referral.card.title')}</h4>
+        <p className="text-sm primary-gradient">{t('referral.card.description')}</p>
       </div>
 
       <div className="flex items-center space-x-2">
         <Button onClick={handleShareInvite} className="w-full space-x-2 dark:border-neutral-700" variant={'outline'}>
-          <span className="primary-gradient">Invite a friend</span>
+          <span className="primary-gradient">{t('referral.card.button')}</span>
           <ChevronRight className="size-4 dark:text-white" />
         </Button>
         <Button variant={'outline'} className="px-4">

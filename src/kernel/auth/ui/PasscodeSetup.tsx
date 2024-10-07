@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { PageHeader } from '@/shared/ui/page-header';
 import { useCloudStorage } from '@telegram-apps/sdk-react';
@@ -13,14 +14,16 @@ type Props = {
 };
 
 const statusTitles: Record<PasscodeSetupStatus, string> = {
-  initial: 'Create New Passcode',
-  confirm: 'Re-enter Passcode'
+  initial: 'auth.setup.status.initial',
+  confirm: 'auth.setup.status.confirm'
 };
 
 export const PasscodeSetup = ({ onPasscodeSuccess }: Props) => {
   const [passcode, setPasscode] = useState<Passcode>(null);
   const [confirmedPasscode, setConfirmedPasscode] = useState<Passcode>(null);
   const [setupStatus, setSetupStatus] = useState<PasscodeSetupStatus>('initial');
+
+  const { t } = useTranslation();
 
   const cloudStorage = useCloudStorage();
 
@@ -38,7 +41,7 @@ export const PasscodeSetup = ({ onPasscodeSuccess }: Props) => {
 
   return (
     <div className="flex flex-col justify-center items-center space-y-8">
-      <PageHeader title={statusTitles[setupStatus]} />
+      <PageHeader title={t(statusTitles[setupStatus])} />
       <PasscodeInput passcode={passcode} setPasscode={setPasscode} />
     </div>
   );

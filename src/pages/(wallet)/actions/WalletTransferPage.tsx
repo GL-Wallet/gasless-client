@@ -1,13 +1,16 @@
-import { Select, SelectContent, SelectItem, SelectTrigger } from '@/shared/ui/select';
-import AnimatedShinyText from '@/shared/magicui/animated-shiny-text';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+
 import { WalletTransferForm } from '@/features/transfer';
 import { AVAILABLE_TOKENS } from '@/shared/enums/tokens';
-import { useState } from 'react';
+import AnimatedShinyText from '@/shared/magicui/animated-shiny-text';
+import { Select, SelectContent, SelectItem, SelectTrigger } from '@/shared/ui/select';
 
 export const WalletTransferPage = ({ token }: { token?: string }) => {
   const [_token, setToken] = useState(token ?? AVAILABLE_TOKENS.USDT);
+  const { t } = useTranslation();
 
-  const title = `Send ${token ?? ''}`;
+  const title = `${t('transfer.title')} ${token ?? ''}`;
 
   return (
     <div className="relative h-full flex flex-col space-y-8">

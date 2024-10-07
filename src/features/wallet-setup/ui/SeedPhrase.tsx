@@ -1,7 +1,9 @@
-import { PropsWithClassname } from '@/shared/types/react';
-import { cn } from '@/shared/lib/utils';
 import { EyeOff } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+
+import { cn } from '@/shared/lib/utils';
+import { PropsWithClassname } from '@/shared/types/react';
 
 type Props = {
   seedPhrase: string[] | null;
@@ -36,6 +38,8 @@ export const SeedPhrase = ({ seedPhrase, onHideMask, className }: PropsWithClass
 };
 
 const Mask = ({ isShowMask, onClick }: { isShowMask: boolean; onClick: () => void }) => {
+  const { t } = useTranslation();
+
   return (
     isShowMask && (
       <div
@@ -44,8 +48,8 @@ const Mask = ({ isShowMask, onClick }: { isShowMask: boolean; onClick: () => voi
       >
         <EyeOff className="h-9 w-9" />
         <div className="mt-2 text-center">
-          <h3 className="text-lg font-medium">Tap to reveal your seed phrase</h3>
-          <p className="text-sm text-muted-foreground">Make sure no one is watching your screen.</p>
+          <h3 className="text-sm font-medium">{t('wallet.setup.seedPhrase.mask.title')}</h3>
+          <p className="text-[12px] text-muted-foreground">{t('wallet.setup.seedPhrase.mask.description')}</p>
         </div>
       </div>
     )
