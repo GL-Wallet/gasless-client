@@ -1,4 +1,5 @@
 import { UserIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import InfiniteScroll from 'react-infinite-scroller';
 
 import { User } from '@/entities/user';
@@ -10,7 +11,7 @@ type Props = {
   referrals: User[];
   isLoading: boolean;
   hasMore: boolean;
-  fetchReferrals(): Promise<void>
+  fetchReferrals(): Promise<void>;
 };
 
 export const ReferralList = ({ referrals, isLoading, hasMore, fetchReferrals }: Props) => {
@@ -47,6 +48,7 @@ interface ReferralItemProps {
 
 const ReferralItem: React.FC<ReferralItemProps> = ({ user }) => {
   const { userName, currentReward, currentPartnerReward, totalReward, totalPartnerReward } = user;
+  const { t } = useTranslation();
 
   return (
     <div className="flex items-center justify-between px-4 py-2 border dark:bg-inherit dark:border-neutral-600 rounded-lg">
@@ -56,8 +58,9 @@ const ReferralItem: React.FC<ReferralItemProps> = ({ user }) => {
         </div>
         <div className="flex flex-col">
           <span>@{userName}</span>
-          <span className="text-sm text-muted-foreground">
-            Total reward: <FormattedNumber number={user.isPartner ? totalPartnerReward : totalReward} />
+          <span className="text-[12px] text-muted-foreground">
+            {t('referral.list.item.totalReward')}:{' '}
+            <FormattedNumber number={user.isPartner ? totalPartnerReward : totalReward} />
           </span>
         </div>
       </div>

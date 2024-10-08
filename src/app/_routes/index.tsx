@@ -15,9 +15,9 @@ import { HomePage } from '@/pages/(app)/HomePage';
 import { BackupMnemonic } from '@/pages/(wallet)/(backup)/BackupMnemonic';
 import { BackupPrivateKey } from '@/pages/(wallet)/(backup)/BackupPrivateKey';
 import { TransactionInProgress } from '@/pages/(wallet)/(transaction)/TransactionInProgress';
+import { TransactionListPage } from '@/pages/(wallet)/(transaction)/TransactionListPage';
 import { TransactionPage } from '@/pages/(wallet)/(transaction)/TransactionPage';
 import { TransactionResultPage } from '@/pages/(wallet)/(transaction)/TransactionResultPage';
-import { TransactionsPage } from '@/pages/(wallet)/(transaction)/TransactionsPage';
 import { WalletExchangePage } from '@/pages/(wallet)/actions/WalletExchangePage';
 import { WalletTransferPage } from '@/pages/(wallet)/actions/WalletTransferPage';
 import {
@@ -86,7 +86,7 @@ export const Routes = () => {
         />
         <Route
           path={ROUTES.TRANSACTIONS_PARAMS}
-          component={({ params: { token } }) => <TransactionsPage token={token} />}
+          component={({ params: { token } }) => <TransactionListPage token={token} />}
         />
         <Route path={ROUTES.TRANSACTION_PARAMS} component={({ params: { txid } }) => <TransactionPage txid={txid} />} />
         <Route path={ROUTES.TRANSACTION_IN_PROGRESS} component={TransactionInProgress} />

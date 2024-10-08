@@ -1,22 +1,27 @@
-import { useSettingsItems } from '../model/useSettingsItems';
+import { Fingerprint } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+
+import { cn } from '@/shared/lib/utils';
 import { PropsWithClassname } from '@/shared/types/react';
 import { SwitchItem } from '@/shared/ui/switch-item';
-import { Fingerprint } from 'lucide-react';
-import { cn } from '@/shared/lib/utils';
+
+import { useSettingsItems } from '../model/useSettingsItems';
 
 export const FinishSettingUp = ({ className }: PropsWithClassname) => {
   const { isBiometryEnabled, handleSwitchBiometry } = useSettingsItems();
+
+  const { t } = useTranslation();
 
   const isShowFinishSettingUp = !isBiometryEnabled;
 
   return (
     isShowFinishSettingUp && (
       <div className={cn('w-full space-y-3', className)}>
-        <h3 className="primary-gradient text-md font-bold">Finish Setting Up</h3>
+        <h3 className="primary-gradient text-md font-bold">{t('setting.finishSettingUp')}</h3>
         <div className="space-y-4">
           {!isBiometryEnabled && (
             <SwitchItem
-              title="Use biometrics"
+              title={t('setting.useBiometrics')}
               checked={isBiometryEnabled}
               onCheckedChange={handleSwitchBiometry}
               className="dark:bg-secondary/60"

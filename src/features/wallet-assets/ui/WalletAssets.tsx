@@ -1,15 +1,17 @@
-import AnimatedShinyText from '@/shared/magicui/animated-shiny-text';
-import { FormattedNumber } from '@/shared/ui/formatted-number';
-import { PropsWithClassname } from '@/shared/types/react';
-import { AVAILABLE_TOKENS } from '@/shared/enums/tokens';
-import { navigate } from 'wouter/use-browser-location';
-import { ROUTES } from '@/shared/constants/routes';
-import { urlJoin } from '@/shared/utils/urlJoin';
-import { useWallet } from '@/entities/wallet';
-import { Button } from '@/shared/ui/button';
 import { Send } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'wouter';
+import { navigate } from 'wouter/use-browser-location';
+
+import { useWallet } from '@/entities/wallet';
+import { ROUTES } from '@/shared/constants/routes';
+import { AVAILABLE_TOKENS } from '@/shared/enums/tokens';
 import { cn } from '@/shared/lib/utils';
+import AnimatedShinyText from '@/shared/magicui/animated-shiny-text';
+import { PropsWithClassname } from '@/shared/types/react';
+import { Button } from '@/shared/ui/button';
+import { FormattedNumber } from '@/shared/ui/formatted-number';
+import { urlJoin } from '@/shared/utils/urlJoin';
 
 const Icons: Record<AVAILABLE_TOKENS, string> = {
   TRX: '/icons/tron.png',
@@ -19,9 +21,11 @@ const Icons: Record<AVAILABLE_TOKENS, string> = {
 export const WalletAssets = ({ className }: PropsWithClassname) => {
   const wallet = useWallet();
 
+  const { t } = useTranslation();
+
   return (
     <div className={cn('w-full space-y-3', className)}>
-      <h3 className="text-neutral-600 text-md font-bold dark:text-muted-foreground mb-1">Assets</h3>
+      <h3 className="text-neutral-600 text-md font-bold dark:text-muted-foreground mb-1">{t('wallet.assets.title')}</h3>
 
       <div className="w-full flex flex-col space-y-2">
         {Object.keys(AVAILABLE_TOKENS).map((token, idx) => (

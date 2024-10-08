@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 import { useUser } from '@/entities/user';
 import { useWallet } from '@/entities/wallet';
@@ -14,6 +15,8 @@ export const ReferralPage = () => {
   const [referralsCount, setReferralsCount] = useState<number | null>(null);
   const [isClaimLoading, setIsClaimLoading] = useState(false);
   const [minRewardLimit, setMinRewardLimit] = useState<number | null>(null);
+
+  const { t } = useTranslation();
 
   const currentPage = useRef<number>(1);
   const limit = useRef<number>(4);
@@ -58,9 +61,9 @@ export const ReferralPage = () => {
 
       <div className="space-y-4">
         <div className="flex justify-between items-center">
-          <h3 className="text-lg font-bold primary-gradient">Friends</h3>
+          <h3 className="text-lg font-bold primary-gradient">{t('referral.friends')}</h3>
           <div className="space-x-2 text-sm text-muted-foreground">
-            <span>Referrals invited</span>
+            <span>{t('referral.referralsInvited')}</span>
             <Badge className="border-none dark:border-neutral-700" variant={'outline'}>
               {referralsCount ?? '...'}
             </Badge>

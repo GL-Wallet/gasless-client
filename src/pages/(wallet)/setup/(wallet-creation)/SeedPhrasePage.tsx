@@ -1,21 +1,25 @@
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { navigate } from 'wouter/use-browser-location';
+
+import { SeedPhrase, useSeedPhrase } from '@/features/wallet-setup';
+import { ROUTES } from '@/shared/constants/routes';
+import ShinyButton from '@/shared/magicui/shiny-button';
 import { CopyToClipboardButton } from '@/shared/ui/copy-to-clipboard-button';
 import { ResponsivePageHeader } from '@/shared/ui/responsive-page-header';
-import { SeedPhrase, useSeedPhrase } from '@/features/wallet-setup';
-import ShinyButton from '@/shared/magicui/shiny-button';
-import { navigate } from 'wouter/use-browser-location';
-import { ROUTES } from '@/shared/constants/routes';
-import { useState } from 'react';
 
 export const SeedPhrasePage = () => {
   const [isDisabled, setIsDisabled] = useState(true);
+
+  const { t } = useTranslation();
 
   const seedPhrase = useSeedPhrase();
 
   return (
     <div className="h-full flex flex-col justify-between items-center space-y-3">
       <ResponsivePageHeader
-        title="Write Down Your Seed Phrase"
-        description="This is your seed phrase. Write it down on a paper and keep it in a safe place. You'll be asked to re-enter this phrase (in order) on the next step."
+        title={t('wallet.setup.seedPhrase.title')}
+        description={t('wallet.setup.seedPhrase.description')}
         className="h-[25%]"
       />
 
@@ -27,7 +31,7 @@ export const SeedPhrasePage = () => {
         onClick={() => navigate(ROUTES.SEED_PHRASE_CONFIRMATION)}
         disabled={isDisabled}
         animate={false}
-        text="Continue"
+        text={t('wallet.setup.seedPhrase.button')}
         className="w-full"
       />
     </div>

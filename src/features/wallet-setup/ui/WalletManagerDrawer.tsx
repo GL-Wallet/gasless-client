@@ -1,5 +1,6 @@
 import { Check, ChevronDown, Wallet2, X } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useWalletStore, Wallet } from '@/entities/wallet';
 import { cn } from '@/shared/lib/utils';
@@ -14,6 +15,8 @@ import { AddWalletDrawer } from './AddWalletDrawer';
 
 export const WalletManagerDrawer = () => {
   const [isOpened, setIsOpened] = useState(false);
+
+  const { t } = useTranslation();
 
   const { walletName, activeIndex, addresses, setActiveWallet } = useWalletStore((store) => ({
     walletName: store.addresses[store.activeIndex].name,
@@ -32,7 +35,7 @@ export const WalletManagerDrawer = () => {
 
   return (
     <Drawer open={isOpened} onOpenChange={setIsOpened}>
-      <DrawerTrigger onClick={handleOpenDrawer} className='outline-none w-fit'>
+      <DrawerTrigger onClick={handleOpenDrawer} className="outline-none w-fit">
         <div
           className={cn(
             'group rounded-full bg-transparent border border-neutral-300 dark:border-input dark:bg-card/40 text-md transition-all ease-in hover:cursor-pointer hover:bg-neutral-200 dark:border-white/5 dark:bg-neutral-900 dark:hover:bg-neutral-800'
@@ -54,7 +57,7 @@ export const WalletManagerDrawer = () => {
         </DrawerClose>
 
         <DrawerHeader>
-          <DrawerTitle>Wallets</DrawerTitle>
+          <DrawerTitle>{t('wallet.manager.title')}</DrawerTitle>
         </DrawerHeader>
 
         <div className="space-y-2 rounded-xl border border-input py-2">

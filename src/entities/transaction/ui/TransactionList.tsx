@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useWallet } from '@/entities/wallet';
 import { AVAILABLE_TOKENS } from '@/shared/enums/tokens';
@@ -17,6 +18,8 @@ export const TransactionList: React.FC<TransactionListProps> = ({ token }) => {
     transactions: store.transactions,
     setTransactions: store.setTransactions
   }));
+
+  const { t } = useTranslation();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -50,7 +53,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({ token }) => {
 
       {!isLoading && transactions.length === 0 && (
         <div className="flex items-center justify-center w-full py-4 border border-dashed rounded-sm text-muted-foreground">
-          Empty
+          {t('transaction.list.empty')}
         </div>
       )}
     </div>

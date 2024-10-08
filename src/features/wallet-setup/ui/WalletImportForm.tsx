@@ -1,15 +1,19 @@
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
-import { PropsWithClassname } from '@/shared/types/react';
-import { Textarea } from '@/shared/ui/textarea';
-import { Button } from '@/shared/ui/button';
 import { ScanLine } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+
 import { cn } from '@/shared/lib/utils';
+import ShinyButton from '@/shared/magicui/shiny-button';
+import { PropsWithClassname } from '@/shared/types/react';
+import { Button } from '@/shared/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
+import { Textarea } from '@/shared/ui/textarea';
 
 import { useWalletImportForm } from '../model/useWalletImportForm';
-import ShinyButton from '@/shared/magicui/shiny-button';
 
 export const WalletImportForm = (props: PropsWithClassname) => {
   const { form, onSubmit, handleOpenQRScanner } = useWalletImportForm();
+
+  const { t } = useTranslation();
 
   return (
     <Form {...form}>
@@ -20,10 +24,15 @@ export const WalletImportForm = (props: PropsWithClassname) => {
             name="seedPhrase"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className='text-md font-bold primary-gradient'>Seed Phrase</FormLabel>
+                <FormLabel className="text-md font-bold primary-gradient">{t('wallet.setup.import.label')}</FormLabel>
                 <FormControl>
                   <div className="relative h-fit">
-                    <Textarea rows={5} {...field} className="text-lg word-break pr-12 bg-transparent" value={field.value || ''} />
+                    <Textarea
+                      rows={5}
+                      {...field}
+                      className="text-lg word-break pr-12 bg-transparent"
+                      value={field.value || ''}
+                    />
 
                     <Button
                       onClick={(e) => {
@@ -44,7 +53,7 @@ export const WalletImportForm = (props: PropsWithClassname) => {
           />
         </div>
         <div className="flex flex-col space-y-5">
-          <ShinyButton type="submit" animate={false} text="Continue" className="w-full" />
+          <ShinyButton type="submit" animate={false} text={t('wallet.setup.import.button.continue')} className="w-full" />
         </div>
       </form>
     </Form>

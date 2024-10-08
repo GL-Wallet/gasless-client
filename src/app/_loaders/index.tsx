@@ -1,9 +1,10 @@
 import { PropsWithChildren, useEffect, useState } from 'react';
-import { SplashScreen } from '@/shared/ui/splash-screen';
+
 import { useAppSettingsStore } from '@/entities/app-settings';
-import { useInitData } from '@telegram-apps/sdk-react';
-import { useWalletStore } from '@/entities/wallet';
 import { useUserStore } from '@/entities/user';
+import { useWalletStore } from '@/entities/wallet';
+import { SplashScreen } from '@/shared/ui/splash-screen';
+import { useInitData } from '@telegram-apps/sdk-react';
 
 export const Loaders = (props: PropsWithChildren) => {
   const [isLoading, setIsLoading] = useState(true);

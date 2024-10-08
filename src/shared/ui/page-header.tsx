@@ -1,6 +1,7 @@
-import { PropsWithClassname } from '../types/react';
-import { cn } from '../lib/utils';
 import { ReactNode } from 'react';
+
+import { cn } from '../lib/utils';
+import { PropsWithClassname } from '../types/react';
 
 type Props = {
   title?: ReactNode;
@@ -9,9 +10,9 @@ type Props = {
 
 export const PageHeader = ({ title, description, className }: PropsWithClassname<Props>) => {
   return (
-    <header className={cn('space-y-1 text-center', className)}>
-      <h2 className="text-2xl primary-gradient font-bold">{title}</h2>
-      <p className="text-base text-muted-foreground">{description}</p>
+    <header className={cn('w-full space-y-2 text-center', className)}>
+      <h2 className="text-xl primary-gradient font-semibold">{title}</h2>
+      <p className="text-[14px] text-muted-foreground">{description}</p>
     </header>
   );
 };

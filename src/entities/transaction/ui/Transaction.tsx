@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { getPrivateKey } from '@/entities/wallet';
 import { tronService } from '@/kernel/tron';
@@ -16,6 +17,8 @@ import { TransactionLink } from './TransactionLink';
 export const Transaction = ({ txid, walletAddress }: { txid: string; walletAddress: string }) => {
   const [transaction, setTransaction] = useState<TransactionType | null>(null);
   const [status, setStatus] = useState<string | null>(null);
+
+  const { t } = useTranslation();
 
   const getTransaction = useTransactionStore((store) => store.getTransaction);
 
@@ -48,21 +51,21 @@ export const Transaction = ({ txid, walletAddress }: { txid: string; walletAddre
 
         <div className="w-full flex flex-col border dark:bg-card/60 p-4 rounded-md space-y-6 mt-20">
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Date</span>
-            <span>{formatDate(new Date(transaction.timestamp), TransactionDateOptions, 'en-GB')}</span>
+            <span className="text-muted-foreground">{t('transaction.date')}</span>
+            <span>{formatDate(new Date(transaction.timestamp), TransactionDateOptions)}</span>
           </div>
 
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Status</span>
+            <span className="text-muted-foreground">{t('transaction.status')}</span>
             {status ? <span>{capitalize(status)}</span> : <Skeleton className="h-6 w-20" />}
           </div>
 
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Sender</span>
+            <span className="text-muted-foreground">{t('transaction.sender')}</span>
             <span>{truncateString(transaction.from, 10)}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Receiver</span>
+            <span className="text-muted-foreground">{t('transaction.receiver')}</span>
             <span>{truncateString(transaction.to, 10)}</span>
           </div>
           <TransactionLink link={tronscanLink} />

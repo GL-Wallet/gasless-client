@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useBiometry } from '@/shared/hooks/useBiometry';
 import { useEffectOnce } from '@/shared/hooks/useEffectOnce';
@@ -19,6 +20,8 @@ export const PasscodeRequired = ({ isBiometryEnabled, passcodeHash, onPasscodeSu
   const [enteredPasscode, setEnteredPasscode] = useState<Passcode>(null);
   const { authenticate } = useBiometry();
 
+  const { t } = useTranslation();
+
   const requestBiometry = useCallback(() => {
     if (!isBiometryEnabled) return;
 
@@ -34,7 +37,7 @@ export const PasscodeRequired = ({ isBiometryEnabled, passcodeHash, onPasscodeSu
 
   useEffect(() => {
     if (!enteredPasscode || enteredPasscode.length !== PASSCODE_LENGTH) return;
-    
+
     if (getHashedPasscode(enteredPasscode) === passcodeHash) {
       onPasscodeSuccess(enteredPasscode);
     }
@@ -42,7 +45,7 @@ export const PasscodeRequired = ({ isBiometryEnabled, passcodeHash, onPasscodeSu
 
   return (
     <div className="grow flex flex-col justify-center items-center space-y-8">
-      <PageHeader title={'Enter passcode'} />
+      <PageHeader title={t('auth.required.title')} />
 
       <PasscodeInput
         isBiometryEnabled={isBiometryEnabled}
