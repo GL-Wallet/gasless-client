@@ -29,11 +29,7 @@
       "seedPhrase": {
         "title": "Write Down Your Seed Phrase",
         "description": "This is your seed phrase. Write it down on paper and keep it in a safe place. You'll be asked to re-enter this phrase (in order) on the next step.",
-        "button": "Continue",
-        "mask": {
-          "title": "Tap to reveal your seed phrase",
-          "description": "Make sure no one is watching your screen."
-        }
+        "button": "Continue"
       },
       "confirmSeedPhrase": {
         "title": "Confirm Seed Phrase",
@@ -182,6 +178,9 @@
     "backupPrivateKey": "Backup private key",
     "appVersion": "App version",
     "finishSettingUp": "Finish Setting Up",
+    "backup": {
+      "button": "Back to Home"
+    },
     "signOut": {
       "modal": {
         "title": "Sign out of All Wallets?",
@@ -244,6 +243,10 @@
     "lang": {
       "code": "en",
       "label": "Language"
+    },
+    "mask": {
+      "title": "Tap to reveal content",
+      "description": "Make sure no one is watching your screen."
     }
   }
 }
