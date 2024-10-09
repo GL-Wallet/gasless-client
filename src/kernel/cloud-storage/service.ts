@@ -1,4 +1,4 @@
-import { initCloudStorage, CloudStorage as TCloudStorage } from '@telegram-apps/sdk-react';
+import { CloudStorage as TCloudStorage, initCloudStorage } from '@telegram-apps/sdk-react';
 
 class CloudStorageService {
   cloudStorage: TCloudStorage;
@@ -11,6 +11,7 @@ class CloudStorageService {
     try {
       const rawData = await this.cloudStorage.get(key);
       if (!rawData) return null;
+
       const data = JSON.parse(rawData);
       return data as P;
     } catch (error) {

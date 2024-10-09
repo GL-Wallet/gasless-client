@@ -1,7 +1,9 @@
 import { FilePenLine, Fingerprint, KeyRound, Wallet2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
+import { useAuth } from '@/kernel/auth';
 import { ROUTES } from '@/shared/constants/routes';
+import { ActionItem } from '@/shared/ui/action-item';
 import { LinkItem } from '@/shared/ui/link-item';
 import { SwitchItem } from '@/shared/ui/switch-item';
 
@@ -11,12 +13,14 @@ import { LanguageSelect } from './LanguageSelect';
 export const AppSettingsItems = () => {
   const { isBiometryEnabled, handleSwitchBiometry } = useSettingsItems();
 
+  const { authenticate } = useAuth();
+
   const { t } = useTranslation();
 
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h3 className='text-lg primary-gradient'>{t("shared.lang.label")}</h3>
+        <h3 className="text-lg primary-gradient">{t('shared.lang.label')}</h3>
         <LanguageSelect className="bg-transparent w-fit" />
       </div>
 
@@ -35,16 +39,16 @@ export const AppSettingsItems = () => {
         className="bg-transparent"
       />
 
-      <LinkItem
+      <ActionItem
         title={t('setting.backupMnemonic')}
-        href={ROUTES.BACKUP_MNEMONIC}
+        onClick={() => authenticate({ redirectTo: ROUTES.BACKUP_MNEMONIC })}
         icon={<FilePenLine className="size-5" />}
         className="bg-transparent"
       />
 
-      <LinkItem
+      <ActionItem
         title={t('setting.backupPrivateKey')}
-        href={ROUTES.BACKUP_PRIVATE_KEY}
+        onClick={() => authenticate({ redirectTo: ROUTES.BACKUP_PRIVATE_KEY })}
         icon={<KeyRound className="size-5" />}
         className="bg-transparent"
       />

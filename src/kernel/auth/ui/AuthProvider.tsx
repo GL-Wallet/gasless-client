@@ -1,11 +1,15 @@
 import { PropsWithChildren, useCallback, useEffect, useRef } from 'react';
 import { navigate } from 'wouter/use-browser-location';
 
+import { ROUTES } from '@/shared/constants/routes';
+
 import { authContext } from '../model/auth-context';
 import { useAuthStore } from '../model/store';
 import { AuthParams, AuthPromiseCallback } from '../model/types';
 import { getHashedPasscodeFromStorage } from '../utils/getHashedPasscodeFromStorage';
 import { savePasscodeHash } from '../utils/savePasscodeHash';
+
+const actions = ['setup', 'startup', 'required', 'update'].map((action) => `/passcode-${action}`);
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const setAuthStore = useAuthStore((store) => store.set);
@@ -40,7 +44,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const handlePasscodeSuccess = useCallback(
     async (enteredPasscode: string) => {
-      savePasscodeHash(enteredPasscode);
+      await savePasscodeHash(enteredPasscode);
 
       try {
         setAuthStore({
@@ -49,7 +53,11 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
           passcode: enteredPasscode
         });
 
-        navigate(authConfigRef.current?.redirectTo ?? returnPathRef.current, { replace: true });
+        navigate(
+          authConfigRef.current?.redirectTo ??
+            (actions.includes(returnPathRef.current) ? ROUTES.HOME : returnPathRef.current),
+          { replace: true }
+        );
         authPromiseRef.current?.(enteredPasscode);
       } catch (error) {
         console.error('Error saving passcode:', error);

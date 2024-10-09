@@ -8,7 +8,7 @@ i18n
   .init({
     lng: navigator.language,
     fallbackLng: 'en',
-    debug: import.meta.env.DEV ? true : false,
+    debug: false,
 
     interpolation: {
       escapeValue: false
