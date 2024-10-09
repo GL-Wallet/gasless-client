@@ -1,13 +1,14 @@
-import { PropsWithChildren, useCallback, useEffect, useRef } from 'react';
+import { PropsWithChildren, useCallback, useRef } from 'react';
 import { navigate } from 'wouter/use-browser-location';
 
 import { ROUTES } from '@/shared/constants/routes';
+import { useEffectOnce } from '@/shared/hooks/useEffectOnce';
 
 import { authContext } from '../model/auth-context';
 import { useAuthStore } from '../model/store';
 import { AuthParams, AuthPromiseCallback } from '../model/types';
 import { getHashedPasscodeFromStorage } from '../utils/getHashedPasscodeFromStorage';
-import { savePasscodeHash } from '../utils/savePasscodeHash';
+import { saveHashedPasscodeToStorage } from '../utils/savePasscodeHash';
 
 const actions = ['setup', 'startup', 'required', 'update'].map((action) => `/passcode-${action}`);
 
@@ -44,7 +45,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const handlePasscodeSuccess = useCallback(
     async (enteredPasscode: string) => {
-      await savePasscodeHash(enteredPasscode);
+      await saveHashedPasscodeToStorage(enteredPasscode);
 
       try {
         setAuthStore({
@@ -66,24 +67,22 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     [setAuthStore]
   );
 
-  useEffect(() => {
-    const initializePasscode = async () => {
-      try {
-        const hashedPasscode = await getHashedPasscodeFromStorage();
+  const initializePasscode = useCallback(async () => {
+    try {
+      const hashedPasscode = await getHashedPasscodeFromStorage();
 
-        if (hashedPasscode) {
-          setAuthStore({ hashedPasscode, requiresSetup: false });
-        } else {
-          setAuthStore({ requiresSetup: true });
-        }
-      } catch (error) {
-        console.error('Error fetching passcode:', error);
+      if (hashedPasscode) {
+        setAuthStore({ hashedPasscode, requiresSetup: false });
+      } else {
         setAuthStore({ requiresSetup: true });
       }
-    };
+    } catch (error) {
+      console.error('Error fetching passcode:', error);
+      setAuthStore({ requiresSetup: true });
+    }
+  }, [setAuthStore]);
 
-    initializePasscode();
-  }, [passcodeHash, setAuthStore]);
+  useEffectOnce(initializePasscode);
 
   return (
     <authContext.Provider

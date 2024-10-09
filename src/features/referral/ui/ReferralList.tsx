@@ -24,7 +24,7 @@ export const ReferralList = ({ referrals, isLoading, hasMore, fetchReferrals }: 
   }
 
   return (
-    <div style={{ height: 250, overflowY: 'auto' }}>
+    <div style={{ height: '100%', overflowY: 'auto' }}>
       <InfiniteScroll
         className="space-y-2"
         pageStart={0}

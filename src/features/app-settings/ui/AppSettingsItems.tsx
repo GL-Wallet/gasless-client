@@ -8,7 +8,7 @@ import { LinkItem } from '@/shared/ui/link-item';
 import { SwitchItem } from '@/shared/ui/switch-item';
 
 import { useSettingsItems } from '../model/useSettingsItems';
-import { LanguageSelect } from './LanguageSelect';
+import { LanguageDrawer } from './LanguageDrawer';
 
 export const AppSettingsItems = () => {
   const { isBiometryEnabled, handleSwitchBiometry } = useSettingsItems();
@@ -21,7 +21,7 @@ export const AppSettingsItems = () => {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h3 className="text-lg primary-gradient">{t('shared.lang.label')}</h3>
-        <LanguageSelect className="bg-transparent w-fit" />
+        <LanguageDrawer />
       </div>
 
       <LinkItem

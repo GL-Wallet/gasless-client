@@ -1,13 +1,11 @@
 import path from 'path';
 import { defineConfig, loadEnv } from 'vite';
-import generateFile from 'vite-plugin-generate-file';
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
+import { vitePluginCacheBuster } from '@piplup/vite-plugin-cache-buster';
 import basicSsl from '@vitejs/plugin-basic-ssl';
 import react from '@vitejs/plugin-react-swc';
-
-import { version } from './package.json';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -28,16 +26,7 @@ export default defineConfig(({ mode }) => {
       // Allows using self-signed certificates to run the dev server using HTTPS.
       // https://www.npmjs.com/package/@vitejs/plugin-basic-ssl
       basicSsl(),
-
-      generateFile([
-        {
-          type: 'json',
-          output: './manifest.json',
-          data: {
-            version
-          }
-        }
-      ]),
+      vitePluginCacheBuster(),
 
       ViteImageOptimizer({
         test: /\.(jpe?g|png|gif|tiff|webp|svg|avif)$/i,

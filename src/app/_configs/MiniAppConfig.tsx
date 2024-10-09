@@ -4,9 +4,7 @@ import { navigate, usePathname } from 'wouter/use-browser-location';
 import { useAuth } from '@/kernel/auth';
 import { ROUTES } from '@/shared/constants/routes';
 import { useTheme } from '@/shared/ui/theme-provider';
-import {
-	initNavigator, postEvent, RGB, useBackButton, useSettingsButton
-} from '@telegram-apps/sdk-react';
+import { postEvent, RGB, useBackButton, useSettingsButton } from '@telegram-apps/sdk-react';
 
 const Config = {
   COLOR: { light: '#ffffff', dark: '#000000' },
@@ -55,8 +53,6 @@ export const MiniAppConfig = (props: PropsWithChildren) => {
   const { theme } = useTheme();
   const { passcode } = useAuth();
 
-  const navigator = initNavigator('app-navigator-state');
-
   const sb = useSettingsButton();
   const bb = useBackButton();
 
@@ -85,10 +81,14 @@ export const MiniAppConfig = (props: PropsWithChildren) => {
 
   useEffect(() => {
     const handleClick = () => {
+      const path = window.history.state?.path;
+
+      if (path) {
+        return navigate(path);
+      }
+
       if (window.history.length > 1) {
         window.history.back();
-      } else {
-        navigator.back();
       }
     };
 
@@ -106,7 +106,7 @@ export const MiniAppConfig = (props: PropsWithChildren) => {
     return () => {
       bb.off('click', handleClick);
     };
-  }, [bb, pathname, navigator]);
+  }, [bb, pathname]);
 
   useEffect(() => {
     sb.on('click', () => {
@@ -114,7 +114,7 @@ export const MiniAppConfig = (props: PropsWithChildren) => {
         pathname as ROUTES
       ) &&
         passcode &&
-        navigate(ROUTES.APP_SETTINGS);
+        navigate(ROUTES.APP_SETTINGS, { state: { path: ROUTES.HOME } });
     });
   }, [passcode, pathname, sb]);
 

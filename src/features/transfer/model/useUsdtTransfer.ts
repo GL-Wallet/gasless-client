@@ -53,7 +53,6 @@ export const useTrc20Transfer = () => {
         return (await api.transfer(user.id, { signedTrxTransaction, signedUsdtTransaction })).txid;
       } catch (error) {
         console.error('Error transferring TRC-20 token:', error);
-        throw error;
       }
     },
     [wallet.address, wallet.encryptedMnemonic, user]

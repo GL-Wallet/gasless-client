@@ -4,7 +4,7 @@ import { cloudStorageService } from '@/kernel/cloud-storage';
 
 import { AUTH_STORAGE_KEY } from '../constants';
 
-export const savePasscodeHash = async (passcode: string) => {
+export const saveHashedPasscodeToStorage = async (passcode: string) => {
   try {
     const hash = md5.create().update(passcode);
 
