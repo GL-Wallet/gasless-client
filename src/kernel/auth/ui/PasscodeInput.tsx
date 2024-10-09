@@ -7,7 +7,7 @@ import { PasscodeOTP } from './PasscodeOTP';
 import { PasscodePad } from './PasscodePad';
 
 type Props = {
-  passcode?: Passcode;
+  passcode: Passcode;
   isBiometryEnabled?: boolean;
   setPasscode(passcode: SetStateAction<Passcode>): void;
   handleBiometry?: () => void;

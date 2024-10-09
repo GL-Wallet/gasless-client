@@ -12,14 +12,18 @@ import { CopyToClipboardButton } from '@/shared/ui/copy-to-clipboard-button';
 
 export const BackupMnemonic = () => {
   const [mnemonic, setMnemonic] = useState<string | null>(null);
+
   const { passcode } = useAuth();
   const { encryptedMnemonic } = useWallet();
 
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (!mnemonic) {
-      const decryptedMnemonic = decrypt(encryptedMnemonic, passcode!);
+    if (mnemonic) return;
+
+    const decryptedMnemonic = decrypt(encryptedMnemonic, passcode!);
+
+    if (decryptedMnemonic) {
       setMnemonic(decryptedMnemonic);
     }
   }, [encryptedMnemonic, mnemonic, passcode]);

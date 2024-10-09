@@ -4,7 +4,7 @@ import { Passcode } from './types';
 
 type State = {
   passcode: Passcode;
-  passcodeHash: string | null;
+  hashedPasscode: string | null;
   requiresSetup: boolean;
   isAuthenticated: boolean;
 };
@@ -16,7 +16,7 @@ type Actions = {
 
 const initialState: State = {
   passcode: null,
-  passcodeHash: null,
+  hashedPasscode: null,
   requiresSetup: true,
   isAuthenticated: false
 };

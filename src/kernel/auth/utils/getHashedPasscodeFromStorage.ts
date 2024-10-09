@@ -5,10 +5,10 @@ import { AUTH_STORAGE_KEY, DEPRECATED_AUTH_STORAGE_KEY } from '../constants';
 import { getHashedPasscode } from './getHashedPasscode';
 
 // with backward compatibility
-export const getPasscodeHashFromStorage = async (): Promise<string | null> => {
+export const getHashedPasscodeFromStorage = async (): Promise<string | null> => {
   try {
-    const encryptedPasscode = await cloudStorageService.get<string>(DEPRECATED_AUTH_STORAGE_KEY);
     const hashedPasscode = await cloudStorageService.get<string>(AUTH_STORAGE_KEY);
+    const encryptedPasscode = await cloudStorageService.get<string>(DEPRECATED_AUTH_STORAGE_KEY);
 
     if (encryptedPasscode) {
       const decryptedPasscode = decrypt(encryptedPasscode, import.meta.env.VITE_AUTH_SECRET);

@@ -1,7 +1,6 @@
-'use client';
-
 import { AnimatePresence, HTMLMotionProps, motion } from 'framer-motion';
 import React, { useState } from 'react';
+
 import { cn } from '../lib/utils';
 
 interface AnimatedSubscribeButtonProps extends HTMLMotionProps<'button'> {
@@ -59,7 +58,7 @@ export const AnimatedSubscribeButton: React.FC<AnimatedSubscribeButtonProps> = (
           style={{ backgroundColor: buttonColor, color: buttonTextColor }}
           onClick={(e) => {
             setIsSubscribed(true);
-            
+
             setTimeout(() => {
               if (onClick) {
                 onClick(e);

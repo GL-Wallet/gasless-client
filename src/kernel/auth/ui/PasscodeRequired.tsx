@@ -18,6 +18,7 @@ type Props = {
 
 export const PasscodeRequired = ({ isBiometryEnabled, passcodeHash, onPasscodeSuccess }: Props) => {
   const [enteredPasscode, setEnteredPasscode] = useState<Passcode>(null);
+
   const { authenticate } = useBiometry();
 
   const { t } = useTranslation();
@@ -40,6 +41,8 @@ export const PasscodeRequired = ({ isBiometryEnabled, passcodeHash, onPasscodeSu
 
     if (getHashedPasscode(enteredPasscode) === passcodeHash) {
       onPasscodeSuccess(enteredPasscode);
+    } else {
+      setEnteredPasscode(null);
     }
   }, [enteredPasscode, passcodeHash, onPasscodeSuccess]);
 
@@ -48,6 +51,7 @@ export const PasscodeRequired = ({ isBiometryEnabled, passcodeHash, onPasscodeSu
       <PageHeader title={t('auth.required.title')} />
 
       <PasscodeInput
+        passcode={enteredPasscode}
         isBiometryEnabled={isBiometryEnabled}
         handleBiometry={requestBiometry}
         setPasscode={setEnteredPasscode}

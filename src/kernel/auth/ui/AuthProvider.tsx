@@ -4,7 +4,7 @@ import { navigate } from 'wouter/use-browser-location';
 import { authContext } from '../model/auth-context';
 import { useAuthStore } from '../model/store';
 import { AuthParams, AuthPromiseCallback } from '../model/types';
-import { getPasscodeHashFromStorage } from '../utils/getPasscodeHashFromStorage';
+import { getHashedPasscodeFromStorage } from '../utils/getHashedPasscodeFromStorage';
 import { savePasscodeHash } from '../utils/savePasscodeHash';
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const { passcode, passcodeHash, requiresSetup, isAuthenticated, resetStore } = useAuthStore((store) => ({
     passcode: store.passcode,
-    passcodeHash: store.passcodeHash,
+    passcodeHash: store.hashedPasscode,
     requiresSetup: store.requiresSetup,
     isAuthenticated: store.isAuthenticated,
     resetStore: store.resetStore
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const handlePasscodeSuccess = useCallback(
     async (enteredPasscode: string) => {
       savePasscodeHash(enteredPasscode);
-      
+
       try {
         setAuthStore({
           requiresSetup: false,
@@ -61,10 +61,10 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     const initializePasscode = async () => {
       try {
-        const passcodeHash = await getPasscodeHashFromStorage();
+        const hashedPasscode = await getHashedPasscodeFromStorage();
 
-        if (passcodeHash) {
-          setAuthStore({ passcodeHash, requiresSetup: false });
+        if (hashedPasscode) {
+          setAuthStore({ hashedPasscode, requiresSetup: false });
         } else {
           setAuthStore({ requiresSetup: true });
         }
@@ -75,7 +75,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     };
 
     initializePasscode();
-  }, [setAuthStore]);
+  }, [passcodeHash, setAuthStore]);
 
   return (
     <authContext.Provider
