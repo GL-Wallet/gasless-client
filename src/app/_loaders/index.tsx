@@ -4,7 +4,7 @@ import { useAppSettingsStore } from '@/entities/app-settings';
 import { useUserStore } from '@/entities/user';
 import { useWalletStore } from '@/entities/wallet';
 import { SplashScreen } from '@/shared/ui/splash-screen';
-// import { checkForUpdates } from '@/shared/utils/checkForUpdates';
+import { handleNewRelease } from '@/shared/utils/handleNewRelease';
 import { useInitData } from '@telegram-apps/sdk-react';
 
 export const Loaders = (props: PropsWithChildren) => {
@@ -22,7 +22,7 @@ export const Loaders = (props: PropsWithChildren) => {
       userLoader(initData.user, initData?.startParam),
       walletLoader(),
       settingsLoader(),
-      // checkForUpdates()
+      handleNewRelease()
     ]).then(() => setIsLoading(false));
   }, [initData, settingsLoader, userLoader, walletLoader]);
 

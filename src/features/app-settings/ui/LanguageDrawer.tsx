@@ -33,14 +33,14 @@ export const LanguageDrawer = () => {
           {supportedLanguages[langCode]}
         </Button>
       </DrawerTrigger>
-      <DrawerContent className="h-1/3">
+      <DrawerContent className="h-fit pb-10">
         <DrawerHeader>
-          <DrawerTitle>{supportedLanguages[langCode]}</DrawerTitle>
+          <DrawerTitle>{t('setting.language.title')}</DrawerTitle>
         </DrawerHeader>
         {Object.entries(supportedLanguages).map(([code, title], index) => (
           <div key={index}>
             <div
-              className="flex items-center justify-between w-full px-6 py-2"
+              className="flex items-center justify-between w-full px-6 py-5"
               onClick={() => handleChangeLanguage(code)}
             >
               <div className="flex items-center space-x-4">

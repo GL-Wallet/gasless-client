@@ -26,6 +26,7 @@ export default defineConfig(({ mode }) => {
       // Allows using self-signed certificates to run the dev server using HTTPS.
       // https://www.npmjs.com/package/@vitejs/plugin-basic-ssl
       basicSsl(),
+
       vitePluginCacheBuster(),
 
       ViteImageOptimizer({

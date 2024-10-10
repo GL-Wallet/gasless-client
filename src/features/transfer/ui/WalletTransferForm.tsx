@@ -119,13 +119,13 @@ export const WalletTransferForm = ({ token }: Props) => {
         return false;
       }
 
-      if (values.amount + BANDWIDTH_COST > balance) {
+      if (values.amount > balance) {
         form.setError('amount', { type: 'manual', message: t('transfer.error.insufficientBalance', { token }) });
         toast.error(t('transfer.error.notEnoughBalance'));
         return false;
       }
 
-      if (isUsdtToken && wallet.balances.TRX < transferInfo?.fee) {
+      if (isUsdtToken && wallet.balances.TRX < transferInfo?.fee + BANDWIDTH_COST) {
         toast.error(t('transfer.error.insufficientBalance', { token: AVAILABLE_TOKENS.TRX }));
         return false;
       }

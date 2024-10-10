@@ -4,8 +4,6 @@ import { Toaster } from 'react-hot-toast';
 
 import { MainLayout } from '@/pages/(layouts)/MainLayout';
 import ErrorBoundary from '@/shared/ui/error-boundary';
-import { SplashScreen } from '@/shared/ui/splash-screen';
-import { CacheBuster } from '@piplup/cache-buster';
 
 import { Configs } from './_configs';
 import { Loaders } from './_loaders';
@@ -19,14 +17,12 @@ export const App = () => {
         <Providers>
           <Configs>
             <Loaders>
-              <CacheBuster loading={<SplashScreen />} verbose={false} enabled={process.env.NODE_ENV === 'production'}>
-                <Routes />
-                <Toaster toastOptions={{ style: { background: '#000000', color: '#ffffff' } }} />
-              </CacheBuster>
+              <Routes />
             </Loaders>
           </Configs>
         </Providers>
       </ErrorBoundary>
+      <Toaster toastOptions={{ style: { background: '#000000', color: '#ffffff' } }} />
     </MainLayout>
   );
 };
