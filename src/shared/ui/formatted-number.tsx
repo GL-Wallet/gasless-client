@@ -11,6 +11,7 @@ export const FormattedNumber = ({ number }: { number: string | number | undefine
       style="decimal"
       minimumFractionDigits={0}
       maximumFractionDigits={2}
+      maximumSignificantDigits={5}
       useGrouping={true}
       roundingMode={'trunc'}
     />

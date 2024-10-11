@@ -49,7 +49,7 @@ const formSchema = z.object({
     }),
   amount: z.coerce
     .number()
-    .min(0.1, { message: 'transfer.error.youMustEnterAtLeast' })
+    .min(0.000001, { message: 'transfer.error.youMustEnterAtLeast' })
     .positive({ message: 'transfer.error.amountMustBePositive' })
 });
 
