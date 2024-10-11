@@ -252,7 +252,7 @@
       "description": "Make sure no one is watching your screen."
     },
     "toast": {
-      "newVersion": "A new version is available, reboot..."
+      "newVersion": "Updating... Restarting app."
     }
   }
 }

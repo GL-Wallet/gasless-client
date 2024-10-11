@@ -50,7 +50,9 @@ export function WalletExchangeForm() {
   });
 
   const receive =
-    exchangeInfo && form.watch('amount') > 0 ? (form.watch('amount') - exchangeInfo.fee) * exchangeInfo?.rate : 0;
+    exchangeInfo && form.watch('amount') - exchangeInfo.fee > 0
+      ? (form.watch('amount') - exchangeInfo.fee) * exchangeInfo?.rate
+      : 0;
 
   useEffect(() => {
     api.exchangeInfo().then((res) => setExchangeInfo(res));

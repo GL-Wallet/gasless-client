@@ -1,3 +1,4 @@
+import { RefreshCw } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 import i18n from '../lib/i18n';
@@ -17,7 +18,11 @@ export const handleNewRelease = async () => {
       if (releaseId !== releaseIdFromStorage) {
         localStorage.setItem(FILENAME, releaseId);
         if (releaseId) {
-          toast.success(i18n.t('shared.toast.newVersion'));
+          toast(i18n.t('shared.toast.newVersion'), {
+            className: 'text-sm border',
+            icon: <RefreshCw className="size-4 text-green-400 animate-spin" />
+          });
+
           await new Promise((res) => setTimeout(res, 1500));
 
           console.log('New release detected. Reloading page');

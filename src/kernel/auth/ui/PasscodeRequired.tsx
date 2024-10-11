@@ -52,9 +52,9 @@ export const PasscodeRequired = ({ isBiometryEnabled, passcodeHash, onPasscodeSu
 
       <PasscodeInput
         passcode={enteredPasscode}
+        setPasscode={setEnteredPasscode}
         isBiometryEnabled={isBiometryEnabled}
         handleBiometry={requestBiometry}
-        setPasscode={setEnteredPasscode}
       />
     </div>
   );

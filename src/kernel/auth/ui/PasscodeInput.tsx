@@ -16,5 +16,9 @@ type Props = {
 export const PasscodeInput = (props: Props) => {
   const isDt = isDesktop();
 
-  return isDt ? <PasscodeOTP passcode={props.passcode} setPasscode={props.setPasscode} /> : <PasscodePad {...props} />;
+  if (isDt) {
+    return <PasscodeOTP passcode={props.passcode} setPasscode={props.setPasscode} />;
+  }
+
+  return <PasscodePad {...props} />;
 };
