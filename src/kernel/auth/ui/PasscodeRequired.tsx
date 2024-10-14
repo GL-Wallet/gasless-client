@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useBiometry } from '@/shared/hooks/useBiometry';
@@ -9,6 +9,9 @@ import { PASSCODE_LENGTH } from '../constants';
 import { Passcode } from '../model/types';
 import { getHashedPasscode } from '../utils/getHashedPasscode';
 import { PasscodeInput } from './PasscodeInput';
+
+// Memoize the PageHeader component
+const MemoizedPageHeader = React.memo(PageHeader);
 
 type Props = {
   isBiometryEnabled: boolean;
@@ -31,7 +34,7 @@ export const PasscodeRequired = ({ isBiometryEnabled, passcodeHash, onPasscodeSu
         onPasscodeSuccess(passcode);
       }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffectOnce(requestBiometry);
@@ -46,11 +49,15 @@ export const PasscodeRequired = ({ isBiometryEnabled, passcodeHash, onPasscodeSu
     }
   }, [enteredPasscode, passcodeHash, onPasscodeSuccess]);
 
+  const title = useMemo(() => t('auth.required.title'), [t]);
+
+  const MemoizedPasscodeInput = React.memo(PasscodeInput);
+
   return (
     <div className="grow flex flex-col justify-center items-center space-y-8">
-      <PageHeader title={t('auth.required.title')} />
+      <MemoizedPageHeader title={title} />
 
-      <PasscodeInput
+      <MemoizedPasscodeInput
         passcode={enteredPasscode}
         setPasscode={setEnteredPasscode}
         isBiometryEnabled={isBiometryEnabled}

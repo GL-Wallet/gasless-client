@@ -11,7 +11,7 @@ type UseFetchReferralsProps = {
 type UseFetchReferralsReturn = {
   referralList: User[];
   hasMoreReferrals: boolean;
-  loadingReferrals: boolean;
+  isLoading: boolean;
   fetchReferralList: () => Promise<void>;
   fetchNextReferrals: () => Promise<void>;
 };
@@ -21,37 +21,42 @@ export const useFetchReferrals = ({ currentPage, pageSize }: UseFetchReferralsPr
 
   const [referralList, setReferralList] = useState<User[]>([]);
   const [hasMoreReferrals, setHasMoreReferrals] = useState<boolean>(false);
-  const [loadingReferrals, setLoadingReferrals] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const fetchReferralList = useCallback(async () => {
     if (!user) return;
 
-    setLoadingReferrals(true);
+    setIsLoading(true);
     try {
       const response = await api.getReferrals(user?.id, { page: currentPage.current, limit: pageSize.current });
       setReferralList(response);
+
+      setHasMoreReferrals(response.length === pageSize.current);
+      if (response.length === pageSize.current) currentPage.current++;
     } catch (error) {
       console.error('Failed to fetch referrals: ', error);
     } finally {
-      setLoadingReferrals(false);
+      setIsLoading(false);
     }
   }, [currentPage, pageSize, user]);
 
   const fetchNextReferrals = useCallback(async () => {
     if (!user) return;
 
-    setLoadingReferrals(true);
+    setIsLoading(true);
+    setHasMoreReferrals(false);
     try {
       const response = await api.getReferrals(user.id, { page: currentPage.current, limit: pageSize.current });
+
       setReferralList((prev) => [...prev, ...response]);
       setHasMoreReferrals(response.length === pageSize.current);
       if (response.length === pageSize.current) currentPage.current++;
     } catch (error) {
       console.error('Failed to fetch referrals: ', error);
     } finally {
-      setLoadingReferrals(false);
+      setIsLoading(false);
     }
   }, [currentPage, pageSize, user]);
 
-  return { referralList, hasMoreReferrals, loadingReferrals, fetchReferralList, fetchNextReferrals };
+  return { referralList, hasMoreReferrals, isLoading, fetchReferralList, fetchNextReferrals };
 };

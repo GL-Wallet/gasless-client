@@ -31,5 +31,9 @@ export const api = {
   getEnergyCountByAddress: async (address: string) =>
     (await axiosInstance.get(`/energy/count/${address}`)).data as number,
 
-  getBankAddress: async () => (await axiosInstance.get('/config/address')).data as string
+  getBankAddress: async () => (await axiosInstance.get('/config/address')).data as string,
+
+  subscribe: async (address: string) => (await axiosInstance.post('/bot/subscribe', { address })).data,
+  unsubscribe: async (address: string) => (await axiosInstance.post('/bot/unsubscribe', { address })).data,
+  unsubscribeAll: async () => (await axiosInstance.post('/bot/unsubscribe-all')).data
 };

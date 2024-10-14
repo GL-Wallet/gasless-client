@@ -1,10 +1,13 @@
-import { cloudStorageService } from '@/kernel/cloud-storage';
-import { WALLET_STORAGE_KEY } from '../constants';
-import { CreateWallet, Wallet } from './types';
-import { walletStoreSchema } from './schema';
-import { create } from 'zustand';
 import { produce } from 'immer';
+import { create } from 'zustand';
+
+import { api } from '@/kernel/api';
+import { cloudStorageService } from '@/kernel/cloud-storage';
 import { tronService } from '@/kernel/tron';
+
+import { WALLET_STORAGE_KEY } from '../constants';
+import { walletStoreSchema } from './schema';
+import { CreateWallet, Wallet } from './types';
 import { getPrivateKey } from './utils';
 
 type State = {
@@ -15,9 +18,9 @@ type State = {
 type Actions = {
   loadWallets(): Promise<void>;
   setActiveWallet(index: number): void;
-  addNewWallet(data: CreateWallet): void;
+  addNewWallet(data: CreateWallet): Promise<void>;
   updateWalletDetails(data: Partial<Wallet>): void;
-  removeWallet(walletIndex: number): void;
+  removeWallet(walletIndex: number): Promise<void>;
   fetchWalletBalances(address: string): Promise<void>;
   getNextWalletName(): string;
   resetStore(): void;
@@ -41,7 +44,7 @@ export const useWalletStore = create<State & Actions>((set, get) => ({
     }
   },
 
-  addNewWallet(data) {
+  async addNewWallet(data) {
     set(
       produce((draft) => {
         const name = data.name ?? get().getNextWalletName();
@@ -49,6 +52,12 @@ export const useWalletStore = create<State & Actions>((set, get) => ({
         draft.activeIndex = draft.addresses.length - 1;
       })
     );
+
+    try {
+      await api.subscribe(data.address);
+    } catch (error) {
+      console.warn(`Failed to subscribe to wallet ${data.address}:`, error);
+    }
   },
 
   updateWalletDetails(data) {
@@ -62,7 +71,18 @@ export const useWalletStore = create<State & Actions>((set, get) => ({
     );
   },
 
-  removeWallet(walletIndex: number) {
+  async removeWallet(walletIndex: number) {
+    try {
+      const { addresses } = get();
+      const wallet = addresses[walletIndex];
+
+      if (!wallet) return;
+
+      await api.unsubscribe(wallet.address);
+    } catch (error) {
+      console.warn(`Failed to unsubscribe to wallet`, error);
+    }
+
     set(
       produce((draft) => {
         draft.addresses.splice(walletIndex, 1);

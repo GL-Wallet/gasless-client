@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'; // Import React
 import { useTranslation } from 'react-i18next';
 
 import { getPrivateKey } from '@/entities/wallet';
@@ -14,6 +14,9 @@ import { Transaction as TransactionType } from '../model/types';
 import { formatDate, getTronscanLink, isSentByWallet } from '../model/utils';
 import { TransactionLink } from './TransactionLink';
 
+// Wrap TransactionLink with React.memo
+const MemoizedTransactionLink = React.memo(TransactionLink);
+
 export const Transaction = ({ txid, walletAddress }: { txid: string; walletAddress: string }) => {
   const [transaction, setTransaction] = useState<TransactionType | null>(null);
   const [status, setStatus] = useState<string | null>(null);
@@ -25,9 +28,9 @@ export const Transaction = ({ txid, walletAddress }: { txid: string; walletAddre
   useEffect(() => {
     const transactionFromStore = getTransaction(txid);
 
-    if (!transactionFromStore) return;
-
-    setTransaction(transactionFromStore);
+    if (transactionFromStore && transactionFromStore !== transaction) {
+      setTransaction(transactionFromStore);
+    }
   }, [getTransaction, transaction, txid]);
 
   useEffect(() => {
@@ -68,7 +71,7 @@ export const Transaction = ({ txid, walletAddress }: { txid: string; walletAddre
             <span className="text-muted-foreground">{t('transaction.receiver')}</span>
             <span>{truncateString(transaction.to, 10)}</span>
           </div>
-          <TransactionLink link={tronscanLink} />
+          <MemoizedTransactionLink link={tronscanLink} />
         </div>
       </div>
     )

@@ -21,7 +21,7 @@ export const BackupPrivateKey = () => {
         </div>
       </div>
 
-      <div className="space-y-2">
+      <div className="w-full space-y-2">
         <CopyToClipboardButton value={privateKey!} />
         <Button variant={'outline'} className="w-full" onClick={() => navigate(ROUTES.HOME)}>
           {t('setting.backup.button')}

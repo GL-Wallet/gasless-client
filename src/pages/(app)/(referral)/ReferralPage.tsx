@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
@@ -9,6 +9,9 @@ import {
 } from '@/features/referral';
 import { api } from '@/kernel/api';
 import { Badge } from '@/shared/ui/badge';
+
+// Wrap ReferralCard with React.memo
+const MemoizedReferralCard = memo(ReferralCard);
 
 export const ReferralPage = () => {
   const [reward, setReward] = useState<number | null>(null);
@@ -21,14 +24,21 @@ export const ReferralPage = () => {
   const currentPage = useRef<number>(1);
   const limit = useRef<number>(4);
 
-  const { referralList, hasMoreReferrals, loadingReferrals, fetchReferralList, fetchNextReferrals } = useFetchReferrals(
-    { currentPage, pageSize: limit }
-  );
+  const { referralList, hasMoreReferrals, isLoading, fetchReferralList, fetchNextReferrals } = useFetchReferrals({
+    currentPage,
+    pageSize: limit
+  });
 
   const wallet = useWallet();
   const user = useUser();
 
-  const handleClaimReward = async () => {
+  // Memoize fetchNextReferrals
+  const memoizedFetchNextReferrals = useCallback(() => {
+    fetchNextReferrals();
+  }, [fetchNextReferrals]);
+
+  // Memoize handleClaimReward
+  const handleClaimReward = useCallback(async () => {
     if (!user || !minRewardLimit || (reward && reward < minRewardLimit)) return;
 
     try {
@@ -42,7 +52,7 @@ export const ReferralPage = () => {
     } finally {
       setIsClaimLoading(false);
     }
-  };
+  }, [user, minRewardLimit, reward, wallet.address, fetchReferralList]);
 
   useEffect(() => {
     if (!user) return;
@@ -57,7 +67,8 @@ export const ReferralPage = () => {
 
   return (
     <div className="h-full flex flex-col space-y-12 pt-12">
-      <ReferralCard userId={user?.id} />
+      {/* Use MemoizedReferralCard instead of ReferralCard */}
+      <MemoizedReferralCard userId={user?.id} />
 
       <div className="space-y-4">
         <div className="flex justify-between items-center">
@@ -75,14 +86,15 @@ export const ReferralPage = () => {
           minRewardLimit={minRewardLimit}
           isZeroReward={isZeroReward}
           isLoading={isClaimLoading}
-          handleClaimReward={handleClaimReward}
+          handleClaimReward={handleClaimReward} // Now memoized
         />
 
         <ReferralList
+          className="h-48"
           referrals={referralList}
-          isLoading={loadingReferrals}
+          isLoading={isLoading}
           hasMore={hasMoreReferrals}
-          fetchReferrals={fetchNextReferrals}
+          fetchReferrals={memoizedFetchNextReferrals} // Now memoized
         />
       </div>
     </div>

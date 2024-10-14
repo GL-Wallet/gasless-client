@@ -1,4 +1,5 @@
 import { ArrowDownUp, ChevronRight } from 'lucide-react';
+import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { navigate } from 'wouter/use-browser-location';
 
@@ -9,9 +10,13 @@ import AnimatedShinyText from '@/shared/magicui/animated-shiny-text';
 import { PropsWithClassname } from '@/shared/types/react';
 import { Button } from '@/shared/ui/button';
 import { CopyToClipboard } from '@/shared/ui/copy-to-clipboard';
+import { ShinyBorders } from '@/shared/ui/shiny-borders';
 import { truncateString } from '@/shared/utils/truncateString';
 
 import { WalletReceiveDrawer } from './WalletReceiveDrawer';
+
+// Memoize the CopyToClipboard component
+const MemoizedCopyToClipboard = memo(CopyToClipboard);
 
 export const WalletActionsCard = ({ className }: PropsWithClassname) => {
   const wallet = useWallet();
@@ -20,17 +25,20 @@ export const WalletActionsCard = ({ className }: PropsWithClassname) => {
   return (
     <div
       className={cn(
-        'relative flex flex-col justify-between light-border bg-card/60 dark:bg-card/40 p-4 h-fit w-full rounded-lg dark:border border-neutral-700 shadow-md',
+        'relative flex flex-col justify-between light-border bg-card/40 dark:bg-card/50 p-4 h-fit w-full rounded-lg shadow-md',
         className
       )}
     >
+      <ShinyBorders />
+
       <div className="hidden dark:block absolute top-0 z-[-1] bottom-0 left-0 right-0 rounded-lg bg-secondary/60 bg-[radial-gradient(ellipse_80%_80%_at_50%_-5%,#505050,rgba(255,255,255,0))]" />
 
       <div className="flex items-center justify-between">
         <p className="dark:text-muted-foreground">{truncateString(wallet.address, 12)}</p>
 
         <div className="flex items-center space-x-2">
-          <CopyToClipboard value={wallet.address} />
+          {/* Use the memoized component */}
+          <MemoizedCopyToClipboard value={wallet.address} />
           <WalletReceiveDrawer address={wallet.address} />
         </div>
       </div>

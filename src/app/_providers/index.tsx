@@ -1,5 +1,4 @@
 import { PropsWithChildren } from 'react';
-import { IntlProvider } from 'react-intl';
 
 import { AuthProvider } from '@/kernel/auth';
 import { ThemeProvider } from '@/shared/ui/theme-provider';
@@ -9,9 +8,7 @@ export const Providers = (props: PropsWithChildren) => {
   return (
     <SDKProvider>
       <ThemeProvider>
-        <AuthProvider>
-          <IntlProvider locale="en">{props.children}</IntlProvider>
-        </AuthProvider>
+        <AuthProvider>{props.children}</AuthProvider>
       </ThemeProvider>
     </SDKProvider>
   );

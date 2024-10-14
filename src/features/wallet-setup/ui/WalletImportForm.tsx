@@ -1,4 +1,5 @@
 import { ScanLine } from 'lucide-react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { cn } from '@/shared/lib/utils';
@@ -10,8 +11,11 @@ import { Textarea } from '@/shared/ui/textarea';
 
 import { useWalletImportForm } from '../model/useWalletImportForm';
 
+// Wrap FormMessage with React.memo
+const MemoizedFormMessage = React.memo(FormMessage);
+
 export const WalletImportForm = (props: PropsWithClassname) => {
-  const { form, onSubmit, handleOpenQRScanner } = useWalletImportForm();
+  const { isLoading, form, onSubmit, handleOpenQRScanner } = useWalletImportForm();
 
   const { t } = useTranslation();
 
@@ -47,13 +51,19 @@ export const WalletImportForm = (props: PropsWithClassname) => {
                     </Button>
                   </div>
                 </FormControl>
-                <FormMessage />
+                <MemoizedFormMessage />
               </FormItem>
             )}
           />
         </div>
         <div className="flex flex-col space-y-5">
-          <ShinyButton type="submit" animate={false} text={t('wallet.setup.import.button.continue')} className="w-full" />
+          <ShinyButton
+            disabled={isLoading}
+            type="submit"
+            animate={false}
+            text={t('wallet.setup.import.button.continue')}
+            className="w-full"
+          />
         </div>
       </form>
     </Form>

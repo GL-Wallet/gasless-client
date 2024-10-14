@@ -16,8 +16,8 @@ export const AppSettingsPage = () => {
     removeWallet: store.removeWallet
   }));
 
-  const handleRemoveWallet = () => {
-    removeWallet(activeIndex);
+  const handleRemoveWallet = async () => {
+    await removeWallet(activeIndex);
     navigate(ROUTES.HOME);
   };
 

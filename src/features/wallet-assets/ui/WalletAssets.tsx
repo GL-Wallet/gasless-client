@@ -1,4 +1,5 @@
 import { Send } from 'lucide-react';
+import React, { useCallback } from 'react'; // Import useCallback
 import { useTranslation } from 'react-i18next';
 import { Link } from 'wouter';
 import { navigate } from 'wouter/use-browser-location';
@@ -11,6 +12,7 @@ import AnimatedShinyText from '@/shared/magicui/animated-shiny-text';
 import { PropsWithClassname } from '@/shared/types/react';
 import { Button } from '@/shared/ui/button';
 import { FormattedNumber } from '@/shared/ui/formatted-number';
+import { ShinyBorders } from '@/shared/ui/shiny-borders';
 import { urlJoin } from '@/shared/utils/urlJoin';
 
 const Icons: Record<AVAILABLE_TOKENS, string> = {
@@ -20,8 +22,16 @@ const Icons: Record<AVAILABLE_TOKENS, string> = {
 
 export const WalletAssets = ({ className }: PropsWithClassname) => {
   const wallet = useWallet();
-
   const { t } = useTranslation();
+
+  // Define the handleNavigate function using useCallback
+  const handleNavigate = useCallback(
+    (token: AVAILABLE_TOKENS) => (e: React.MouseEvent) => {
+      e.preventDefault();
+      navigate(urlJoin(ROUTES.WALLET_TRANSFER, token));
+    },
+    []
+  );
 
   return (
     <div className={cn('w-full space-y-3', className)}>
@@ -31,9 +41,10 @@ export const WalletAssets = ({ className }: PropsWithClassname) => {
         {Object.keys(AVAILABLE_TOKENS).map((token, idx) => (
           <Link
             href={[ROUTES.TRANSACTIONS, token].join('/')}
-            className="border bg-card/60 dark:bg-secondary/60 dark:border-neutral-700 relative flex h-full w-full items-center justify-between overflow-hidden rounded-md p-3 dark:shadow-md"
+            className="border bg-card/40 dark:bg-secondary/60 dark:border-neutral-700 relative flex h-full w-full items-center justify-between overflow-hidden rounded-md p-3 dark:shadow-md"
             key={idx}
           >
+            <ShinyBorders />
             <div className="flex items-center space-x-4">
               <img src={Icons[token as AVAILABLE_TOKENS]} className="size-8" />
               <div className="z-10 whitespace-pre-wrap text-center text-lg font-medium tracking-tighter text-black dark:text-white">
@@ -50,10 +61,7 @@ export const WalletAssets = ({ className }: PropsWithClassname) => {
               <Button
                 variant={'outline'}
                 size={'icon'}
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate(urlJoin(ROUTES.WALLET_TRANSFER, token));
-                }}
+                onClick={handleNavigate(token as AVAILABLE_TOKENS)}
                 className="border border-gray-300 dark:border-neutral-700"
               >
                 <Send className="size-4" />

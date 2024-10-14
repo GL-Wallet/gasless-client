@@ -9,6 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 type Props = {
   onSubmit(walletName: string): void;
+  isLoading?: boolean;
   defaultValues?: z.infer<typeof formSchema>;
 };
 
@@ -18,7 +19,7 @@ const formSchema = z.object({
   })
 });
 
-export const WalletCustomizationForm = ({ onSubmit, defaultValues = { name: '' } }: Props) => {
+export const WalletCustomizationForm = ({ isLoading, onSubmit, defaultValues = { name: '' } }: Props) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues
@@ -52,7 +53,7 @@ export const WalletCustomizationForm = ({ onSubmit, defaultValues = { name: '' }
           )}
         />
 
-        <ShinyButton animate={false} text={t('wallet.setup.customize.button')} className="w-full" type="submit" />
+        <ShinyButton disabled={isLoading} animate={false} text={t('wallet.setup.customize.button')} className="w-full" type="submit" />
       </form>
     </Form>
   );

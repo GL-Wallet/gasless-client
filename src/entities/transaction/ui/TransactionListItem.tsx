@@ -19,9 +19,12 @@ export const TransactionListItem = ({ transaction, walletAddress }: Props) => {
   const isSent = isSentByWallet(from, walletAddress);
 
   return (
-    <Alert className="dark:bg-card/80 cursor-pointer rounded-sm" onClick={() => navigate(urlJoin(ROUTES.TRANSACTION, txid))}>
+    <Alert
+      className="dark:bg-card/80 cursor-pointer rounded-sm"
+      onClick={() => navigate(urlJoin(ROUTES.TRANSACTION, txid))}
+    >
       <AlertTitle className="primary-gradient font-bold text-lg">
-      {isSent ? '-' : '+'}
+        {isSent ? '-' : '+'}
         <FormattedNumber number={amount} />
       </AlertTitle>
       <AlertDescription>

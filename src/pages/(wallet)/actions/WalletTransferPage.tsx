@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { WalletTransferForm } from '@/features/transfer';
 import { AVAILABLE_TOKENS } from '@/shared/enums/tokens';
 import AnimatedShinyText from '@/shared/magicui/animated-shiny-text';
 import { Select, SelectContent, SelectItem, SelectTrigger } from '@/shared/ui/select';
+
+// Wrap WalletTransferForm with React.memo
+const MemoizedWalletTransferForm = memo(WalletTransferForm);
 
 export const WalletTransferPage = ({ token }: { token?: string }) => {
   const [_token, setToken] = useState(token ?? AVAILABLE_TOKENS.USDT);
@@ -35,7 +38,8 @@ export const WalletTransferPage = ({ token }: { token?: string }) => {
         )}
       </div>
 
-      <WalletTransferForm token={_token} />
+      {/* Use MemoizedWalletTransferForm instead of WalletTransferForm */}
+      <MemoizedWalletTransferForm token={_token} />
     </div>
   );
 };

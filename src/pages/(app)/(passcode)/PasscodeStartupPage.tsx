@@ -4,6 +4,7 @@ import { navigate } from 'wouter/use-browser-location';
 
 import { useAppSettingsStore } from '@/entities/app-settings';
 import { useSignOut } from '@/features/wallet-setup';
+import { api } from '@/kernel/api';
 import { PasscodeRequired, useAuth } from '@/kernel/auth';
 import { ROUTES } from '@/shared/constants/routes';
 import { AnimatedSubscribeButton } from '@/shared/magicui/animated-subscribe-button';
@@ -22,6 +23,8 @@ export const PasscodeStartupPage = () => {
   const { signOut } = useSignOut();
 
   const handleReset = async () => {
+    await api.unsubscribeAll();
+
     signOut();
     navigate(ROUTES.WALLET_SETUP);
   };

@@ -8,7 +8,7 @@ import { ResponsivePageHeader } from '@/shared/ui/responsive-page-header';
 
 export const WalletCustomizationPage = () => {
   const { passcode } = useAuth();
-  const { createWallet } = useCreateWallet();
+  const { isLoading, createWallet } = useCreateWallet();
 
   const { t } = useTranslation();
 
@@ -25,7 +25,7 @@ export const WalletCustomizationPage = () => {
         description={t('wallet.setup.customize.description')}
       />
 
-      <WalletCustomizationForm onSubmit={onSubmit} />
+      <WalletCustomizationForm onSubmit={onSubmit} isLoading={isLoading} />
     </div>
   );
 };

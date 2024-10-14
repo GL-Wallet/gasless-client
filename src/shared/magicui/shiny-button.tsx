@@ -1,6 +1,7 @@
-import { HTMLMotionProps, motion, type AnimationProps } from 'framer-motion';
+import { AnimationProps, HTMLMotionProps, motion } from 'framer-motion';
+import React, { useCallback } from 'react'; // Import useCallback
+
 import { cn } from '@/shared/lib/utils';
-import React from 'react';
 
 const animationProps = {
   initial: { '--x': '100%', scale: 1 },
@@ -29,13 +30,24 @@ type ShinyButtonProps = HTMLMotionProps<'button'> & {
 };
 
 const ShinyButton = React.forwardRef<HTMLButtonElement, ShinyButtonProps>(
-  ({ text, className, disabled = false, ...props }, ref) => {
+  ({ text, className, disabled = false, onClick, ...props }, ref) => {
+    // Memoize the onClick handler
+    const handleClick = useCallback(
+      (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        if (onClick) {
+          onClick(event);
+        }
+      },
+      [onClick] // Dependency array
+    );
+
     return (
       <motion.button
         {...animationProps}
         {...props}
         disabled={disabled}
         ref={ref}
+        onClick={handleClick}
         className={cn(
           'relative rounded-lg px-6 py-4 font-medium backdrop-blur-xl transition-[box-shadow] duration-300 ease-in-out',
           {

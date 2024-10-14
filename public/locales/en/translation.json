@@ -166,6 +166,7 @@
       "claim": "Claim"
     },
     "list": {
+      "empty": "Empty",
       "item": {
         "totalReward": "Total reward"
       }

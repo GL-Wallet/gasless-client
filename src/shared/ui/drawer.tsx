@@ -3,12 +3,18 @@ import { Drawer as DrawerPrimitive } from 'vaul';
 
 import { cn } from '@/shared/lib/utils';
 
-const Drawer = ({
+// Wrap Drawer component with React.memo
+const Drawer = React.memo(({
   shouldScaleBackground = true,
   ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Root>) => (
-  <DrawerPrimitive.Root shouldScaleBackground={shouldScaleBackground} {...props} />
-);
+}: React.ComponentProps<typeof DrawerPrimitive.Root>) => {
+  // Memoize any functions or objects/arrays passed as props
+  const memoizedProps = React.useMemo(() => ({ shouldScaleBackground, ...props }), [shouldScaleBackground, props]);
+
+  return (
+    <DrawerPrimitive.Root {...memoizedProps} />
+  );
+});
 Drawer.displayName = 'Drawer';
 
 const DrawerTrigger = DrawerPrimitive.Trigger;

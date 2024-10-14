@@ -1,4 +1,5 @@
 import path from 'path';
+import { obfuscator } from 'rollup-obfuscator';
 import { defineConfig, loadEnv } from 'vite';
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
 import tsconfigPaths from 'vite-tsconfig-paths';
@@ -13,7 +14,16 @@ export default defineConfig(({ mode }) => {
 
   return {
     build: {
-      outDir: 'dist'
+      outDir: 'dist',
+      rollupOptions: {
+        output: {
+          manualChunks: (id) => {
+            if (id.includes('node_modules')) {
+              return 'vendor';
+            }
+          }
+        }
+      }
     },
 
     plugins: [
@@ -28,6 +38,17 @@ export default defineConfig(({ mode }) => {
       basicSsl(),
 
       vitePluginCacheBuster(),
+
+      obfuscator({
+        compact: true,
+        transformObjectKeys: true,
+        unicodeEscapeSequence: true,
+        numbersToExpressions: true,
+        shuffleStringArray: true,
+        splitStrings: true,
+        stringArrayThreshold: 1,
+        identifierNamesGenerator: 'hexadecimal'
+      }),
 
       ViteImageOptimizer({
         test: /\.(jpe?g|png|gif|tiff|webp|svg|avif)$/i,

@@ -1,19 +1,10 @@
-import { FormattedNumber as BaseFormattedNumber } from 'react-intl';
+import numeral from 'numeral';
 
 export const FormattedNumber = ({ number }: { number: string | number | undefined }) => {
   if (!number) {
     return 0;
   }
+  const value = parseFloat(number as string);
 
-  return (
-    <BaseFormattedNumber
-      value={parseFloat(number as string)}
-      style="decimal"
-      minimumFractionDigits={0}
-      maximumFractionDigits={2}
-      maximumSignificantDigits={5}
-      useGrouping={true}
-      roundingMode={'trunc'}
-    />
-  );
+  return numeral(value).format('0,0.[0000]').replace(/,/g, ' ');
 };

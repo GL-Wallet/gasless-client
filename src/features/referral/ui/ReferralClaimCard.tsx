@@ -34,7 +34,7 @@ export const ReferralClaimCard = ({ reward, minRewardLimit, isZeroReward, isLoad
         </div>
         <div className="relative flex items-center space-x-1 text-[11px] text-muted-foreground">
           <AlertCircle className="size-4" />
-          <span className="absolute left-4 bottom-0 text-nowrap">
+          <span className="absolute left-4 bottom-0" style={{ whiteSpace: 'nowrap' }}>
             {t('referral.claimCard.minPayLimit')}: {minRewardLimit}
           </span>
         </div>

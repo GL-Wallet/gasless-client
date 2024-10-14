@@ -1,31 +1,47 @@
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import { navigate } from 'wouter/use-browser-location';
+
 import { useWalletStore, Wallet } from '@/entities/wallet';
-import { encrypt } from '@/shared/lib/crypto-js';
 import { tronService } from '@/kernel/tron';
+import { ROUTES } from '@/shared/constants/routes';
+import { encrypt } from '@/shared/lib/crypto-js';
 
 export const useCreateWallet = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const addNewWallet = useWalletStore((store) => store.addNewWallet);
 
   const createWallet = async (data: Partial<Wallet> & { passcode: string }) => {
-    const wallet = tronService.createWallet();
+    try {
+      setIsLoading(true);
 
-    if (!wallet || !wallet.mnemonic?.phrase || !data.passcode) {
-      console.error('Failed to create wallet: Missing required data.');
-      return;
+      const wallet = tronService.createWallet();
+
+      if (!wallet || !wallet.mnemonic?.phrase || !data.passcode) {
+        console.error('Failed to create wallet: Missing required data.');
+        return;
+      }
+
+      const { passcode } = data;
+
+      const { address, publicKey, path, mnemonic } = wallet;
+      const encryptedMnemonic = encrypt(mnemonic.phrase, passcode);
+
+      await addNewWallet({
+        address,
+        publicKey,
+        path: path ?? undefined,
+        encryptedMnemonic,
+        ...data
+      });
+    } catch {
+      toast.error('Something went wrong.');
+      navigate(ROUTES.HOME);
+    } finally {
+      setIsLoading(false);
     }
-
-    const { passcode } = data;
-
-    const { address, publicKey, path, mnemonic } = wallet;
-    const encryptedMnemonic = encrypt(mnemonic.phrase, passcode);
-
-    addNewWallet({
-      address,
-      publicKey,
-      path: path ?? undefined,
-      encryptedMnemonic,
-      ...data
-    });
   };
 
-  return { createWallet };
+  return { isLoading, createWallet };
 };

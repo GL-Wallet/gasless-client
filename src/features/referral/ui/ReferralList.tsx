@@ -3,39 +3,47 @@ import { useTranslation } from 'react-i18next';
 import InfiniteScroll from 'react-infinite-scroller';
 
 import { User } from '@/entities/user';
+import { cn } from '@/shared/lib/utils';
+import { PropsWithClassname } from '@/shared/types/react';
 import { Badge } from '@/shared/ui/badge';
 import { FormattedNumber } from '@/shared/ui/formatted-number';
 import { Skeleton } from '@/shared/ui/skeleton';
 
-type Props = {
+type ReferralListProps = {
   referrals: User[];
   isLoading: boolean;
   hasMore: boolean;
-  fetchReferrals(): Promise<void>;
+  fetchReferrals(): void;
 };
 
-export const ReferralList = ({ referrals, isLoading, hasMore, fetchReferrals }: Props) => {
+export const ReferralList = ({
+  referrals,
+  isLoading,
+  hasMore,
+  fetchReferrals,
+  className
+}: PropsWithClassname<ReferralListProps>) => {
+  const { t } = useTranslation();
+
   if (referrals.length === 0 && !isLoading) {
     return (
       <div className="flex items-center justify-center w-full h-14 text-lg primary-gradient border dark:border-neutral-600 border-dashed rounded-lg">
-        Empty
+        {t('referral.list.empty')}
       </div>
     );
   }
 
   return (
-    <div style={{ height: '100%', overflowY: 'auto' }}>
+    <div className={cn('h-full', className)} style={{ overflowY: 'auto' }}>
       <InfiniteScroll
         className="space-y-2"
         pageStart={0}
-        loadMore={fetchReferrals}
         hasMore={hasMore}
+        loadMore={fetchReferrals}
         loader={<Loader key={0} />}
         useWindow={false}
       >
-        {referrals.map((user) => (
-          <ReferralItem key={user.id} user={user} />
-        ))}
+        {referrals?.map((user) => <ReferralItem key={user.id} user={user} />)}
         {isLoading && <Loader />}
       </InfiniteScroll>
     </div>
@@ -57,7 +65,7 @@ const ReferralItem: React.FC<ReferralItemProps> = ({ user }) => {
           <UserIcon className="size-5" />
         </div>
         <div className="flex flex-col">
-          <span>@{userName}</span>
+          {userName && <span>@{userName}</span>}
           <span className="text-[12px] text-muted-foreground">
             {t('referral.list.item.totalReward')}:{' '}
             <FormattedNumber number={user.isPartner ? totalPartnerReward : totalReward} />

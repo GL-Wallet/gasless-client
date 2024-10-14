@@ -106,7 +106,7 @@ export const MiniAppConfig = (props: PropsWithChildren) => {
     return () => {
       bb.off('click', handleClick);
     };
-  }, [bb, pathname]);
+  }, [bb, pathname, theme]);
 
   useEffect(() => {
     sb.on('click', () => {

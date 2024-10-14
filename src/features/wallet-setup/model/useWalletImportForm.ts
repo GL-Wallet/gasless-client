@@ -1,18 +1,20 @@
-import { useQRScanner } from '@telegram-apps/sdk-react';
-import { navigate } from 'wouter/use-browser-location';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { ROUTES } from '@/shared/constants/routes';
-import { useImportWallet } from './useImportWallet';
-import { importWalletFormSchema } from './schema';
-import { tronService } from '@/kernel/tron';
-import { useForm } from 'react-hook-form';
 import { useCallback } from 'react';
+import { useForm } from 'react-hook-form';
+import { navigate } from 'wouter/use-browser-location';
 import { z } from 'zod';
+
+import { tronService } from '@/kernel/tron';
+import { ROUTES } from '@/shared/constants/routes';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useQRScanner } from '@telegram-apps/sdk-react';
+
+import { importWalletFormSchema } from './schema';
+import { useImportWallet } from './useImportWallet';
 
 const SeedPhraseLength = 12;
 
 export const useWalletImportForm = () => {
-  const { importWallet } = useImportWallet();
+  const { isLoading, importWallet } = useImportWallet();
   const qrScanner = useQRScanner();
 
   const form = useForm<z.infer<typeof importWalletFormSchema>>({
@@ -67,6 +69,7 @@ export const useWalletImportForm = () => {
   }, [qrScanner, handleQRCodeScanned]);
 
   return {
+    isLoading,
     form,
     onSubmit: form.handleSubmit(handleSubmit),
     handleOpenQRScanner

@@ -29,10 +29,14 @@ export const BackupMnemonic = () => {
   }, [encryptedMnemonic, mnemonic, passcode]);
 
   return (
-    <div className="relative flex flex-col h-full w-full">
-      {mnemonic && <SeedPhrase seedPhrase={mnemonic?.split(' ')} />}
+    <div className="h-full w-full flex flex-col">
+      {mnemonic && (
+        <div className='grow flex'>
+          <SeedPhrase seedPhrase={mnemonic?.split(' ')} />
+        </div>
+      )}
 
-      <div className="space-y-2 absolute bottom-2">
+      <div className="w-full space-y-2">
         <CopyToClipboardButton value={mnemonic!} />
         <Button variant={'outline'} className="w-full" onClick={() => navigate(ROUTES.HOME)}>
           {t('setting.backup.button')}
