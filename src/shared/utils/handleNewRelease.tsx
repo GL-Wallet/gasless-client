@@ -23,7 +23,7 @@ export const handleNewRelease = async () => {
             icon: <RefreshCw className="size-4 text-green-400 animate-spin" />
           });
 
-          await new Promise((res) => setTimeout(res, 1500));
+          await new Promise((res) => setTimeout(res, 1000));
 
           console.log('New release detected. Reloading page');
 

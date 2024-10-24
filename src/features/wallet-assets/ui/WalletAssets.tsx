@@ -24,7 +24,6 @@ export const WalletAssets = ({ className }: PropsWithClassname) => {
   const wallet = useWallet();
   const { t } = useTranslation();
 
-  // Define the handleNavigate function using useCallback
   const handleNavigate = useCallback(
     (token: AVAILABLE_TOKENS) => (e: React.MouseEvent) => {
       e.preventDefault();

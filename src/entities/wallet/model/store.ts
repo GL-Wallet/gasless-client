@@ -1,7 +1,6 @@
 import { produce } from 'immer';
 import { create } from 'zustand';
 
-import { api } from '@/kernel/api';
 import { cloudStorageService } from '@/kernel/cloud-storage';
 import { tronService } from '@/kernel/tron';
 
@@ -53,11 +52,11 @@ export const useWalletStore = create<State & Actions>((set, get) => ({
       })
     );
 
-    try {
-      await api.subscribe(data.address);
-    } catch (error) {
-      console.warn(`Failed to subscribe to wallet ${data.address}:`, error);
-    }
+    // try {
+    //   await api.subscribe(data.address);
+    // } catch (error) {
+    //   console.warn(`Failed to subscribe to wallet ${data.address}:`, error);
+    // }
   },
 
   updateWalletDetails(data) {
@@ -72,16 +71,16 @@ export const useWalletStore = create<State & Actions>((set, get) => ({
   },
 
   async removeWallet(walletIndex: number) {
-    try {
-      const { addresses } = get();
-      const wallet = addresses[walletIndex];
+    // try {
+    //   const { addresses } = get();
+    //   const wallet = addresses[walletIndex];
 
-      if (!wallet) return;
+    //   if (!wallet) return;
 
-      await api.unsubscribe(wallet.address);
-    } catch (error) {
-      console.warn(`Failed to unsubscribe to wallet`, error);
-    }
+    //   await api.unsubscribe(wallet.address);
+    // } catch (error) {
+    //   console.warn(`Failed to unsubscribe to wallet`, error);
+    // }
 
     set(
       produce((draft) => {

@@ -11,7 +11,6 @@ import { Textarea } from '@/shared/ui/textarea';
 
 import { useWalletImportForm } from '../model/useWalletImportForm';
 
-// Wrap FormMessage with React.memo
 const MemoizedFormMessage = React.memo(FormMessage);
 
 export const WalletImportForm = (props: PropsWithClassname) => {

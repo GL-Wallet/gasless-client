@@ -15,7 +15,6 @@ import { truncateString } from '@/shared/utils/truncateString';
 
 import { WalletReceiveDrawer } from './WalletReceiveDrawer';
 
-// Memoize the CopyToClipboard component
 const MemoizedCopyToClipboard = memo(CopyToClipboard);
 
 export const WalletActionsCard = ({ className }: PropsWithClassname) => {

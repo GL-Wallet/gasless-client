@@ -1,9 +1,8 @@
 import './_styles/globals.css';
 
-import { Toaster } from 'react-hot-toast';
-
 import { MainLayout } from '@/pages/(layouts)/MainLayout';
 import ErrorBoundary from '@/shared/ui/error-boundary';
+import { Toaster } from '@/shared/ui/toaster';
 
 import { Configs } from './_configs';
 import { Loaders } from './_loaders';
@@ -22,7 +21,7 @@ export const App = () => {
           </Configs>
         </Providers>
       </ErrorBoundary>
-      <Toaster toastOptions={{ style: { background: '#000000', color: '#ffffff' } }} />
+      <Toaster />
     </MainLayout>
   );
 };

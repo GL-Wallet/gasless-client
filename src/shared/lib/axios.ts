@@ -1,10 +1,10 @@
-import { retrieveLaunchParams } from '@telegram-apps/sdk-react';
-import { urlJoin } from '../utils/urlJoin';
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.DEV
-  ? import.meta.env.VITE_API_BASE_URL_DEV
-  : import.meta.env.VITE_API_BASE_URL_PROD;
+import { retrieveLaunchParams } from '@telegram-apps/sdk-react';
+
+import { urlJoin } from '../utils/urlJoin';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const { initDataRaw } = retrieveLaunchParams();
 

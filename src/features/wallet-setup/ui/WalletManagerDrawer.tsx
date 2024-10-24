@@ -1,5 +1,5 @@
 import { Check, ChevronDown, Wallet2, X } from 'lucide-react';
-import React, { memo, useCallback, useMemo, useState } from 'react'; // Import useMemo and React
+import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useWalletStore, Wallet } from '@/entities/wallet';
@@ -13,7 +13,6 @@ import { Separator } from '@/shared/ui/separator';
 
 import { AddWalletDrawer } from './AddWalletDrawer';
 
-// Wrap AddWalletDrawer with React.memo
 const MemoizedAddWalletDrawer = memo(AddWalletDrawer);
 
 export const WalletManagerDrawer = () => {
