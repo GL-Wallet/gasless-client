@@ -13,6 +13,7 @@ type State = {
 type Actions = {
   loadUser(telegramUser: TelegramUser, referrerId?: string): Promise<void>;
   createUser(data: CreateUser): Promise<void>;
+  resetStore(): void;
 };
 
 const initialState: State = {
@@ -32,6 +33,7 @@ export const useUserStore = create<State & Actions>((set) => ({
       if (existingUser) {
         set({ user: existingUser });
       } else {
+        // TODO: refactoring
         const newUserData: CreateUser = {
           userName: telegramUser.username!,
           referrerId
@@ -44,6 +46,7 @@ export const useUserStore = create<State & Actions>((set) => ({
     }
   },
 
+  // TODO: refactoring
   async createUser(data) {
     set({ loading: true });
 
@@ -55,5 +58,9 @@ export const useUserStore = create<State & Actions>((set) => ({
     } finally {
       set({ loading: false });
     }
+  },
+
+  resetStore() {
+    set(initialState);
   }
 }));
