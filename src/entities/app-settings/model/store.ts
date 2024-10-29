@@ -13,7 +13,7 @@ type Actions = {
   loadSettings(): Promise<void>;
   updateSettings(data: Partial<State>): void;
   updateLanguage(language: string | undefined): void;
-  resetStore(): void;
+  resetStore(keep?: Partial<State>): void;
 };
 
 const initialState: State = {
@@ -50,8 +50,8 @@ export const useAppSettingsStore = create<State & Actions>((set, get) => ({
     });
   },
 
-  resetStore() {
-    set(initialState);
+  resetStore(keep) {
+    set({ ...initialState, ...keep });
   }
 }));
 

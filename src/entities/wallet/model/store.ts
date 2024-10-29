@@ -52,6 +52,8 @@ export const useWalletStore = create<State & Actions>((set, get) => ({
       })
     );
 
+    // temporary
+
     // try {
     //   await api.subscribe(data.address);
     // } catch (error) {
@@ -71,6 +73,8 @@ export const useWalletStore = create<State & Actions>((set, get) => ({
   },
 
   async removeWallet(walletIndex: number) {
+    // temporary
+
     // try {
     //   const { addresses } = get();
     //   const wallet = addresses[walletIndex];

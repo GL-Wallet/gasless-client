@@ -21,11 +21,11 @@ export const PasscodeStartupPage = () => {
 
   const { signOut } = useSignOut();
 
-  const handleReset = async () => {
+  const handleReset = () => {
     // temporary
     // await api.unsubscribeAll();
 
-    signOut();
+   signOut();
     navigate(ROUTES.WALLET_SETUP);
   };
 
