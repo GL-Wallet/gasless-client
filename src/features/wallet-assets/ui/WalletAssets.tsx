@@ -12,7 +12,7 @@ import AnimatedShinyText from '@/shared/magicui/animated-shiny-text';
 import { PropsWithClassname } from '@/shared/types/react';
 import { Button } from '@/shared/ui/button';
 import { FormattedNumber } from '@/shared/ui/formatted-number';
-import { ShinyBorders } from '@/shared/ui/shiny-borders';
+import { ShinyBorder } from '@/shared/ui/shiny-borders';
 import { urlJoin } from '@/shared/utils/urlJoin';
 
 const Icons: Record<AVAILABLE_TOKENS, string> = {
@@ -43,7 +43,7 @@ export const WalletAssets = ({ className }: PropsWithClassname) => {
             className="border bg-card/40 dark:bg-secondary/60 dark:border-neutral-700 relative flex h-full w-full items-center justify-between overflow-hidden rounded-md p-3 dark:shadow-md"
             key={idx}
           >
-            <ShinyBorders />
+            <ShinyBorder />
             <div className="flex items-center space-x-4">
               <img src={Icons[token as AVAILABLE_TOKENS]} className="size-8" />
               <div className="z-10 whitespace-pre-wrap text-center text-lg font-medium tracking-tighter text-black dark:text-white">
