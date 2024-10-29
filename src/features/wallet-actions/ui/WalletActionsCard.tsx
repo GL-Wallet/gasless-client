@@ -10,7 +10,7 @@ import AnimatedShinyText from '@/shared/magicui/animated-shiny-text';
 import { PropsWithClassname } from '@/shared/types/react';
 import { Button } from '@/shared/ui/button';
 import { CopyToClipboard } from '@/shared/ui/copy-to-clipboard';
-import { ShinyBorders } from '@/shared/ui/shiny-borders';
+import { ShinyBorder } from '@/shared/ui/shiny-borders';
 import { truncateString } from '@/shared/utils/truncateString';
 
 import { WalletReceiveDrawer } from './WalletReceiveDrawer';
@@ -24,13 +24,13 @@ export const WalletActionsCard = ({ className }: PropsWithClassname) => {
   return (
     <div
       className={cn(
-        'relative flex flex-col justify-between light-border bg-card/40 dark:bg-card/50 p-4 h-fit w-full rounded-lg shadow-md',
+        'relative flex flex-col justify-between border bg-card/40 dark:bg-card/50 p-4 h-fit w-full rounded-lg shadow-md',
         className
       )}
     >
-      <ShinyBorders />
+      <ShinyBorder />
 
-      <div className="hidden dark:block absolute top-0 z-[-1] bottom-0 left-0 right-0 rounded-lg bg-secondary/60 bg-[radial-gradient(ellipse_80%_80%_at_50%_-5%,#505050,rgba(255,255,255,0))]" />
+      <div className="hidden dark:block absolute top-0 z-[-1] bottom-0 left-0 right-0 rounded-md bg-secondary/60 bg-[radial-gradient(ellipse_80%_80%_at_50%_-5%,#505050,rgba(255,255,255,0))]" />
 
       <div className="flex items-center justify-between">
         <p className="dark:text-muted-foreground">{truncateString(wallet.address, 12)}</p>
