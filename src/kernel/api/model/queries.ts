@@ -1,4 +1,4 @@
-import { User } from '@/entities/user';
+import { UserData } from '@/entities/user';
 import { axiosInstance } from '@/shared/lib/axios';
 
 import {
@@ -23,7 +23,7 @@ export const api = {
   getReferrals: async (
     id: string,
     { page = 1, limit = 10 }: { page?: number; limit?: number } = { page: 1, limit: 10 }
-  ) => (await axiosInstance.get(`/referral/referrals/${id}`, { params: { page, limit } })).data as User[],
+  ) => (await axiosInstance.get(`/referral/referrals/${id}`, { params: { page, limit } })).data as UserData[],
   getReferralsCount: async (id: string) => (await axiosInstance.get(`/referral/referrals/count/${id}`)).data as number,
 
   getEnergyRequirementsByAddress: async (address: string) =>

@@ -84,8 +84,8 @@ const createAndSignTrxTransaction = async (address: WalletAddress, amount: Amoun
   return signedTx;
 };
 
-// Get Balances
-const getBalances = async (address: WalletAddress, privateKey: PrivateKey): Promise<Balances> => {
+// Fetch Balances
+const fetchBalances = async (address: WalletAddress, privateKey: PrivateKey): Promise<Balances> => {
   if (!address) {
     throw new Error('User wallet address is required.');
   }
@@ -158,31 +158,22 @@ const getTrc20TransactionFee = async (address: string, privateKey: string) => {
   const tronWeb = createTronWebInstance(privateKey);
 
   const parameter = [
-    {
-      type: 'address',
-      value: tronWeb.address.toHex(address)
-    },
-    {
-      type: 'uint256',
-      value: 0
-    }
+    { type: 'address', value: address },
+    { type: 'uint256', value: 10 }
   ];
 
-  const functionSelector = 'transfer(address,uint256)';
 
-  const energyEstimate = await tronWeb.transactionBuilder.estimateEnergy(
-    tronWeb.address.toHex(USDT_CONTRACT_ADDRESS),
-    functionSelector,
-    { feeLimit: 1_000_000, callValue: 0 },
-    parameter
+  console.log(TronWeb.address.toHex(USDT_CONTRACT_ADDRESS))
+
+  const transactionWrapper = await tronWeb.transactionBuilder.triggerConstantContract(
+    USDT_CONTRACT_ADDRESS,
+    'transfer(address,uint256)',
+    {},
+    parameter,
+    'THQbYWkPDChusW8gNSmrsHeM3Nd8NgrawJ'
   );
 
-  const chainParams = await tronWeb.trx.getChainParameters();
-  const energyFee = chainParams.filter((item) => item.key === 'getEnergyFee')[0].value;
-  const feeLimit = tronWeb.fromSun(energyEstimate.energy_required * energyFee);
-
-  // temporary 
-  return Number(feeLimit) * 2;
+  console.log(transactionWrapper);
 };
 
 // Get Transaction Status
@@ -222,7 +213,7 @@ export const tronService = {
   sendUsdt,
   createAndSignTrc20Transaction,
   createAndSignTrxTransaction,
-  getBalances,
+  fetchBalances,
   getBandwidthByAddress,
   getAccountEnergy,
   getTransactionInfo,

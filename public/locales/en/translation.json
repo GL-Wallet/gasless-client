@@ -98,7 +98,11 @@
       "invalidTrc20AddressFormat": "Invalid TRC20 address format.",
       "addressNotExist": "Invalid TRC20 address: Address doesn't exist on the TRON network.",
       "youMustEnterAtLeast": "You must enter at least {{value}} token to send.",
-      "amountMustBePositive": "Amount must be a positive number."
+      "amountMustBePositive": "Amount must be a positive number.",
+      "alert": {
+        "title": "Transaction Failed with Optimized Fee",
+        "description": "We couldn’t process your transaction with the optimized fee. Would you like to try again with the standard fee?"
+      }
     }
   },
   "exchange": {

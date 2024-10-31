@@ -27,6 +27,7 @@ import { useExchange } from '../model/useExchange';
 const formSchema = z.object({
   amount: z.coerce
     .number()
+    // temporary
     .min(10, { message: 'exchange.error.youMustEnterAtLeast' })
     .positive({ message: 'exchange.error.amountMustBePositive' })
 });
@@ -87,7 +88,7 @@ export function WalletExchangeForm() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="h-full flex flex-col justify-between w-full">
         <div className="space-y-2">
-          <div className="relative w-full flex flex-col bg-secondary/50 border dark:border-neutral-600 p-4 rounded-lg">
+          <div className="relative w-full flex flex-col dark:bg-secondary/40 border dark:border-neutral-600 p-4 rounded-lg">
             <TokenAmountInput
               form={form}
               label={t('exchange.send')}
@@ -95,14 +96,14 @@ export function WalletExchangeForm() {
               token={AVAILABLE_TOKENS.USDT}
             />
 
-            <div className="text-neutral-500 bg-secondary/40 border border-neutral-300 dark:text-neutral-400 dark:bg-neutral-800 dark:border-neutral-500 absolute bottom-[-30px] right-8 w-fit rounded-full p-2">
+            <div className="text-neutral-500 bg-background  border border-neutral-300 dark:text-neutral-400 dark:bg-neutral-800 dark:border-neutral-500 absolute bottom-[-30px] right-8 w-fit rounded-full p-2">
               <ArrowDown />
             </div>
           </div>
 
           <Receive balances={wallet.balances} token={AVAILABLE_TOKENS.TRX} receive={receive} />
 
-          <div className="relative w-full flex flex-col justify-between gap-2 bg-secondary/50 border p-4 rounded-lg">
+          <div className="relative w-full flex flex-col justify-between  gap-2 dark:bg-secondary/40 border p-4 rounded-lg">
             <div className="w-full flex items-center justify-between">
               <span>{t('exchange.fee.trx')}</span>
               <Check className="size-5 text-green-400" />
@@ -215,7 +216,7 @@ const Receive = ({ balances, token, receive }: { balances: Balances; token: AVAI
   const { t } = useTranslation();
 
   return (
-    <div className="w-full flex flex-col space-y-4 bg-secondary/50 border dark:border-neutral-600 p-4 pt-8 rounded-lg">
+    <div className="w-full flex flex-col space-y-4 border dark:bg-secondary/40 dark:border-neutral-600 p-4 pt-8 rounded-lg">
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <span className="text-muted-foreground">{t('exchange.receive')}</span>

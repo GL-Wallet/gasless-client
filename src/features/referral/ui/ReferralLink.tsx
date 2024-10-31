@@ -13,7 +13,7 @@ export const ReferralLink = ({ className }: PropsWithClassname) => {
   return (
     <div
       className={cn(
-        'relative h-16 w-full p-4 pr-2 bg-card/60 dark:bg-card/30 rounded-lg border border-neutral-300 dark:border-neutral-700 shadow-md flex items-center justify-between',
+        'relative h-16 w-full p-4 pr-2 bg-card/60 dark:bg-secondary/50 border rounded-lg dark:border-neutral-800 flex items-center justify-between',
         className
       )}
       onClick={() => navigate(ROUTES.REFERRAL)}

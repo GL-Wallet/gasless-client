@@ -8,17 +8,18 @@ import { CopyToClipboard } from '@/shared/ui/copy-to-clipboard';
 import { useUtils } from '@telegram-apps/sdk-react';
 
 type Props = {
-  link: string;
+  tronscanLink: string;
+  transactionLink: string;
 };
 
-export const TransactionLink = ({ link, className }: PropsWithClassname<Props>) => {
+export const TransactionLink = ({ tronscanLink, transactionLink, className }: PropsWithClassname<Props>) => {
   const utils = useUtils();
   const { t } = useTranslation();
 
   return (
     <div className={cn('w-full flex items-center justify-between space-x-6', className)}>
       <Button
-        onClick={() => utils.openLink(link)}
+        onClick={() => utils.openLink(tronscanLink)}
         variant={'outline'}
         className="w-full space-x-1 dark:border-neutral-700"
       >
@@ -27,8 +28,8 @@ export const TransactionLink = ({ link, className }: PropsWithClassname<Props>) 
       </Button>
 
       <div className="flex items-center space-x-5">
-        <Share className="size-5" onClick={() => utils.shareURL(link)} />
-        <CopyToClipboard size={5} value={link} />
+        <Share className="size-5" onClick={() => utils.shareURL(transactionLink)} />
+        <CopyToClipboard size={5} value={transactionLink} />
       </div>
     </div>
   );

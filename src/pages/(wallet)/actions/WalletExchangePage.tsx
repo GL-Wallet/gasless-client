@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { WalletExchangeForm } from '@/features/exchange';
+import { WalletExchangeForm } from '@/features/wallet-actions/exchange';
 import AnimatedShinyText from '@/shared/magicui/animated-shiny-text';
 
 export const WalletExchangePage = () => {

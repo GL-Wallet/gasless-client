@@ -11,7 +11,7 @@ import { truncateString } from '@/shared/utils/truncateString';
 import { TransactionDateOptions } from '../constants';
 import { useTransactionStore } from '../model/store';
 import { Transaction as TransactionType } from '../model/types';
-import { formatDate, getTronscanLink, isSentByWallet } from '../model/utils';
+import { formatDate, getTransactionLink, getTronscanLink, isSentByWallet } from '../model/utils';
 import { TransactionLink } from './TransactionLink';
 
 // Wrap TransactionLink with React.memo
@@ -42,6 +42,7 @@ export const Transaction = ({ txid, walletAddress }: { txid: string; walletAddre
   }, [txid]);
 
   const tronscanLink = getTronscanLink(transaction?.txid);
+  const transactionLink = getTransactionLink(transaction?.txid);
 
   return (
     transaction && (
@@ -71,7 +72,7 @@ export const Transaction = ({ txid, walletAddress }: { txid: string; walletAddre
             <span className="text-muted-foreground">{t('transaction.receiver')}</span>
             <span>{truncateString(transaction.to, 10)}</span>
           </div>
-          <MemoizedTransactionLink link={tronscanLink} />
+          <MemoizedTransactionLink tronscanLink={tronscanLink} transactionLink={transactionLink} />
         </div>
       </div>
     )

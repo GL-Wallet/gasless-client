@@ -10,7 +10,6 @@ import {
 import { api } from '@/kernel/api';
 import { Badge } from '@/shared/ui/badge';
 
-// Wrap ReferralCard with React.memo
 const MemoizedReferralCard = memo(ReferralCard);
 
 export const ReferralPage = () => {
@@ -32,12 +31,10 @@ export const ReferralPage = () => {
   const wallet = useWallet();
   const user = useUser();
 
-  // Memoize fetchNextReferrals
   const memoizedFetchNextReferrals = useCallback(() => {
     fetchNextReferrals();
   }, [fetchNextReferrals]);
 
-  // Memoize handleClaimReward
   const handleClaimReward = useCallback(async () => {
     if (!user || !minRewardLimit || (reward && reward < minRewardLimit)) return;
 
@@ -67,7 +64,6 @@ export const ReferralPage = () => {
 
   return (
     <div className="h-full flex flex-col space-y-12 pt-12">
-      {/* Use MemoizedReferralCard instead of ReferralCard */}
       <MemoizedReferralCard userId={user?.id} />
 
       <div className="space-y-4">
@@ -86,7 +82,7 @@ export const ReferralPage = () => {
           minRewardLimit={minRewardLimit}
           isZeroReward={isZeroReward}
           isLoading={isClaimLoading}
-          handleClaimReward={handleClaimReward} // Now memoized
+          handleClaimReward={handleClaimReward}
         />
 
         <ReferralList
@@ -94,7 +90,7 @@ export const ReferralPage = () => {
           referrals={referralList}
           isLoading={isLoading}
           hasMore={hasMoreReferrals}
-          fetchReferrals={memoizedFetchNextReferrals} // Now memoized
+          fetchReferrals={memoizedFetchNextReferrals}
         />
       </div>
     </div>

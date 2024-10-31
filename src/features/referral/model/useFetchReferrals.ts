@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { User, useUser } from '@/entities/user';
+import { UserData, useUser } from '@/entities/user';
 import { api } from '@/kernel/api';
 
 type UseFetchReferralsProps = {
@@ -9,7 +9,7 @@ type UseFetchReferralsProps = {
 };
 
 type UseFetchReferralsReturn = {
-  referralList: User[];
+  referralList: UserData[];
   hasMoreReferrals: boolean;
   isLoading: boolean;
   fetchReferralList: () => Promise<void>;
@@ -19,7 +19,7 @@ type UseFetchReferralsReturn = {
 export const useFetchReferrals = ({ currentPage, pageSize }: UseFetchReferralsProps): UseFetchReferralsReturn => {
   const user = useUser();
 
-  const [referralList, setReferralList] = useState<User[]>([]);
+  const [referralList, setReferralList] = useState<UserData[]>([]);
   const [hasMoreReferrals, setHasMoreReferrals] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -29,10 +29,12 @@ export const useFetchReferrals = ({ currentPage, pageSize }: UseFetchReferralsPr
     setIsLoading(true);
     try {
       const response = await api.getReferrals(user?.id, { page: currentPage.current, limit: pageSize.current });
-      setReferralList(response);
 
-      setHasMoreReferrals(response.length === pageSize.current);
-      if (response.length === pageSize.current) currentPage.current++;
+      if (!response) return;
+
+      setReferralList(response);
+      setHasMoreReferrals(response?.length === pageSize?.current);
+      if (response?.length === pageSize?.current) currentPage.current++;
     } catch (error) {
       console.error('Failed to fetch referrals: ', error);
     } finally {
@@ -48,6 +50,8 @@ export const useFetchReferrals = ({ currentPage, pageSize }: UseFetchReferralsPr
     try {
       const response = await api.getReferrals(user.id, { page: currentPage.current, limit: pageSize.current });
 
+      if (!response) return;
+      
       setReferralList((prev) => [...prev, ...response]);
       setHasMoreReferrals(response.length === pageSize.current);
       if (response.length === pageSize.current) currentPage.current++;

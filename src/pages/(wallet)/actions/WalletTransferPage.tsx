@@ -1,7 +1,7 @@
 import { memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { WalletTransferForm } from '@/features/transfer';
+import { WalletTransferForm } from '@/features/wallet-actions/transfer';
 import { AVAILABLE_TOKENS } from '@/shared/enums/tokens';
 import AnimatedShinyText from '@/shared/magicui/animated-shiny-text';
 import { Select, SelectContent, SelectItem, SelectTrigger } from '@/shared/ui/select';

@@ -1,4 +1,4 @@
-import { PropsWithChildren, useCallback, useMemo, useRef } from 'react'; // Add useMemo
+import { PropsWithChildren, useCallback, useMemo, useRef } from 'react';
 import { navigate } from 'wouter/use-browser-location';
 
 import { ROUTES } from '@/shared/constants/routes';
@@ -44,8 +44,8 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   );
 
   const handlePasscodeSuccess = useCallback(
-    async (enteredPasscode: string) => {
-      await saveHashedPasscodeToStorage(enteredPasscode);
+    (enteredPasscode: string) => {
+      saveHashedPasscodeToStorage(enteredPasscode);
 
       try {
         setAuthStore({
@@ -84,18 +84,17 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
   useEffectOnce(initializePasscode);
 
-  const value = useMemo(() => ({
-    authenticate,
-    resetAuth: resetStore,
-    passcode,
-    authenticated: isAuthenticated,
-    _passcodeHash: passcodeHash,
-    _onPasscodeSuccess: handlePasscodeSuccess
-  }), [authenticate, resetStore, passcode, isAuthenticated, passcodeHash, handlePasscodeSuccess]);
-
-  return (
-    <authContext.Provider value={value}>
-      {children}
-    </authContext.Provider>
+  const value = useMemo(
+    () => ({
+      authenticate,
+      resetAuth: resetStore,
+      passcode,
+      authenticated: isAuthenticated,
+      _passcodeHash: passcodeHash,
+      _onPasscodeSuccess: handlePasscodeSuccess
+    }),
+    [authenticate, resetStore, passcode, isAuthenticated, passcodeHash, handlePasscodeSuccess]
   );
+
+  return <authContext.Provider value={value}>{children}</authContext.Provider>;
 };

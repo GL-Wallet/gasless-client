@@ -1,8 +1,10 @@
 import { create } from 'zustand';
 
+import { cloudStorageService } from '@/kernel/cloud-storage';
 import { User as TelegramUser } from '@telegram-apps/sdk-react';
 
-import { createUser as createUserQuery, getUser as getUserQuery } from './queries';
+import { USER_STORAGE_KEY } from '../constants';
+import { createUser as createUserQuery, getUser } from './queries';
 import { CreateUser, User } from './types';
 
 type State = {
@@ -21,25 +23,28 @@ const initialState: State = {
   loading: false
 };
 
-export const useUserStore = create<State & Actions>((set) => ({
+export const useUserStore = create<State & Actions>((set, get) => ({
   ...initialState,
 
   async loadUser(telegramUser, referrerId) {
     set({ loading: true });
 
     try {
-      const existingUser = await getUserQuery();
+      const userId = await cloudStorageService.get<string>(USER_STORAGE_KEY);
+      if (userId) return set({ user: { id: userId } });
 
-      if (existingUser) {
-        set({ user: existingUser });
+      const userFromDb = await getUser();
+
+      if (userFromDb?.id) {
+        set({ user: { id: userFromDb?.id } });
       } else {
-        // TODO: refactoring
+        const { createUser } = get();
         const newUserData: CreateUser = {
           userName: telegramUser.username!,
           referrerId
         };
-        const newUser = await createUserQuery(newUserData);
-        set({ user: newUser });
+
+        await createUser(newUserData);
       }
     } finally {
       set({ loading: false });
@@ -52,7 +57,9 @@ export const useUserStore = create<State & Actions>((set) => ({
 
     try {
       const newUser = await createUserQuery(data);
-      set({ user: newUser });
+      if (!newUser?.id) return;
+
+      set({ user: { id: newUser.id } });
     } catch (error) {
       throw new Error('Error creating user');
     } finally {
@@ -64,3 +71,8 @@ export const useUserStore = create<State & Actions>((set) => ({
     set(initialState);
   }
 }));
+
+useUserStore.subscribe((state) => {
+  const { user } = state;
+  cloudStorageService.set(USER_STORAGE_KEY, user?.id);
+});

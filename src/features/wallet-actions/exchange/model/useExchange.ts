@@ -21,7 +21,7 @@ export const useExchange = () => {
       const signedTx = await tronService.createAndSignTrc20Transaction(address, amount, privateKey);
       const { txid } = await api.exchange(signedTx);
 
-      navigate(urlJoin(ROUTES.TRANSACTION_RESULT, txid));
+      navigate(urlJoin(ROUTES.TRANSACTION_RESULT, txid ?? 'no-txid'));
     } catch (e) {
       navigate(urlJoin(ROUTES.TRANSACTION_RESULT, 'no-txid'));
     }

@@ -51,14 +51,6 @@ export const useWalletStore = create<State & Actions>((set, get) => ({
         draft.activeIndex = draft.addresses.length - 1;
       })
     );
-
-    // temporary
-
-    // try {
-    //   await api.subscribe(data.address);
-    // } catch (error) {
-    //   console.warn(`Failed to subscribe to wallet ${data.address}:`, error);
-    // }
   },
 
   updateWalletDetails(data) {
@@ -73,19 +65,6 @@ export const useWalletStore = create<State & Actions>((set, get) => ({
   },
 
   async removeWallet(walletIndex: number) {
-    // temporary
-
-    // try {
-    //   const { addresses } = get();
-    //   const wallet = addresses[walletIndex];
-
-    //   if (!wallet) return;
-
-    //   await api.unsubscribe(wallet.address);
-    // } catch (error) {
-    //   console.warn(`Failed to unsubscribe to wallet`, error);
-    // }
-
     set(
       produce((draft) => {
         draft.addresses.splice(walletIndex, 1);
@@ -98,7 +77,7 @@ export const useWalletStore = create<State & Actions>((set, get) => ({
     const privateKey = getPrivateKey();
     if (!privateKey) return;
 
-    const balances = await tronService.getBalances(address, privateKey);
+    const balances = await tronService.fetchBalances(address, privateKey);
     if (!balances) return;
 
     set(
@@ -122,8 +101,8 @@ export const useWalletStore = create<State & Actions>((set, get) => ({
   }
 }));
 
-useWalletStore.subscribe((state) => {
-  cloudStorageService.set(WALLET_STORAGE_KEY, state);
+useWalletStore.subscribe(async (state) => {
+  await cloudStorageService.set(WALLET_STORAGE_KEY, state);
 });
 
 export const getWallet = () => {

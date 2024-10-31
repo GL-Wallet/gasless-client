@@ -1,6 +1,10 @@
 import { z } from 'zod';
 
 export const userSchema = z.object({
+  id: z.string()
+});
+
+export const userDataSchema = z.object({
   id: z.string(),
   userId: z.string(),
   userName: z.string(),
@@ -17,6 +21,6 @@ export const userSchema = z.object({
 });
 
 export const createUserSchema = z.object({
-  userName: z.string(),
+  userName: z.string().optional(),
   referrerId: z.string().optional()
 });

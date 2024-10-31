@@ -7,14 +7,15 @@ import { TronWeb } from 'tronweb';
 import { navigate } from 'wouter/use-browser-location';
 import { z } from 'zod';
 
-import { getPrivateKey, useWallet } from '@/entities/wallet';
+import { useWallet } from '@/entities/wallet';
 import { api, TransferInfoResponse } from '@/kernel/api';
 import { useAuth } from '@/kernel/auth';
-import { Balances } from '@/kernel/tron/model/types';
+import { Balances, TransactionID } from '@/kernel/tron/model/types';
 import { ROUTES } from '@/shared/constants/routes';
 import { AVAILABLE_TOKENS } from '@/shared/enums/tokens.ts';
 import ShinyButton from '@/shared/magicui/shiny-button';
 import { Alert, AlertDescription, AlertTitle } from '@/shared/ui/alert';
+import { useAlert } from '@/shared/ui/alert/Alert';
 import { Button } from '@/shared/ui/button';
 import {
 	Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle
@@ -62,16 +63,10 @@ type Props = {
 export const WalletTransferForm = ({ token }: Props) => {
   const { transferUsdt } = useTrc20Transfer();
   const { transferTrx } = useTrxTransfer();
-
-  const { t } = useTranslation();
-
-  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
-  const [formValues, setFormValues] = useState<FormFields>();
-  const [transferInfo, setTransferInfo] = useState<TransferInfoResponse | null>(null);
-  const [prevFee, setPrevFee] = useState<number | null>(null);
-
   const { authenticate } = useAuth();
+  const { t } = useTranslation();
   const wallet = useWallet();
+  const alert = useAlert();
 
   const form = useForm<FormFields>({
     resolver: zodResolver(formSchema),
@@ -81,9 +76,15 @@ export const WalletTransferForm = ({ token }: Props) => {
     }
   });
 
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
+  const [formValues, setFormValues] = useState<FormFields>();
+  const [transferInfo, setTransferInfo] = useState<TransferInfoResponse | null>(null);
+  const [prevFee, setPrevFee] = useState<number | null>(null);
+
   const receiver = form.getValues('address');
 
   const isUsdtToken = token === AVAILABLE_TOKENS.USDT;
+  const isTrxToken = token === AVAILABLE_TOKENS.TRX;
   const isOptimizationEnabled = transferInfo?.optimization === true || transferInfo?.optimization === undefined;
 
   const fetchTransferInfo = useCallback(async (address: string) => {
@@ -92,9 +93,6 @@ export const WalletTransferForm = ({ token }: Props) => {
   }, []);
 
   const fetchTransferPrevFee = useCallback(async (address: string) => {
-    const privateKey = getPrivateKey();
-    if (!privateKey) return;
-
     const energyCount = await api.getEnergyCountByAddress(address);
 
     setPrevFee(energyCount * TRANSACTION_FEE);
@@ -130,6 +128,11 @@ export const WalletTransferForm = ({ token }: Props) => {
         return false;
       }
 
+      if (isTrxToken && wallet.balances.TRX < transferInfo?.fee + BANDWIDTH_COST) {
+        toast.error(t('transfer.error.insufficientBalance', { token: AVAILABLE_TOKENS.TRX }));
+        return false;
+      }
+
       if (values.address === wallet.address) {
         form.setError('address', { type: 'manual', message: t('transfer.error.cannotUseOwnAddress') });
         toast.error(t('transfer.error.cannotUseOwnAddress'));
@@ -139,7 +142,7 @@ export const WalletTransferForm = ({ token }: Props) => {
       form.clearErrors('amount');
       return true;
     },
-    [form, isUsdtToken, t, token, transferInfo?.fee, wallet]
+    [form, isTrxToken, isUsdtToken, t, token, transferInfo?.fee, wallet]
   );
 
   const handleFormSubmit = useCallback(
@@ -152,20 +155,66 @@ export const WalletTransferForm = ({ token }: Props) => {
     [validateTransaction]
   );
 
-  const handleTransaction = useCallback(
-    async (address: string, amount: number, passcode: string): Promise<string | undefined> => {
+  const handleAuthenticateAndSign = async () => {
+    const passcode = await authenticate();
+    if (passcode) {
+      if (!formValues?.address || !formValues.amount) return;
+
+      try {
+        const transactionId = await handleProcessTransaction(formValues.address, formValues.amount, passcode);
+        navigateToTransactionResult(transactionId);
+        processTransferResult(transactionId, formValues.address, formValues.amount, passcode);
+      } catch (error) {
+        console.error(`Transaction processing error:`, error);
+        navigateToTransactionResult(undefined);
+      }
+    }
+  };
+
+  const processTransferResult = (
+    txid: TransactionID | undefined,
+    address: string,
+    amount: number,
+    passcode: string
+  ) => {
+    if (!txid && token === AVAILABLE_TOKENS.USDT) {
+      alert.setState({
+        title: t('transfer.error.alert.title'),
+        description: (
+          <span>
+            {t('transfer.error.alert.description')} <br />
+            <span className="text-md font-bold">
+              (~{prevFee} {AVAILABLE_TOKENS.TRX})
+            </span>
+            ?
+          </span>
+        )
+      });
+      alert.setIsOpen(true);
+      alert.setActions({
+        async handleContinue() {
+          const transactionId = await handleProcessTransaction(address, amount, passcode, false);
+          navigateToTransactionResult(transactionId);
+        }
+      });
+    }
+  };
+
+  const handleProcessTransaction = useCallback(
+    async (address: string, amount: number, passcode: string, optimization?: boolean): Promise<string | undefined> => {
       if (!transferInfo?.address || !transferInfo?.fee) return;
 
       switch (token) {
         case AVAILABLE_TOKENS.USDT:
           navigate(ROUTES.TRANSACTION_IN_PROGRESS);
+
           return await transferUsdt({
             recipientAddress: address,
             depositAddress: transferInfo.address,
             transferAmount: amount,
             transactionFee: transferInfo.fee,
             userPasscode: passcode,
-            optimization: transferInfo.optimization
+            optimization: optimization ?? transferInfo.optimization
           });
         case AVAILABLE_TOKENS.TRX:
           return await transferTrx({ recipientAddress: address, transferAmount: amount, userPasscode: passcode });
@@ -177,57 +226,19 @@ export const WalletTransferForm = ({ token }: Props) => {
     [token, transferInfo, transferTrx, transferUsdt]
   );
 
-  const processTransaction = useCallback(
-    async (passcode: string) => {
-      if (!formValues?.address || !formValues.amount) return;
-
-      try {
-        const transactionId = await handleTransaction(formValues.address, formValues.amount, passcode);
-        navigateToTransactionResult(transactionId);
-      } catch (error) {
-        console.error(`Transaction processing error:`, error);
-        navigateToTransactionResult(undefined);
-      }
-    },
-    [formValues, handleTransaction]
-  );
-
-  const navigateToTransactionResult = (transactionId?: string) => {
+  const navigateToTransactionResult = useCallback((transactionId?: string) => {
     const resultRoute = transactionId
       ? urlJoin(ROUTES.TRANSACTION_RESULT, transactionId)
       : urlJoin(ROUTES.TRANSACTION_RESULT, 'no-txid');
+
     navigate(resultRoute);
-  };
-
-  const handleAuthenticateAndSign = async () => {
-    const passcode = await authenticate();
-    if (passcode) {
-      await processTransaction(passcode);
-    }
-  };
-
-  const renderReducedFee = () => {
-    if (!transferInfo?.fee || !form.watch('address')) {
-      return <span>-</span>;
-    }
-
-    return (
-      <div className="flex items-center space-x-1">
-        <span className="text-muted-foreground line-through text-md">
-          <FormattedNumber number={prevFee!} />
-        </span>
-        <span className="flex text-md">
-          <FormattedNumber number={transferInfo?.fee + BANDWIDTH_COST} /> {AVAILABLE_TOKENS.TRX}
-        </span>
-      </div>
-    );
-  };
+  }, []);
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleFormSubmit)} className="h-full flex flex-col justify-between">
         <div className="space-y-2">
-          <div className="relative py-3 px-3 bg-secondary/40 border dark:border-neutral-700 rounded-lg space-y-4">
+          <div className="relative py-3 px-3 dark:bg-secondary/40 border dark:border-neutral-700 rounded-lg space-y-4">
             <AddressInput form={form} />
 
             <TokenAmountInput form={form} balances={wallet.balances} token={token} />
@@ -235,10 +246,10 @@ export const WalletTransferForm = ({ token }: Props) => {
 
           {isUsdtToken && <TrxPurchaseLink need={transferInfo?.fee} balances={wallet.balances} />}
 
-          <div className="flex flex-col gap-4 py-4 px-3 bg-secondary/40 border dark:border-neutral-700 rounded-lg">
+          <div className="flex flex-col gap-4 py-4 px-3 dark:bg-secondary/40 border dark:border-neutral-700 rounded-lg">
             <div className="flex items-center justify-between">
-              <span className="text-md">{t('transfer.available')}:</span>
-              <span className="text-md">
+              <span className="text-sm">{t('transfer.available')}:</span>
+              <span className="text-sm">
                 {wallet.balances[token as keyof typeof wallet.balances]} {token}
               </span>
             </div>
@@ -247,7 +258,9 @@ export const WalletTransferForm = ({ token }: Props) => {
               <div className="flex items-center justify-between">
                 <span>{t('transfer.fee')}:</span>
                 <div className="text-md space-x-1">
-                  <span>{renderReducedFee()}</span>
+                  <span>
+                    <ReducedFee form={form} transferInfo={transferInfo} prevFee={prevFee} />
+                  </span>
                 </div>
               </div>
             )}
@@ -284,6 +297,31 @@ export const WalletTransferForm = ({ token }: Props) => {
         />
       </form>
     </Form>
+  );
+};
+
+const ReducedFee = ({
+  transferInfo,
+  prevFee,
+  form
+}: {
+  transferInfo: TransferInfoResponse | null;
+  prevFee: number | null;
+  form: UseFormReturn<FormFields>;
+}) => {
+  if (!transferInfo?.fee || !form.watch('address')) {
+    return <span>-</span>;
+  }
+
+  return (
+    <div className="flex items-center space-x-1">
+      <span className="text-muted-foreground line-through text-md">
+        <FormattedNumber number={prevFee!} />
+      </span>
+      <span className="flex text-md">
+        <FormattedNumber number={transferInfo?.fee + BANDWIDTH_COST} /> {AVAILABLE_TOKENS.TRX}
+      </span>
+    </div>
   );
 };
 

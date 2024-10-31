@@ -9,16 +9,9 @@ import { WalletAssets } from '@/features/wallet-assets';
 import { WalletManagerDrawer } from '@/features/wallet-setup';
 import { ModeToggle } from '@/shared/ui/mode-toggle';
 
-// Wrap FinishSettingUp with React.memo
 const MemoizedFinishSettingUp = React.memo(FinishSettingUp);
-
-// Wrap WalletAssets with React.memo
 const MemoizedWalletAssets = memo(WalletAssets);
-
-// Wrap WalletManagerDrawer with React.memo
 const MemoizedWalletManagerDrawer = React.memo(WalletManagerDrawer);
-
-// Wrap ReferralLink with React.memo
 const MemoizedReferralLink = memo(ReferralLink);
 
 export const HomePage = () => {
@@ -31,7 +24,7 @@ export const HomePage = () => {
 
   useEffect(() => {
     handleUpdateBalance();
-  }, [handleUpdateBalance]);
+  }, [handleUpdateBalance, wallet.address]);
 
   return (
     <PullToRefresh onRefresh={handleUpdateBalance} pullingContent="">

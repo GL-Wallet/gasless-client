@@ -2,7 +2,7 @@ import { UserIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import InfiniteScroll from 'react-infinite-scroller';
 
-import { User } from '@/entities/user';
+import { UserData } from '@/entities/user';
 import { cn } from '@/shared/lib/utils';
 import { PropsWithClassname } from '@/shared/types/react';
 import { Badge } from '@/shared/ui/badge';
@@ -10,7 +10,7 @@ import { FormattedNumber } from '@/shared/ui/formatted-number';
 import { Skeleton } from '@/shared/ui/skeleton';
 
 type ReferralListProps = {
-  referrals: User[];
+  referrals: UserData[];
   isLoading: boolean;
   hasMore: boolean;
   fetchReferrals(): void;
@@ -51,7 +51,7 @@ export const ReferralList = ({
 };
 
 interface ReferralItemProps {
-  user: User;
+  user: UserData;
 }
 
 const ReferralItem: React.FC<ReferralItemProps> = ({ user }) => {
