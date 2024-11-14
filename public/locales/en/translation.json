@@ -140,7 +140,7 @@
     "sender": "Sender",
     "receiver": "Receiver",
     "button": "Back to Home",
-    "link": "Open in TronScan",
+    "link": "Share",
     "list": {
       "title": "Transactions",
       "empty": "Empty"
