@@ -1,21 +1,19 @@
+import { ROUTES } from '@/shared/constants/routes';
+import { importWalletFormSchema } from './schema';
+import { initQRScanner } from '@telegram-apps/sdk-react';
+import { navigate } from 'wouter/use-browser-location';
+import { tronService } from '@/kernel/tron';
 import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
-import { navigate } from 'wouter/use-browser-location';
-import { z } from 'zod';
-
-import { tronService } from '@/kernel/tron';
-import { ROUTES } from '@/shared/constants/routes';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useQRScanner } from '@telegram-apps/sdk-react';
-
-import { importWalletFormSchema } from './schema';
 import { useImportWallet } from './useImportWallet';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 const SeedPhraseLength = 12;
 
 export const useWalletImportForm = () => {
   const { isLoading, importWallet } = useImportWallet();
-  const qrScanner = useQRScanner();
+  const qrScanner = initQRScanner();
 
   const form = useForm<z.infer<typeof importWalletFormSchema>>({
     resolver: zodResolver(importWalletFormSchema),
@@ -58,7 +56,7 @@ export const useWalletImportForm = () => {
   const handleOpenQRScanner = useCallback(async () => {
     try {
       const valueFromQRCode = await qrScanner.open();
-      if (typeof valueFromQRCode === 'string') {
+      if (valueFromQRCode) {
         handleQRCodeScanned(valueFromQRCode);
       }
     } catch (error) {

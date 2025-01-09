@@ -1,8 +1,8 @@
-import { PropsWithClassname } from '@/shared/types/react';
-import { useQRScanner } from '@telegram-apps/sdk-react';
-import { ScanLine } from 'lucide-react';
 import { Button } from './button';
 import { MouseEvent } from 'react';
+import { PropsWithClassname } from '@/shared/types/react';
+import { ScanLine } from 'lucide-react';
+import { initQRScanner } from '@telegram-apps/sdk-react';
 
 type Props = {
   setValue(value: string): void;
@@ -10,7 +10,7 @@ type Props = {
 };
 
 export const QrScannerButton = ({ setValue, size = 5, className }: PropsWithClassname<Props>) => {
-  const qrScanner = useQRScanner();
+  const qrScanner = initQRScanner();
 
   const handleScan = async (e: MouseEvent) => {
     e.preventDefault();
