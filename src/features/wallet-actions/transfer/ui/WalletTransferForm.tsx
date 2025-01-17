@@ -1,43 +1,39 @@
-import { CircleAlert, LucideArrowDown, Wallet2 } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
-import { useForm, UseFormReturn } from 'react-hook-form';
-import toast from 'react-hot-toast';
-import { useTranslation } from 'react-i18next';
-import { TronWeb } from 'tronweb';
-import { navigate } from 'wouter/use-browser-location';
-import { z } from 'zod';
-
-import { useWallet } from '@/entities/wallet';
-import { api, TransferInfoResponse } from '@/kernel/api';
-import { useAuth } from '@/kernel/auth';
-import { Balances, TransactionID } from '@/kernel/tron/model/types';
-import { ROUTES } from '@/shared/constants/routes';
-import { AVAILABLE_TOKENS } from '@/shared/enums/tokens.ts';
-import ShinyButton from '@/shared/magicui/shiny-button';
 import { Alert, AlertDescription, AlertTitle } from '@/shared/ui/alert';
-import { useAlert } from '@/shared/ui/alert/Alert';
-import { Button } from '@/shared/ui/button';
-import {
-	Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle
-} from '@/shared/ui/drawer';
+import { Balances, TransactionID } from '@/kernel/tron/model/types';
+import { CircleAlert, LucideArrowDown, Wallet2 } from 'lucide-react';
+import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/shared/ui/drawer';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
+import { TransferInfoResponse, api } from '@/kernel/api';
+import { UseFormReturn, useForm } from 'react-hook-form';
+import { useCallback, useEffect, useState } from 'react';
+
+import { AVAILABLE_TOKENS } from '@/shared/enums/tokens.ts';
+import { Button } from '@/shared/ui/button';
 import { FormattedNumber } from '@/shared/ui/formatted-number';
 import { Input } from '@/shared/ui/input';
 import { QrScannerButton } from '@/shared/ui/qr-scanner-button';
+import { ROUTES } from '@/shared/constants/routes';
 import { Separator } from '@/shared/ui/separator';
+import ShinyButton from '@/shared/magicui/shiny-button';
+import { TronWeb } from 'tronweb';
+import { TrxPurchaseLink } from './TrxPurchaseLink';
+import { navigate } from 'wouter/use-browser-location';
+import toast from 'react-hot-toast';
 import { truncateString } from '@/shared/utils/truncateString';
 import { urlJoin } from '@/shared/utils/urlJoin';
-import { zodResolver } from '@hookform/resolvers/zod';
-
-import { useTrxTransfer } from '../model/useTrxTransfer';
+import { useAlert } from '@/shared/ui/alert/Alert';
+import { useAuth } from '@/kernel/auth';
+import { useTranslation } from 'react-i18next';
 import { useTrc20Transfer } from '../model/useUsdtTransfer';
-import { TrxPurchaseLink } from './TrxPurchaseLink';
+import { useTrxTransfer } from '../model/useTrxTransfer';
+import { useWallet } from '@/entities/wallet';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 // Validation schema for form fields
 const tronAddressRegex = /^T[1-9A-HJ-NP-Za-km-z]{33}$/;
 
 const BANDWIDTH_COST = 0.345;
-const TRANSACTION_FEE = 13.5;
 
 const formSchema = z.object({
   address: z
@@ -90,23 +86,18 @@ export const WalletTransferForm = ({ token }: Props) => {
   const fetchTransferInfo = useCallback(async (address: string) => {
     const res = await api.transferInfo(address);
     setTransferInfo(res);
-  }, []);
-
-  const fetchTransferPrevFee = useCallback(async (address: string) => {
-    const energyCount = await api.getEnergyCountByAddress(address);
-
-    setPrevFee(energyCount * TRANSACTION_FEE);
+    
+    setPrevFee((res.fee * 2) + 1)
   }, []);
 
   useEffect(() => {
     const { unsubscribe } = form.watch(({ address }) => {
       if (TronWeb.isAddress(address) && address !== receiver) {
         fetchTransferInfo(address!);
-        fetchTransferPrevFee(address!);
       }
     });
     return () => unsubscribe();
-  }, [fetchTransferInfo, fetchTransferPrevFee, form, receiver]);
+  }, [fetchTransferInfo, form, receiver]);
 
   const validateTransaction = useCallback(
     (values: FormFields): boolean => {
