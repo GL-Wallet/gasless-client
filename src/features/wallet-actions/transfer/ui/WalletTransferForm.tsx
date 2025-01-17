@@ -1,7 +1,14 @@
 import { Alert, AlertDescription, AlertTitle } from '@/shared/ui/alert';
 import { Balances, TransactionID } from '@/kernel/tron/model/types';
 import { CircleAlert, LucideArrowDown, Wallet2 } from 'lucide-react';
-import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/shared/ui/drawer';
+import {
+	Drawer,
+	DrawerClose,
+	DrawerContent,
+	DrawerFooter,
+	DrawerHeader,
+	DrawerTitle
+} from '@/shared/ui/drawer';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
 import { TransferInfoResponse, api } from '@/kernel/api';
 import { UseFormReturn, useForm } from 'react-hook-form';
@@ -34,6 +41,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 const tronAddressRegex = /^T[1-9A-HJ-NP-Za-km-z]{33}$/;
 
 const BANDWIDTH_COST = 0.345;
+const TRANSACTION_FEE = 13.5;
 
 const formSchema = z.object({
   address: z
@@ -86,18 +94,23 @@ export const WalletTransferForm = ({ token }: Props) => {
   const fetchTransferInfo = useCallback(async (address: string) => {
     const res = await api.transferInfo(address);
     setTransferInfo(res);
-    
-    setPrevFee((res.fee * 2) + 1)
+  }, []);
+
+  const fetchTransferPrevFee = useCallback(async (address: string) => {
+    const energyCount = await api.getEnergyCountByAddress(address);
+
+    setPrevFee(energyCount * TRANSACTION_FEE);
   }, []);
 
   useEffect(() => {
     const { unsubscribe } = form.watch(({ address }) => {
       if (TronWeb.isAddress(address) && address !== receiver) {
         fetchTransferInfo(address!);
+        fetchTransferPrevFee(address!);
       }
     });
     return () => unsubscribe();
-  }, [fetchTransferInfo, form, receiver]);
+  }, [fetchTransferInfo, fetchTransferPrevFee, form, receiver]);
 
   const validateTransaction = useCallback(
     (values: FormFields): boolean => {
