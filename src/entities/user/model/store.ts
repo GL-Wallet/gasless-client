@@ -30,9 +30,6 @@ export const useUserStore = create<State & Actions>((set, get) => ({
     set({ loading: true });
 
     try {
-      const userId = await cloudStorageService.get<string>(USER_STORAGE_KEY);
-      if (userId) return set({ user: { id: userId } });
-
       const userFromDb = await getUser();
 
       if (userFromDb?.id) {
@@ -46,6 +43,9 @@ export const useUserStore = create<State & Actions>((set, get) => ({
 
         await createUser(newUserData);
       }
+    } catch {
+      const userId = await cloudStorageService.get<string>(USER_STORAGE_KEY);
+      if (userId) return set({ user: { id: userId } });
     } finally {
       set({ loading: false });
     }

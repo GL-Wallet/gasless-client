@@ -2,17 +2,17 @@ import { Alert, AlertDescription, AlertTitle } from '@/shared/ui/alert';
 import { Balances, TransactionID } from '@/kernel/tron/model/types';
 import { CircleAlert, LucideArrowDown, Wallet2 } from 'lucide-react';
 import {
-	Drawer,
-	DrawerClose,
-	DrawerContent,
-	DrawerFooter,
-	DrawerHeader,
-	DrawerTitle
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle
 } from '@/shared/ui/drawer';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
 import { TransferInfoResponse, api } from '@/kernel/api';
 import { UseFormReturn, useForm } from 'react-hook-form';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { AVAILABLE_TOKENS } from '@/shared/enums/tokens.ts';
 import { Button } from '@/shared/ui/button';
@@ -36,6 +36,7 @@ import { useTrxTransfer } from '../model/useTrxTransfer';
 import { useWallet } from '@/entities/wallet';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQuery } from '@tanstack/react-query'
 
 // Validation schema for form fields
 const tronAddressRegex = /^T[1-9A-HJ-NP-Za-km-z]{33}$/;
@@ -82,44 +83,31 @@ export const WalletTransferForm = ({ token }: Props) => {
 
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [formValues, setFormValues] = useState<FormFields>();
-  const [transferInfo, setTransferInfo] = useState<TransferInfoResponse | null>(null);
-  const [prevFee, setPrevFee] = useState<number | null>(null);
+  const address = form.watch('address')
 
-  const receiver = form.getValues('address');
+  const { data: transferInfo } = useQuery({
+    queryKey: ['transferInfo', address],
+    queryFn: () => {
+      return api.transferInfo(address)
+    },
+    enabled: !!address && TronWeb.isAddress(address)
+  })
+
+  const { data: prevFee } = useQuery({
+    queryKey: ['previous-fee', address],
+    queryFn: async () => {
+      const energyCount = await api.getEnergyCountByAddress(address)
+      return energyCount * TRANSACTION_FEE
+    },
+    enabled: !!address && TronWeb.isAddress(address)
+  })
 
   const isUsdtToken = token === AVAILABLE_TOKENS.USDT;
-  const isTrxToken = token === AVAILABLE_TOKENS.TRX;
   const isOptimizationEnabled = transferInfo?.optimization === true || transferInfo?.optimization === undefined;
-
-  const fetchTransferInfo = useCallback(async (address: string) => {
-    const res = await api.transferInfo(address);
-    setTransferInfo(res);
-  }, []);
-
-  const fetchTransferPrevFee = useCallback(async (address: string) => {
-    const energyCount = await api.getEnergyCountByAddress(address);
-
-    setPrevFee(energyCount * TRANSACTION_FEE);
-  }, []);
-
-  useEffect(() => {
-    const { unsubscribe } = form.watch(({ address }) => {
-      if (TronWeb.isAddress(address) && address !== receiver) {
-        fetchTransferInfo(address!);
-        fetchTransferPrevFee(address!);
-      }
-    });
-    return () => unsubscribe();
-  }, [fetchTransferInfo, fetchTransferPrevFee, form, receiver]);
 
   const validateTransaction = useCallback(
     (values: FormFields): boolean => {
       const balance = wallet.balances[token as keyof typeof wallet.balances];
-
-      if (!transferInfo?.fee) {
-        toast.error(t('transfer.error.waitForFeeToLoad'));
-        return false;
-      }
 
       if (values.amount > balance) {
         form.setError('amount', { type: 'manual', message: t('transfer.error.insufficientBalance', { token }) });
@@ -127,13 +115,8 @@ export const WalletTransferForm = ({ token }: Props) => {
         return false;
       }
 
-      if (isUsdtToken && wallet.balances.TRX < transferInfo?.fee) {
-        toast.error(t('transfer.error.insufficientBalance', { token: AVAILABLE_TOKENS.TRX }));
-        return false;
-      }
-
-      if (isTrxToken && wallet.balances.TRX < transferInfo?.fee) {
-        toast.error(t('transfer.error.insufficientBalance', { token: AVAILABLE_TOKENS.TRX }));
+      if (transferInfo?.fee && balance < values.amount + transferInfo?.fee) {
+        toast.error(t('transfer.error.insufficientBalance', { token }));
         return false;
       }
 
@@ -146,7 +129,7 @@ export const WalletTransferForm = ({ token }: Props) => {
       form.clearErrors('amount');
       return true;
     },
-    [form, isTrxToken, isUsdtToken, t, token, transferInfo?.fee, wallet]
+    [form, t, token, transferInfo?.fee, wallet]
   );
 
   const handleFormSubmit = useCallback(
@@ -309,8 +292,8 @@ const ReducedFee = ({
   prevFee,
   form
 }: {
-  transferInfo: TransferInfoResponse | null;
-  prevFee: number | null;
+  transferInfo: TransferInfoResponse | undefined;
+  prevFee: number | undefined;
   form: UseFormReturn<FormFields>;
 }) => {
   if (!transferInfo?.fee || !form.watch('address')) {
