@@ -116,7 +116,7 @@ export const WalletTransferForm = ({ token }: Props) => {
         return false;
       }
 
-      if (transferInfo?.fee && feeBalance < transferInfo?.fee) {
+      if (isUsdtToken && transferInfo?.fee && feeBalance < transferInfo?.fee) {
         toast.error(t('transfer.error.insufficientBalance', { token: "TRX" }));
         return false;
       }
@@ -130,7 +130,7 @@ export const WalletTransferForm = ({ token }: Props) => {
       form.clearErrors('amount');
       return true;
     },
-    [form, t, token, transferInfo?.fee, wallet]
+    [form, isUsdtToken, t, token, transferInfo?.fee, wallet]
   );
 
   const handleFormSubmit = useCallback(
