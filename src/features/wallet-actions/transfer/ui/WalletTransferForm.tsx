@@ -107,16 +107,17 @@ export const WalletTransferForm = ({ token }: Props) => {
 
   const validateTransaction = useCallback(
     (values: FormFields): boolean => {
-      const balance = wallet.balances[token as keyof typeof wallet.balances];
+      const sourceBalance = wallet.balances[token as keyof typeof wallet.balances];
+      const feeBalance = wallet.balances.TRX;
 
-      if (values.amount > balance) {
+      if (values.amount > sourceBalance) {
         form.setError('amount', { type: 'manual', message: t('transfer.error.insufficientBalance', { token }) });
         toast.error(t('transfer.error.notEnoughBalance'));
         return false;
       }
 
-      if (transferInfo?.fee && balance < values.amount + transferInfo?.fee) {
-        toast.error(t('transfer.error.insufficientBalance', { token }));
+      if (transferInfo?.fee && feeBalance < transferInfo?.fee) {
+        toast.error(t('transfer.error.insufficientBalance', { token: "TRX" }));
         return false;
       }
 
