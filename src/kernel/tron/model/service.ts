@@ -163,8 +163,6 @@ const getTrc20TransactionFee = async (address: string, privateKey: string) => {
   ];
 
 
-  console.log(TronWeb.address.toHex(USDT_CONTRACT_ADDRESS))
-
   const transactionWrapper = await tronWeb.transactionBuilder.triggerConstantContract(
     USDT_CONTRACT_ADDRESS,
     'transfer(address,uint256)',

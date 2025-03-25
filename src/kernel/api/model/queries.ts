@@ -2,18 +2,21 @@ import { UserData } from '@/entities/user';
 import { axiosInstance } from '@/shared/lib/axios';
 
 import {
-	ClaimRewardResponse, ExchangeInfoResponse, ExchangeResponse, TransferInfoResponse,
-	TransferResponse
+  ClaimRewardResponse, ExchangeInfoResponse, ExchangeResponse, TransferInfoResponse,
+  TransferResponse
 } from './types';
 
 export const api = {
   transfer: async <T>(id: string, data: T) =>
     (await axiosInstance.post(`/transfer/${id}`, data)).data as TransferResponse,
+
   transferInfo: async (address: string) =>
     (await axiosInstance.get(`/transfer/info/${address}`)).data as TransferInfoResponse,
 
   exchange: async <T>(data: T) => (await axiosInstance.post('/exchange', data)).data as ExchangeResponse,
   exchangeInfo: async () => (await axiosInstance.get('/exchange/info')).data as ExchangeInfoResponse,
+
+  updateUserLocale: async (data: { locale: string }) => (await axiosInstance.patch('/user', data)).data,
 
   claimReward: async <T>(id: string, data: T) =>
     (await axiosInstance.post(`/referral/claim/${id}`, data)).data as ClaimRewardResponse,

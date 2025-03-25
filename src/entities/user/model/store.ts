@@ -6,6 +6,7 @@ import { User as TelegramUser } from '@telegram-apps/sdk-react';
 import { USER_STORAGE_KEY } from '../constants';
 import { createUser as createUserQuery, getUser } from './queries';
 import { CreateUser, User } from './types';
+import { api } from '@/kernel/api';
 
 type State = {
   user: User | null;
@@ -34,6 +35,14 @@ export const useUserStore = create<State & Actions>((set, get) => ({
 
       if (userFromDb?.id) {
         set({ user: { id: userFromDb?.id } });
+
+        if (telegramUser.languageCode) {
+          try {
+            api.updateUserLocale({ locale: telegramUser.languageCode })
+          } catch {
+            console.error('Error during update user locale')
+          }
+        }
       } else {
         const { createUser } = get();
         const newUserData: CreateUser = {

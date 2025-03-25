@@ -27,7 +27,6 @@ import { useExchange } from '../model/useExchange';
 const formSchema = z.object({
   amount: z.coerce
     .number()
-    // temporary
     .min(10, { message: 'exchange.error.youMustEnterAtLeast' })
     .positive({ message: 'exchange.error.amountMustBePositive' })
 });

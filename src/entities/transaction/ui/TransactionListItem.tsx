@@ -16,10 +16,12 @@ interface Props {
 
 export const TransactionListItem = ({ transaction, walletAddress }: Props) => {
   const { txid, amount, from, timestamp } = transaction;
+
   const isSent = isSentByWallet(from, walletAddress);
+  const isShowTransaction = amount > 0.0001
 
   return (
-    <Alert
+    isShowTransaction && <Alert
       className="dark:bg-card/80 cursor-pointer rounded-sm"
       onClick={() => navigate(urlJoin(ROUTES.TRANSACTION, txid))}
     >
