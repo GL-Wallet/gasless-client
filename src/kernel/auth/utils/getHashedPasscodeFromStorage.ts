@@ -1,18 +1,19 @@
-import { cloudStorageService } from '@/kernel/cloud-storage';
+import { cloudStorageService } from '@/kernel/cloud-storage'
 
-import { AUTH_STORAGE_KEY } from '../constants';
+import { AUTH_STORAGE_KEY } from '../constants'
 
-export const getHashedPasscodeFromStorage = async (): Promise<string | null> => {
+export async function getHashedPasscodeFromStorage(): Promise<string | null> {
   try {
-    const hashedPasscode = await cloudStorageService.get<string>(AUTH_STORAGE_KEY);
+    const hashedPasscode = await cloudStorageService.get<string>(AUTH_STORAGE_KEY)
 
     if (hashedPasscode) {
-      return hashedPasscode;
+      return hashedPasscode
     }
 
-    return null;
-  } catch (error) {
-    console.error('Error retrieving passcode:', error);
-    return null;
+    return null
   }
-};
+  catch (error) {
+    console.error('Error retrieving passcode:', error)
+    return null
+  }
+}

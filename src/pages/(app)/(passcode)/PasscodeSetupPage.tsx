@@ -1,11 +1,11 @@
-import { PasscodeSetup, useAuth } from '@/kernel/auth';
+import { PasscodeSetup, useAuth } from '@/kernel/auth'
 
-export const PasscodeSetupPage = () => {
-  const { _onPasscodeSuccess } = useAuth();
+export function PasscodeSetupPage() {
+  const { _onPasscodeSuccess } = useAuth()
 
   return (
-    <div className="h-full flex justify-center items-center">
+    <div className="flex-1 flex justify-center items-center">
       <PasscodeSetup onPasscodeSuccess={_onPasscodeSuccess} />
     </div>
-  );
-};
+  )
+}

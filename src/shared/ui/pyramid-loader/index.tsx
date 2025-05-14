@@ -1,5 +1,5 @@
-import React from 'react';
-import styles from './styles.module.css';
+import React from 'react'
+import styles from './styles.module.css'
 
 export const PyramidLoader: React.FC = () => {
   return (
@@ -12,5 +12,5 @@ export const PyramidLoader: React.FC = () => {
         <span className={styles.shadow}></span>
       </div>
     </div>
-  );
-};
+  )
+}

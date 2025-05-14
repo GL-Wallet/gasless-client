@@ -1,7 +1,8 @@
-import { PropsWithChildren, useEffect } from 'react';
+import type { PropsWithChildren } from 'react'
+import { useEffect } from 'react'
 
-export const Updates = ({ children }: PropsWithChildren) => {
-  useEffect(() => {}, []);
+export function Updates({ children }: PropsWithChildren) {
+  useEffect(() => {}, [])
 
-  return children;
-};
+  return children
+}

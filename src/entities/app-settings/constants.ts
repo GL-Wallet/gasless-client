@@ -1,1 +1,1 @@
-export const USER_STORAGE_KEY = 'settings-storage';
+export const USER_STORAGE_KEY = 'settings-storage'

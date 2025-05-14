@@ -1,1 +1,1 @@
-export { cloudStorageService } from './service';
+export { cloudStorageService } from './service'

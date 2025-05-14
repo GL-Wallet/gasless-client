@@ -1,55 +1,57 @@
-import React, { useEffect, useState } from 'react'; // Import React
-import { useTranslation } from 'react-i18next';
+import type { Transaction as TransactionType } from '../model/types'
+import { getPrivateKey } from '@/entities/wallet'
 
-import { getPrivateKey } from '@/entities/wallet';
-import { tronService } from '@/kernel/tron';
-import { FormattedNumber } from '@/shared/ui/formatted-number';
-import { Skeleton } from '@/shared/ui/skeleton';
-import { capitalize } from '@/shared/utils/capitalize';
-import { truncateString } from '@/shared/utils/truncateString';
+import { tronService } from '@/kernel/tron'
+import { FormattedNumber } from '@/shared/ui/formatted-number'
+import { Skeleton } from '@/shared/ui/skeleton'
+import { capitalize } from '@/shared/utils/capitalize'
+import { truncateString } from '@/shared/utils/truncateString'
+import React, { useEffect, useState } from 'react' // Import React
 
-import { TransactionDateOptions } from '../constants';
-import { useTransactionStore } from '../model/store';
-import { Transaction as TransactionType } from '../model/types';
-import { formatDate, getTransactionLink, getTronscanLink, isSentByWallet } from '../model/utils';
-import { TransactionLink } from './TransactionLink';
+import { useTranslation } from 'react-i18next'
+import { TransactionDateOptions } from '../constants'
+import { useTransactionStore } from '../model/store'
+import { formatDate, getTransactionLink, getTronscanLink, isSentByWallet } from '../model/utils'
+import { TransactionLink } from './TransactionLink'
 
 // Wrap TransactionLink with React.memo
-const MemoizedTransactionLink = React.memo(TransactionLink);
+const MemoizedTransactionLink = React.memo(TransactionLink)
 
-export const Transaction = ({ txid, walletAddress }: { txid: string; walletAddress: string }) => {
-  const [transaction, setTransaction] = useState<TransactionType | null>(null);
-  const [status, setStatus] = useState<string | null>(null);
+export function Transaction({ txid, walletAddress }: { txid: string, walletAddress: string }) {
+  const [transaction, setTransaction] = useState<TransactionType | null>(null)
+  const [status, setStatus] = useState<string | null>(null)
 
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
-  const getTransaction = useTransactionStore((store) => store.getTransaction);
+  const getTransaction = useTransactionStore(store => store.getTransaction)
 
   useEffect(() => {
-    const transactionFromStore = getTransaction(txid);
+    const transactionFromStore = getTransaction(txid)
 
     if (transactionFromStore && transactionFromStore !== transaction) {
-      setTransaction(transactionFromStore);
+      setTransaction(transactionFromStore)
     }
-  }, [getTransaction, transaction, txid]);
+  }, [getTransaction, transaction, txid])
 
   useEffect(() => {
-    const privateKey = getPrivateKey();
+    const privateKey = getPrivateKey()
 
-    if (!privateKey) return;
+    if (!privateKey)
+      return
 
-    tronService.getTransactionStatus(txid, privateKey).then((status) => setStatus(status));
-  }, [txid]);
+    tronService.getTransactionStatus(txid, privateKey).then(status => setStatus(status))
+  }, [txid])
 
-  const tronscanLink = getTronscanLink(transaction?.txid);
-  const transactionLink = getTransactionLink(transaction?.txid);
+  const tronscanLink = getTronscanLink(transaction?.txid)
+  const transactionLink = getTransactionLink(transaction?.txid)
 
   return (
     transaction && (
       <div className="flex flex-col items-center pt-6">
         <h2 className="primary-gradient text-center whitespace-pre-wrap text-3xl font-medium tracking-tighter">
           {isSentByWallet(transaction.from, walletAddress) ? '-' : '+'}
-          <FormattedNumber number={transaction.amount} />{' '}
+          <FormattedNumber number={transaction.amount} />
+          {' '}
           <span className="text-2xl text-muted-foreground">{transaction.token}</span>
         </h2>
 
@@ -76,5 +78,5 @@ export const Transaction = ({ txid, walletAddress }: { txid: string; walletAddre
         </div>
       </div>
     )
-  );
-};
+  )
+}

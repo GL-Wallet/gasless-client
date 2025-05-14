@@ -1,17 +1,18 @@
-import { ComponentType, useLayoutEffect } from 'react';
-import { AuthParams } from '../model/types';
-import { useAuth } from '../model/useAuth';
+import type { ComponentType } from 'react'
+import type { AuthParams } from '../model/types'
+import { useLayoutEffect } from 'react'
+import { useAuth } from '../model/useAuth'
 
-export const withAuth = <P extends object>(Component: ComponentType<P>, authParams?: AuthParams) => {
+export function withAuth<P extends object>(Component: ComponentType<P>, authParams?: AuthParams) {
   return (props: P) => {
-    const { authenticated, authenticate } = useAuth();
+    const { authenticated, authenticate } = useAuth()
 
     useLayoutEffect(() => {
       if (!authenticated) {
-        authenticate(authParams);
+        authenticate(authParams)
       }
-    }, [authenticated, authenticate]);
+    }, [authenticated, authenticate])
 
-    return <Component {...props} />;
-  };
-};
+    return <Component {...props} />
+  }
+}

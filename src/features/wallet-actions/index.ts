@@ -1,1 +1,1 @@
-export { WalletActionsCard } from './ui/WalletActionsCard';
+export { WalletActionsCard } from './ui/WalletActionsCard'

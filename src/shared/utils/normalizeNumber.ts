@@ -1,3 +1,3 @@
 export function normalizeNumber(value: number): number {
-  return isNaN(value) ? 0 : value;
+  return Number.isNaN(value) ? 0 : value
 }

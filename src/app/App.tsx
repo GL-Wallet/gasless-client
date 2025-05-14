@@ -1,24 +1,24 @@
-import './_styles/globals.css';
+import { MainLayout } from '@/pages/(layouts)/MainLayout'
 
-import TelegramAnalytics from '@telegram-apps/analytics';
-import { MainLayout } from '@/pages/(layouts)/MainLayout';
-import ErrorBoundary from '@/shared/ui/error-boundary';
-import { Toaster } from '@/shared/ui/toaster';
+import { Toaster } from '@/shared/ui/toaster'
+import * as Sentry from '@sentry/react'
+import TelegramAnalytics from '@telegram-apps/analytics'
+import { Configs } from './_configs'
 
-import { Configs } from './_configs';
-import { Loaders } from './_loaders';
-import { Providers } from './_providers';
-import { Routes } from './_routes';
+import { Loaders } from './_loaders'
+import { Providers } from './_providers'
+import { Routes } from './_routes'
+import './_styles/globals.css'
 
 TelegramAnalytics.init({
   token: import.meta.env.VITE_TELEGRAM_ANALYTICS_TOKEN,
-  appName: 'gasless_wallet'
-});
+  appName: 'gasless_wallet',
+})
 
-export const App = () => {
+export function App() {
   return (
     <MainLayout>
-      <ErrorBoundary>
+      <Sentry.ErrorBoundary fallback={<p>An error has occurred</p>}>
         <Providers>
           <Configs>
             <Loaders>
@@ -26,8 +26,8 @@ export const App = () => {
             </Loaders>
           </Configs>
         </Providers>
-      </ErrorBoundary>
+      </Sentry.ErrorBoundary>
       <Toaster />
     </MainLayout>
-  );
-};
+  )
+}

@@ -1,43 +1,46 @@
-import { RefreshCw } from 'lucide-react';
-import toast from 'react-hot-toast';
+/* eslint-disable ts/ban-ts-comment */
+/* eslint-disable no-console */
+import { RefreshCw } from 'lucide-react'
+import toast from 'react-hot-toast'
 
-import i18n from '../lib/i18n';
+import i18n from '../lib/i18n'
 
-const FILENAME = 'RELEASE';
+const FILENAME = 'RELEASE'
 
-export const handleNewRelease = async () => {
-  const resourceURL = `/${FILENAME}?v=${new Date().getTime().toString()}`;
+export async function handleNewRelease() {
+  const resourceURL = `/${FILENAME}?v=${new Date().getTime().toString()}`
 
   try {
     if (typeof window !== 'undefined') {
-      const res = await fetch(resourceURL);
-      const releaseId = await res.text();
+      const res = await fetch(resourceURL)
+      const releaseId = await res.text()
 
-      const releaseIdFromStorage = localStorage.getItem(FILENAME);
+      const releaseIdFromStorage = localStorage.getItem(FILENAME)
 
       if (releaseId !== releaseIdFromStorage) {
-        localStorage.setItem(FILENAME, releaseId);
+        localStorage.setItem(FILENAME, releaseId)
         if (releaseId) {
           toast(i18n.t('shared.toast.newVersion'), {
             className: 'text-sm border',
-            icon: <RefreshCw className="size-4 text-green-400 animate-spin" />
-          });
+            icon: <RefreshCw className="size-4 text-green-400 animate-spin" />,
+          })
 
-          await new Promise((res) => setTimeout(res, 1000));
+          await new Promise(res => setTimeout(res, 1000))
 
-          console.log('New release detected. Reloading page');
+          console.log('New release detected. Reloading page')
 
           window.location.reload(
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            true // https://developer.mozilla.org/en-US/docs/Web/API/Location/reload#forceget
-          );
+            // @ts-expect-error
+            true, // https://developer.mozilla.org/en-US/docs/Web/API/Location/reload#forceget
+          )
         }
-      } else {
-        console.log('No new release detected.');
+      }
+      else {
+        console.log('No new release detected.')
       }
     }
-  } catch {
-    console.error('error', 'An error occurred while verifying release id');
   }
-};
+  catch {
+    console.error('error', 'An error occurred while verifying release id')
+  }
+}

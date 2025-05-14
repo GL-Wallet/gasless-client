@@ -1,25 +1,26 @@
-import { useTranslation } from 'react-i18next';
-import { navigate } from 'wouter/use-browser-location';
+import { useCreateWallet, WalletCustomizationForm } from '@/features/wallet-setup'
+import { useAuth } from '@/kernel/auth'
 
-import { useCreateWallet, WalletCustomizationForm } from '@/features/wallet-setup';
-import { useAuth } from '@/kernel/auth';
-import { ROUTES } from '@/shared/constants/routes';
-import { ResponsivePageHeader } from '@/shared/ui/responsive-page-header';
+import { ROUTES } from '@/shared/constants/routes'
+import { ResponsivePageHeader } from '@/shared/ui/responsive-page-header'
+import { useTranslation } from 'react-i18next'
+import { navigate } from 'wouter/use-browser-location'
 
-export const WalletCustomizationPage = () => {
-  const { passcode } = useAuth();
-  const { isLoading, createWallet } = useCreateWallet();
+export function WalletCustomizationPage() {
+  const { passcode } = useAuth()
+  const { isLoading, createWallet } = useCreateWallet()
 
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   const onSubmit = (walletName: string) => {
-    if (!passcode) return;
+    if (!passcode)
+      return
 
-    createWallet({ passcode, name: walletName }).then(() => navigate(ROUTES.SEED_PHRASE));
-  };
+    createWallet({ passcode, name: walletName }).then(() => navigate(ROUTES.SEED_PHRASE))
+  }
 
   return (
-    <div className="h-full flex flex-col items-center text-center pt-8 space-y-8">
+    <div className="flex-1 flex flex-col items-center text-center pt-8 space-y-8">
       <ResponsivePageHeader
         title={t('wallet.setup.customize.title')}
         description={t('wallet.setup.customize.description')}
@@ -27,5 +28,5 @@ export const WalletCustomizationPage = () => {
 
       <WalletCustomizationForm onSubmit={onSubmit} isLoading={isLoading} />
     </div>
-  );
-};
+  )
+}

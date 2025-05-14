@@ -1,22 +1,22 @@
-import { ScanLine } from 'lucide-react';
-import React from 'react';
-import { useTranslation } from 'react-i18next';
+import type { PropsWithClassname } from '@/shared/types/react'
+import { cn } from '@/shared/lib/utils'
+import ShinyButton from '@/shared/magicui/shiny-button'
 
-import { cn } from '@/shared/lib/utils';
-import ShinyButton from '@/shared/magicui/shiny-button';
-import { PropsWithClassname } from '@/shared/types/react';
-import { Button } from '@/shared/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
-import { Textarea } from '@/shared/ui/textarea';
+import { Button } from '@/shared/ui/button'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form'
+import { Textarea } from '@/shared/ui/textarea'
+import { ScanLine } from 'lucide-react'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
 
-import { useWalletImportForm } from '../model/useWalletImportForm';
+import { useWalletImportForm } from '../model/useWalletImportForm'
 
-const MemoizedFormMessage = React.memo(FormMessage);
+const MemoizedFormMessage = React.memo(FormMessage)
 
-export const WalletImportForm = (props: PropsWithClassname) => {
-  const { isLoading, form, onSubmit, handleOpenQRScanner } = useWalletImportForm();
+export function WalletImportForm(props: PropsWithClassname) {
+  const { isLoading, form, onSubmit, handleOpenQRScanner } = useWalletImportForm()
 
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   return (
     <Form {...form}>
@@ -39,12 +39,12 @@ export const WalletImportForm = (props: PropsWithClassname) => {
 
                     <Button
                       onClick={(e) => {
-                        e.preventDefault();
-                        handleOpenQRScanner();
+                        e.preventDefault()
+                        handleOpenQRScanner()
                       }}
                       className="absolute top-1 right-1"
-                      variant={'ghost'}
-                      size={'icon'}
+                      variant="ghost"
+                      size="icon"
                     >
                       <ScanLine />
                     </Button>
@@ -66,5 +66,5 @@ export const WalletImportForm = (props: PropsWithClassname) => {
         </div>
       </form>
     </Form>
-  );
-};
+  )
+}

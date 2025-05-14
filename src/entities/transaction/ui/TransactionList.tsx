@@ -1,47 +1,49 @@
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import type { AVAILABLE_TOKENS } from '@/shared/enums/tokens'
+import { useWallet } from '@/entities/wallet'
 
-import { useWallet } from '@/entities/wallet';
-import { AVAILABLE_TOKENS } from '@/shared/enums/tokens';
-import { Skeleton } from '@/shared/ui/skeleton';
+import { Skeleton } from '@/shared/ui/skeleton'
+import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
-import { fetchTransactionList } from '../model/queries';
-import { useTransactionStore } from '../model/store';
-import { TransactionListItem } from './TransactionListItem';
+import { fetchTransactionList } from '../model/queries'
+import { useTransactionStore } from '../model/store'
+import { TransactionListItem } from './TransactionListItem'
 
 interface TransactionListProps {
-  token: AVAILABLE_TOKENS;
+  token: AVAILABLE_TOKENS
 }
 
 export const TransactionList: React.FC<TransactionListProps> = ({ token }) => {
-  const { transactions, setTransactions } = useTransactionStore((store) => ({
+  const { transactions, setTransactions } = useTransactionStore(store => ({
     transactions: store.transactions,
-    setTransactions: store.setTransactions
-  }));
+    setTransactions: store.setTransactions,
+  }))
 
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  const wallet = useWallet();
+  const wallet = useWallet()
 
   useEffect(() => {
     const fetchAndSetTransactions = async () => {
-      setIsLoading(true);
+      setIsLoading(true)
       try {
-        const fetchedTransactions = await fetchTransactionList(wallet.address, token);
+        const fetchedTransactions = await fetchTransactionList(wallet.address, token)
 
-        setTransactions(fetchedTransactions);
-      } catch (error) {
-        console.error('Failed to fetch transactions:', error);
-        setTransactions([]);
-      } finally {
-        setIsLoading(false);
+        setTransactions(fetchedTransactions)
       }
-    };
+      catch (error) {
+        console.error('Failed to fetch transactions:', error)
+        setTransactions([])
+      }
+      finally {
+        setIsLoading(false)
+      }
+    }
 
-    fetchAndSetTransactions();
-  }, [setTransactions, token, wallet.address]);
+    fetchAndSetTransactions()
+  }, [setTransactions, token, wallet.address])
 
   return (
     <div className="space-y-2 py-4">
@@ -57,5 +59,5 @@ export const TransactionList: React.FC<TransactionListProps> = ({ token }) => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}

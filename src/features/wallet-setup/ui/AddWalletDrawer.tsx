@@ -1,30 +1,35 @@
-import { Import, Plus, X } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import { ROUTES } from '@/shared/constants/routes'
+import ShinyButton from '@/shared/magicui/shiny-button'
 
-import { ROUTES } from '@/shared/constants/routes';
-import ShinyButton from '@/shared/magicui/shiny-button';
 import {
-	Drawer, DrawerClose, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger
-} from '@/shared/ui/drawer';
-import { LinkItem } from '@/shared/ui/link-item';
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/shared/ui/drawer'
+import { LinkItem } from '@/shared/ui/link-item'
+import { Import, Plus, X } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 const Actions = [
   {
     title: 'wallet.manager.action.new.title',
     description: 'wallet.manager.action.new.description',
     icon: <Plus className="h-7 w-7" strokeWidth={4} />,
-    href: ROUTES.WALLET_CUSTOMIZATION
+    href: ROUTES.WALLET_CUSTOMIZATION,
   },
   {
     title: 'wallet.manager.action.exists.title',
     description: 'wallet.manager.action.exists.description',
     icon: <Import className="h-7 w-7" />,
-    href: ROUTES.WALLET_IMPORT
-  }
-];
+    href: ROUTES.WALLET_IMPORT,
+  },
+]
 
-export const AddWalletDrawer = () => {
-  const { t } = useTranslation();
+export function AddWalletDrawer() {
+  const { t } = useTranslation()
 
   return (
     <Drawer>
@@ -50,5 +55,5 @@ export const AddWalletDrawer = () => {
         </div>
       </DrawerContent>
     </Drawer>
-  );
-};
+  )
+}

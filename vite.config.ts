@@ -1,29 +1,32 @@
-import path from 'path';
-import { obfuscator } from 'rollup-obfuscator';
-import { defineConfig, loadEnv } from 'vite';
-import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
-import tsconfigPaths from 'vite-tsconfig-paths';
+/* eslint-disable node/prefer-global/process */
+import path from 'node:path'
+import { vitePluginCacheBuster } from '@piplup/vite-plugin-cache-buster'
+import { sentryVitePlugin } from '@sentry/vite-plugin'
+import basicSsl from '@vitejs/plugin-basic-ssl'
+import react from '@vitejs/plugin-react-swc'
+import { obfuscator } from 'rollup-obfuscator'
 
-import { vitePluginCacheBuster } from '@piplup/vite-plugin-cache-buster';
-import basicSsl from '@vitejs/plugin-basic-ssl';
-import react from '@vitejs/plugin-react-swc';
+import { defineConfig, loadEnv } from 'vite'
+import { ViteImageOptimizer } from 'vite-plugin-image-optimizer'
+import tsconfigPaths from 'vite-tsconfig-paths'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  process.env = { ...process.env, ...loadEnv(mode, process.cwd()) };
+  process.env = { ...process.env, ...loadEnv(mode, process.cwd()) }
 
   return {
     build: {
+      sourcemap: true,
       outDir: 'dist',
       rollupOptions: {
         output: {
           manualChunks: (id) => {
             if (id.includes('node_modules')) {
-              return 'vendor';
+              return 'vendor'
             }
-          }
-        }
-      }
+          },
+        },
+      },
     },
 
     plugins: [
@@ -39,6 +42,12 @@ export default defineConfig(({ mode }) => {
 
       vitePluginCacheBuster(),
 
+      sentryVitePlugin({
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+        org: 'xpaid',
+        project: 'javascript-react',
+      }),
+
       obfuscator({
         compact: true,
         transformObjectKeys: true,
@@ -47,7 +56,7 @@ export default defineConfig(({ mode }) => {
         shuffleStringArray: true,
         splitStrings: true,
         stringArrayThreshold: 1,
-        identifierNamesGenerator: 'hexadecimal'
+        identifierNamesGenerator: 'hexadecimal',
       }),
 
       ViteImageOptimizer({
@@ -70,52 +79,52 @@ export default defineConfig(({ mode }) => {
               params: {
                 overrides: {
                   cleanupNumericValues: false,
-                  removeViewBox: false
-                }
-              }
+                  removeViewBox: false,
+                },
+              },
             },
             'sortAttrs',
             {
               name: 'addAttributesToSVGElement',
               params: {
-                attributes: [{ xmlns: 'http://www.w3.org/2000/svg' }]
-              }
-            }
-          ]
+                attributes: [{ xmlns: 'http://www.w3.org/2000/svg' }],
+              },
+            },
+          ],
         },
 
         png: {
-          quality: 85 // Moderate quality to balance size and quality
+          quality: 85, // Moderate quality to balance size and quality
         },
 
         jpeg: {
-          quality: 85 // Moderate quality for reduced size
+          quality: 85, // Moderate quality for reduced size
         },
 
         tiff: {
-          quality: 85 // Moderate quality to reduce size
+          quality: 85, // Moderate quality to reduce size
         },
 
         gif: {},
 
         webp: {
-          lossless: true // Use lossless compression for quality
+          lossless: true, // Use lossless compression for quality
         },
 
         avif: {
-          lossless: true // Use lossless compression for quality
+          lossless: true, // Use lossless compression for quality
         },
 
         cache: true,
-        cacheLocation: './node_modules/.cache/vite-plugin-image-optimizer'
-      })
+        cacheLocation: './node_modules/.cache/vite-plugin-image-optimizer',
+      }),
     ],
 
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
-        buffer: 'buffer'
-      }
+        'buffer': 'buffer',
+      },
     },
 
     publicDir: './public',
@@ -126,7 +135,7 @@ export default defineConfig(({ mode }) => {
       strictPort: true,
       hmr: {
         port: 5173,
-      }
-    }
-  };
-});
+      },
+    },
+  }
+})

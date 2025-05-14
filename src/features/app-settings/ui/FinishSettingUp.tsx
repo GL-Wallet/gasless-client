@@ -1,18 +1,18 @@
-import { Fingerprint } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import type { PropsWithClassname } from '@/shared/types/react'
+import { cn } from '@/shared/lib/utils'
 
-import { cn } from '@/shared/lib/utils';
-import { PropsWithClassname } from '@/shared/types/react';
-import { SwitchItem } from '@/shared/ui/switch-item';
+import { SwitchItem } from '@/shared/ui/switch-item'
+import { Fingerprint } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
-import { useSettingsItems } from '../model/useSettingsItems';
+import { useSettingsItems } from '../model/useSettingsItems'
 
-export const FinishSettingUp = ({ className }: PropsWithClassname) => {
-  const { isBiometryEnabled, handleSwitchBiometry } = useSettingsItems();
+export function FinishSettingUp({ className }: PropsWithClassname) {
+  const { isBiometryEnabled, handleSwitchBiometry } = useSettingsItems()
 
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
-  const isShowFinishSettingUp = !isBiometryEnabled;
+  const isShowFinishSettingUp = !isBiometryEnabled
 
   return (
     isShowFinishSettingUp && (
@@ -31,5 +31,5 @@ export const FinishSettingUp = ({ className }: PropsWithClassname) => {
         </div>
       </div>
     )
-  );
-};
+  )
+}

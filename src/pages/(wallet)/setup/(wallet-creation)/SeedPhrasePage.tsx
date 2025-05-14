@@ -1,22 +1,22 @@
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { navigate } from 'wouter/use-browser-location';
+import { SeedPhrase, useSeedPhrase } from '@/features/wallet-setup'
+import { ROUTES } from '@/shared/constants/routes'
+import ShinyButton from '@/shared/magicui/shiny-button'
 
-import { SeedPhrase, useSeedPhrase } from '@/features/wallet-setup';
-import { ROUTES } from '@/shared/constants/routes';
-import ShinyButton from '@/shared/magicui/shiny-button';
-import { CopyToClipboardButton } from '@/shared/ui/copy-to-clipboard-button';
-import { ResponsivePageHeader } from '@/shared/ui/responsive-page-header';
+import { CopyToClipboardButton } from '@/shared/ui/copy-to-clipboard-button'
+import { ResponsivePageHeader } from '@/shared/ui/responsive-page-header'
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { navigate } from 'wouter/use-browser-location'
 
-export const SeedPhrasePage = () => {
-  const [isDisabled, setIsDisabled] = useState(true);
+export function SeedPhrasePage() {
+  const [isDisabled, setIsDisabled] = useState(true)
 
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
-  const seedPhrase = useSeedPhrase();
+  const seedPhrase = useSeedPhrase()
 
   return (
-    <div className="h-full flex flex-col justify-between items-center space-y-3">
+    <div className="flex-1 flex flex-col justify-between items-center space-y-3">
       <ResponsivePageHeader
         title={t('wallet.setup.seedPhrase.title')}
         description={t('wallet.setup.seedPhrase.description')}
@@ -35,5 +35,5 @@ export const SeedPhrasePage = () => {
         className="w-full"
       />
     </div>
-  );
-};
+  )
+}

@@ -1,22 +1,23 @@
-import { REGEXP_ONLY_DIGITS } from 'input-otp';
-import React, { SetStateAction, useCallback } from 'react';
+import type { SetStateAction } from 'react'
+import type { Passcode } from '../model/types'
 
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/shared/ui/input-otp';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/shared/ui/input-otp'
 
-import { Passcode } from '../model/types';
+import { REGEXP_ONLY_DIGITS } from 'input-otp'
+import React, { useCallback } from 'react'
 
 // Memoize InputOTPSlot
-const MemoizedInputOTPSlot = React.memo(InputOTPSlot);
+const MemoizedInputOTPSlot = React.memo(InputOTPSlot)
 
-type Props = {
-  passcode?: Passcode;
-  setPasscode(passcode: SetStateAction<Passcode>): void;
-};
+interface Props {
+  passcode?: Passcode
+  setPasscode: (passcode: SetStateAction<Passcode>) => void
+}
 
-export const PasscodeOTP = ({ passcode, setPasscode }: Props) => {
+export function PasscodeOTP({ passcode, setPasscode }: Props) {
   const handleChange = useCallback((value: string) => {
-    setPasscode(value);
-  }, [setPasscode]);
+    setPasscode(value)
+  }, [setPasscode])
 
   return (
     <InputOTP
@@ -32,5 +33,5 @@ export const PasscodeOTP = ({ passcode, setPasscode }: Props) => {
         ))}
       </InputOTPGroup>
     </InputOTP>
-  );
-};
+  )
+}

@@ -1,37 +1,37 @@
-import { useTranslation } from 'react-i18next';
-import { navigate } from 'wouter/use-browser-location';
+import { useCreateWallet } from '@/features/wallet-setup/model/useCreateWallet'
+import { useAuth } from '@/kernel/auth'
 
-import { useCreateWallet } from '@/features/wallet-setup/model/useCreateWallet';
-import { useAuth } from '@/kernel/auth';
-import { ROUTES } from '@/shared/constants/routes';
-import ShinyButton from '@/shared/magicui/shiny-button';
-import { Button } from '@/shared/ui/button';
-import { LogoDark } from '@/shared/ui/logo/logo-dark';
-import { LogoLight } from '@/shared/ui/logo/logo-light';
-import { useTheme } from '@/shared/ui/theme-provider';
+import { ROUTES } from '@/shared/constants/routes'
+import ShinyButton from '@/shared/magicui/shiny-button'
+import { Button } from '@/shared/ui/button'
+import { LogoDark } from '@/shared/ui/logo/logo-dark'
+import { LogoLight } from '@/shared/ui/logo/logo-light'
+import { useTheme } from '@/shared/ui/theme-provider'
+import { useTranslation } from 'react-i18next'
+import { navigate } from 'wouter/use-browser-location'
 
-export const WalletSetupPage = () => {
-  const { authenticate } = useAuth();
-  const { createWallet } = useCreateWallet();
+export function WalletSetupPage() {
+  const { authenticate } = useAuth()
+  const { createWallet } = useCreateWallet()
 
-  const { theme } = useTheme();
+  const { theme } = useTheme()
 
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   const handleCreateWallet = () => {
     authenticate({ actionType: 'setup' })
-      .then((passcode) => createWallet({ passcode }))
-      .then(() => navigate(ROUTES.SEED_PHRASE));
-  };
+      .then(passcode => createWallet({ passcode }))
+      .then(() => navigate(ROUTES.SEED_PHRASE))
+  }
 
   const handleImportWallet = () => {
-    authenticate({ actionType: 'setup' }).then(() => navigate(ROUTES.WALLET_IMPORT));
-  };
+    authenticate({ actionType: 'setup' }).then(() => navigate(ROUTES.WALLET_IMPORT))
+  }
 
-  const Comp = theme === 'light' ? LogoLight : LogoDark;
+  const Comp = theme === 'light' ? LogoLight : LogoDark
 
   return (
-    <div className="relative h-full flex flex-col items-center justify-end">
+    <div className="relative flex-1 flex flex-col items-center justify-end">
       {/* Content Section */}
       <div className="grow flex flex-col justify-between">
         {/* Heading and Description */}
@@ -53,5 +53,5 @@ export const WalletSetupPage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

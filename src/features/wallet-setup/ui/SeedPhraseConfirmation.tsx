@@ -1,73 +1,74 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { navigate } from 'wouter/use-browser-location';
+import type { PropsWithClassname } from '@/shared/types/react'
+import { ROUTES } from '@/shared/constants/routes'
+import { cn } from '@/shared/lib/utils'
 
-import { ROUTES } from '@/shared/constants/routes';
-import { cn } from '@/shared/lib/utils';
-import ShinyButton from '@/shared/magicui/shiny-button';
-import { PropsWithClassname } from '@/shared/types/react';
-import { isEqual } from '@/shared/utils/isEqual';
-import { shuffle } from '@/shared/utils/shuffle';
+import ShinyButton from '@/shared/magicui/shiny-button'
+import { isEqual } from '@/shared/utils/isEqual'
+import { shuffle } from '@/shared/utils/shuffle'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { navigate } from 'wouter/use-browser-location'
 
-import { generateUniqueRandomNumbers } from '../helpers/generateUniqueRandomNumbers';
+import { generateUniqueRandomNumbers } from '../helpers/generateUniqueRandomNumbers'
 
-export const SeedPhraseConfirmation = ({ className, seedPhrase }: PropsWithClassname<{ seedPhrase: string[] }>) => {
-  const [selectedWords, setSelectedWords] = useState<string[]>([]);
-  const [isPrevWordCorrect, setIsPrevWordCorrect] = useState(false);
-  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+export function SeedPhraseConfirmation({ className, seedPhrase }: PropsWithClassname<{ seedPhrase: string[] }>) {
+  const [selectedWords, setSelectedWords] = useState<string[]>([])
+  const [isPrevWordCorrect, setIsPrevWordCorrect] = useState(false)
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true)
 
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false)
 
   // Generate unique random numbers and correct words based on those numbers
-  const randomNumbers = useMemo(() => generateUniqueRandomNumbers(3, 0, seedPhrase.length - 1), [seedPhrase]);
+  const randomNumbers = useMemo(() => generateUniqueRandomNumbers(3, 0, seedPhrase.length - 1), [seedPhrase])
 
-  const correctWords = useMemo(() => randomNumbers.map((number) => seedPhrase[number]), [randomNumbers, seedPhrase]);
+  const correctWords = useMemo(() => randomNumbers.map(number => seedPhrase[number]), [randomNumbers, seedPhrase])
 
   // Shuffle the seed phrase for display
-  const shuffledSeedPhrase = useMemo(() => shuffle(seedPhrase), [seedPhrase]);
+  const shuffledSeedPhrase = useMemo(() => shuffle(seedPhrase), [seedPhrase])
 
   // Determine if a word is selected or correct
-  const isSelectedWord = useCallback((word: string) => selectedWords.includes(word), [selectedWords]);
-  const isCorrectWord = useCallback((word: string, index: number) => correctWords[index] === word, [correctWords]);
+  const isSelectedWord = useCallback((word: string) => selectedWords.includes(word), [selectedWords])
+  const isCorrectWord = useCallback((word: string, index: number) => correctWords[index] === word, [correctWords])
 
   useEffect(() => {
-    const lastSelectedWord = selectedWords[selectedWords.length - 1];
-    const lastSelectedIndex = selectedWords.length - 1;
-    setIsPrevWordCorrect(isCorrectWord(lastSelectedWord, lastSelectedIndex));
-  }, [selectedWords, isCorrectWord]);
+    const lastSelectedWord = selectedWords[selectedWords.length - 1]
+    const lastSelectedIndex = selectedWords.length - 1
+    setIsPrevWordCorrect(isCorrectWord(lastSelectedWord, lastSelectedIndex))
+  }, [selectedWords, isCorrectWord])
 
   useEffect(() => {
     if (isEqual(correctWords, selectedWords)) {
-      setIsButtonDisabled(false);
-      setIsSuccess(true);
+      setIsButtonDisabled(false)
+      setIsSuccess(true)
     }
-  }, [correctWords, selectedWords]);
+  }, [correctWords, selectedWords])
 
   const handleWordClick = useCallback(
     (word: string) => {
       if (selectedWords.length < 3 && !isSelectedWord(word) && (isPrevWordCorrect || selectedWords.length === 0)) {
-        setSelectedWords((prev) => [...prev, word]);
-      } else {
-        !isSuccess && setSelectedWords((prev) => [...prev.slice(0, -1), word]);
+        setSelectedWords(prev => [...prev, word])
+      }
+      else {
+        !isSuccess && setSelectedWords(prev => [...prev.slice(0, -1), word])
       }
     },
-    [selectedWords.length, isSelectedWord, isPrevWordCorrect, isSuccess]
-  );
+    [selectedWords.length, isSelectedWord, isPrevWordCorrect, isSuccess],
+  )
 
   const handleCellClick = useCallback(
     (index: number, word: string) => {
       if (!isCorrectWord(word, index) && !isSuccess) {
-        setSelectedWords((prev) => prev.filter((selected) => selected !== word));
+        setSelectedWords(prev => prev.filter(selected => selected !== word))
       }
     },
-    [isCorrectWord, isSuccess]
-  );
+    [isCorrectWord, isSuccess],
+  )
 
   const handleButtonClick = () => {
-    navigate(ROUTES.WALLET_CREATION_SUCCESS);
-  };
+    navigate(ROUTES.WALLET_CREATION_SUCCESS)
+  }
 
   return (
     <div className={cn('grow flex flex-col justify-between space-y-3', className)}>
@@ -80,7 +81,7 @@ export const SeedPhraseConfirmation = ({ className, seedPhrase }: PropsWithClass
                 'border-green-700': isCorrectWord(selectedWords[idx] || '', idx),
                 'border-red-900': selectedWords[idx] && !isCorrectWord(selectedWords[idx], idx),
                 'border-dashed':
-                  (selectedWords.length === 0 && idx === 0) || (selectedWords.length === idx && isPrevWordCorrect)
+                  (selectedWords.length === 0 && idx === 0) || (selectedWords.length === idx && isPrevWordCorrect),
               })}
               key={idx}
             >
@@ -99,8 +100,8 @@ export const SeedPhraseConfirmation = ({ className, seedPhrase }: PropsWithClass
                   {
                     'border-transparent': isSelectedWord(word),
                     'cursor-pointer': !isSelectedWord(word),
-                    'cursor-not-allowed': isSelectedWord(word)
-                  }
+                    'cursor-not-allowed': isSelectedWord(word),
+                  },
                 )}
                 key={idx}
               >
@@ -118,5 +119,5 @@ export const SeedPhraseConfirmation = ({ className, seedPhrase }: PropsWithClass
         text={t('wallet.setup.confirmSeedPhrase.button')}
       />
     </div>
-  );
-};
+  )
+}

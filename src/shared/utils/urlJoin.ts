@@ -1,3 +1,3 @@
-export const urlJoin = (...args: unknown[]) => {
-  return args.join('/');
-};
+export function urlJoin(...args: unknown[]) {
+  return args.join('/')
+}

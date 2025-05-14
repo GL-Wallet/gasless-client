@@ -1,12 +1,13 @@
-import { useAppSettingsStore } from '@/entities/app-settings';
-import { ComponentType, ReactNode } from 'react';
+import type { ComponentType, ReactNode } from 'react'
+import { useAppSettingsStore } from '@/entities/app-settings'
 
-export const withOnboarding = <P extends object>(Component: ComponentType<P>, page: ReactNode) => {
+export function withOnboarding<P extends object>(Component: ComponentType<P>, page: ReactNode) {
   return (props: P) => {
-    const isNewest = useAppSettingsStore((store) => store.isNewest);
+    const isNewest = useAppSettingsStore(store => store.isNewest)
 
-    if (isNewest) return page;
+    if (isNewest)
+      return page
 
-    return <Component {...props} />;
-  };
-};
+    return <Component {...props} />
+  }
+}

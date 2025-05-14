@@ -1,87 +1,97 @@
-import { ArrowDown, Check, ChevronRight, Wallet2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { useForm, UseFormReturn } from 'react-hook-form';
-import toast from 'react-hot-toast';
-import { useTranslation } from 'react-i18next';
-import { z } from 'zod';
+/* eslint-disable ts/no-use-before-define */
+import type { ExchangeInfoResponse } from '@/kernel/api'
+import type { Balances } from '@/kernel/tron'
+import type { UseFormReturn } from 'react-hook-form'
+import { useWallet } from '@/entities/wallet'
+import { api } from '@/kernel/api'
+import { AVAILABLE_TOKENS } from '@/shared/enums/tokens'
+import ShinyButton from '@/shared/magicui/shiny-button'
 
-import { useWallet } from '@/entities/wallet';
-import { api, ExchangeInfoResponse } from '@/kernel/api';
-import { Balances } from '@/kernel/tron';
-import { AVAILABLE_TOKENS } from '@/shared/enums/tokens';
-import ShinyButton from '@/shared/magicui/shiny-button';
-import { Alert, AlertDescription, AlertTitle } from '@/shared/ui/alert';
-import { Button } from '@/shared/ui/button';
+import { Alert, AlertDescription, AlertTitle } from '@/shared/ui/alert'
+import { Button } from '@/shared/ui/button'
 import {
-	Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle
-} from '@/shared/ui/drawer';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/shared/ui/form';
-import { FormattedNumber } from '@/shared/ui/formatted-number';
-import { Input } from '@/shared/ui/input';
-import { Separator } from '@/shared/ui/separator';
-import { truncateString } from '@/shared/utils/truncateString';
-import { zodResolver } from '@hookform/resolvers/zod';
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from '@/shared/ui/drawer'
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/shared/ui/form'
+import { FormattedNumber } from '@/shared/ui/formatted-number'
+import { Input } from '@/shared/ui/input'
+import { Separator } from '@/shared/ui/separator'
+import { truncateString } from '@/shared/utils/truncateString'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { ArrowDown, Check, ChevronRight, Wallet2 } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
+import { z } from 'zod'
 
-import { useExchange } from '../model/useExchange';
+import { useExchange } from '../model/useExchange'
 
 const formSchema = z.object({
   amount: z.coerce
     .number()
     .min(10, { message: 'exchange.error.youMustEnterAtLeast' })
-    .positive({ message: 'exchange.error.amountMustBePositive' })
-});
+    .positive({ message: 'exchange.error.amountMustBePositive' }),
+})
 
-type FormFields = z.infer<typeof formSchema>;
+type FormFields = z.infer<typeof formSchema>
 
 export function WalletExchangeForm() {
-  const [exchangeInfo, setExchangeInfo] = useState<ExchangeInfoResponse | null>(null);
-  const [isDrawerOpened, setIsDrawerOpened] = useState(false);
+  const [exchangeInfo, setExchangeInfo] = useState<ExchangeInfoResponse | null>(null)
+  const [isDrawerOpened, setIsDrawerOpened] = useState(false)
 
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
-  const { exchange } = useExchange();
-  const wallet = useWallet();
+  const { exchange } = useExchange()
+  const wallet = useWallet()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      amount: 0
-    }
-  });
+      amount: 0,
+    },
+  })
 
-  const receive =
-    exchangeInfo && form.watch('amount') - exchangeInfo.fee > 0
+  const receive
+    = exchangeInfo && form.watch('amount') - exchangeInfo.fee > 0
       ? (form.watch('amount') - exchangeInfo.fee) * exchangeInfo?.rate
-      : 0;
+      : 0
 
   useEffect(() => {
-    api.exchangeInfo().then((res) => setExchangeInfo(res));
-  }, []);
+    api.exchangeInfo().then(res => setExchangeInfo(res))
+  }, [])
 
   const handleSubmit = (values: FormFields) => {
-    if (!exchangeInfo) return;
+    if (!exchangeInfo)
+      return
 
-    const balance = wallet.balances[AVAILABLE_TOKENS.USDT as keyof typeof wallet.balances];
+    const balance = wallet.balances[AVAILABLE_TOKENS.USDT as keyof typeof wallet.balances]
 
     if (values.amount > balance) {
       form.setError('amount', {
         type: 'manual',
-        message: t('exchange.error.insufficientBalance', { token: AVAILABLE_TOKENS.USDT })
-      });
-      toast.error(t('exchange.error.notEnoughBalance'));
-      return;
+        message: t('exchange.error.insufficientBalance', { token: AVAILABLE_TOKENS.USDT }),
+      })
+      toast.error(t('exchange.error.notEnoughBalance'))
+      return
     }
 
-    form.clearErrors('amount');
-    setIsDrawerOpened(true);
-  };
+    form.clearErrors('amount')
+    setIsDrawerOpened(true)
+  }
 
   const handleSign = async () => {
-    const amount = +form.getValues('amount');
-    if (!exchangeInfo || amount < exchangeInfo?.minAmount) return;
+    const amount = +form.getValues('amount')
+    if (!exchangeInfo || amount < exchangeInfo?.minAmount)
+      return
 
-    await exchange(amount);
-  };
+    await exchange(amount)
+  }
 
   return (
     <Form {...form}>
@@ -109,30 +119,42 @@ export function WalletExchangeForm() {
             </div>
 
             <div className="w-full flex items-center justify-between">
-              <span className="text-md">{t('exchange.fee.usdt')}:</span>
               <span className="text-md">
-                {exchangeInfo?.fee} {AVAILABLE_TOKENS.USDT}
+                {t('exchange.fee.usdt')}
+                :
+              </span>
+              <span className="text-md">
+                {exchangeInfo?.fee}
+                {' '}
+                {AVAILABLE_TOKENS.USDT}
               </span>
             </div>
 
             <Separator className="mt-2" />
 
             <div className="w-full flex items-center justify-between">
-              <span className="text-lg">{t('exchange.total')}:</span>
+              <span className="text-lg">
+                {t('exchange.total')}
+                :
+              </span>
               <span className="text-md">
-                {form.getValues('amount') > 0 ? (
-                  <>
-                    {+form.watch('amount')} {AVAILABLE_TOKENS.USDT}
-                  </>
-                ) : (
-                  '-'
-                )}
+                {form.getValues('amount') > 0
+                  ? (
+                      <>
+                        {+form.watch('amount')}
+                        {' '}
+                        {AVAILABLE_TOKENS.USDT}
+                      </>
+                    )
+                  : (
+                      '-'
+                    )}
               </span>
             </div>
           </div>
         </div>
 
-        <Button className="dark:text-white bg-secondary/80 dark:border-neutral-500" variant={'outline'} type="submit">
+        <Button className="dark:text-white bg-secondary/80 dark:border-neutral-500" variant="outline" type="submit">
           {t('exchange.button.buy')}
         </Button>
 
@@ -147,20 +169,20 @@ export function WalletExchangeForm() {
         />
       </form>
     </Form>
-  );
+  )
 }
 
-const TokenAmountInput = ({
+function TokenAmountInput({
   form,
   label,
   balances,
-  token
+  token,
 }: {
-  form: UseFormReturn<FormFields>;
-  label: string;
-  balances: Balances;
-  token: AVAILABLE_TOKENS;
-}) => {
+  form: UseFormReturn<FormFields>
+  label: string
+  balances: Balances
+  token: AVAILABLE_TOKENS
+}) {
   return (
     <FormField
       control={form.control}
@@ -170,11 +192,14 @@ const TokenAmountInput = ({
           <div className="flex items-center justify-between">
             <span className="text-muted-foreground">{label}</span>
             <div className="flex items-center space-x-2">
-              <span className="text-sm text-muted-foreground">Balance: {balances[token]}</span>
+              <span className="text-sm text-muted-foreground">
+                Balance:
+                {balances[token]}
+              </span>
               <div
                 className="text-sm dark:text-white"
                 onClick={() => {
-                  form.setValue('amount', balances[token as keyof typeof balances]);
+                  form.setValue('amount', balances[token as keyof typeof balances])
                 }}
               >
                 MAX
@@ -196,9 +221,9 @@ const TokenAmountInput = ({
                 step="any"
                 // temporary
                 onFocus={(e) => {
-                  const value = e.target.value;
+                  const value = e.target.value
                   if (+value === 0) {
-                    form.setValue('amount', value.replace(/^0+/, '') as unknown as number);
+                    form.setValue('amount', value.replace(/^0+/, '') as unknown as number)
                   }
                 }}
               />
@@ -208,11 +233,11 @@ const TokenAmountInput = ({
         </FormItem>
       )}
     />
-  );
-};
+  )
+}
 
-const Receive = ({ balances, token, receive }: { balances: Balances; token: AVAILABLE_TOKENS; receive: number }) => {
-  const { t } = useTranslation();
+function Receive({ balances, token, receive }: { balances: Balances, token: AVAILABLE_TOKENS, receive: number }) {
+  const { t } = useTranslation()
 
   return (
     <div className="w-full flex flex-col space-y-4 border dark:bg-secondary/40 dark:border-neutral-600 p-4 pt-8 rounded-lg">
@@ -221,7 +246,9 @@ const Receive = ({ balances, token, receive }: { balances: Balances; token: AVAI
           <span className="text-muted-foreground">{t('exchange.receive')}</span>
           <div className="flex items-center space-x-2">
             <span className="text-sm text-muted-foreground">
-              {t('exchange.balance')}: {balances[token]}
+              {t('exchange.balance')}
+              :
+              {balances[token]}
             </span>
           </div>
         </div>
@@ -237,27 +264,27 @@ const Receive = ({ balances, token, receive }: { balances: Balances; token: AVAI
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-const TransactionDrawer = ({
+function TransactionDrawer({
   token,
   isOpen,
   onClose,
   values,
   walletAddress,
   handleSign,
-  receive
+  receive,
 }: {
-  token: string;
-  isOpen: boolean;
-  onClose: () => void;
-  values?: FormFields;
-  walletAddress: string;
-  handleSign: () => void;
-  receive: number;
-}) => {
-  const { t } = useTranslation();
+  token: string
+  isOpen: boolean
+  onClose: () => void
+  values?: FormFields
+  walletAddress: string
+  handleSign: () => void
+  receive: number
+}) {
+  const { t } = useTranslation()
 
   return (
     <Drawer open={isOpen} onClose={onClose}>
@@ -295,13 +322,13 @@ const TransactionDrawer = ({
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
-  );
-};
+  )
+}
 
-const ExchangeAlert: React.FC<{ title: string; description: string }> = ({ title, description }) => (
+const ExchangeAlert: React.FC<{ title: string, description: string }> = ({ title, description }) => (
   <Alert>
     <Wallet2 className="h-4 w-4" />
     <AlertTitle>{title}</AlertTitle>
     <AlertDescription>{truncateString(description, 14)}</AlertDescription>
   </Alert>
-);
+)

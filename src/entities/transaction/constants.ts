@@ -5,8 +5,8 @@ export const TransactionListDateOptions: Intl.DateTimeFormatOptions = {
   hour: '2-digit',
   minute: '2-digit',
   second: '2-digit',
-  hour12: false
-};
+  hour12: false,
+}
 
 export const TransactionDateOptions: Intl.DateTimeFormatOptions = {
   day: '2-digit',
@@ -14,7 +14,7 @@ export const TransactionDateOptions: Intl.DateTimeFormatOptions = {
   year: 'numeric',
   hour: '2-digit',
   minute: '2-digit',
-  hour12: false
-};
+  hour12: false,
+}
 
-export const TRONSCAN_TRANSACTION_BASE_URL = 'https://tronscan.org/#/transaction';
+export const TRONSCAN_TRANSACTION_BASE_URL = 'https://tronscan.org/#/transaction'

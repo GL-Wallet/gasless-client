@@ -1,88 +1,93 @@
-import { PropsWithChildren, useCallback, useMemo, useRef } from 'react';
-import { navigate } from 'wouter/use-browser-location';
+/* eslint-disable ts/ban-ts-comment */
+import type { PropsWithChildren } from 'react'
+import type { AuthParams, AuthPromiseCallback } from '../model/types'
+import { ROUTES } from '@/shared/constants/routes'
 
-import { ROUTES } from '@/shared/constants/routes';
-import { useEffectOnce } from '@/shared/hooks/useEffectOnce';
+import { useEffectOnce } from '@/shared/hooks/useEffectOnce'
+import { useCallback, useMemo, useRef } from 'react'
 
-import { authContext } from '../model/auth-context';
-import { useAuthStore } from '../model/store';
-import { AuthParams, AuthPromiseCallback } from '../model/types';
-import { getHashedPasscodeFromStorage } from '../utils/getHashedPasscodeFromStorage';
-import { saveHashedPasscodeToStorage } from '../utils/savePasscodeHash';
+import { navigate } from 'wouter/use-browser-location'
+import { authContext } from '../model/auth-context'
+import { useAuthStore } from '../model/store'
+import { getHashedPasscodeFromStorage } from '../utils/getHashedPasscodeFromStorage'
+import { saveHashedPasscodeToStorage } from '../utils/savePasscodeHash'
 
-const actions = ['setup', 'startup', 'required', 'update'].map((action) => `/passcode-${action}`);
+const actions = ['setup', 'startup', 'required', 'update'].map(action => `/passcode-${action}`)
 
-export const AuthProvider = ({ children }: PropsWithChildren) => {
-  const setAuthStore = useAuthStore((store) => store.set);
+export function AuthProvider({ children }: PropsWithChildren) {
+  const setAuthStore = useAuthStore(store => store.set)
 
-  const { passcode, passcodeHash, requiresSetup, isAuthenticated, resetStore } = useAuthStore((store) => ({
+  const { passcode, passcodeHash, requiresSetup, isAuthenticated, resetStore } = useAuthStore(store => ({
     passcode: store.passcode,
     passcodeHash: store.hashedPasscode,
     requiresSetup: store.requiresSetup,
     isAuthenticated: store.isAuthenticated,
-    resetStore: store.resetStore
-  }));
+    resetStore: store.resetStore,
+  }))
 
-  const authPromiseRef = useRef<AuthPromiseCallback>();
-  const authConfigRef = useRef<AuthParams>({});
-  const returnPathRef = useRef<string>(location.pathname);
+  const authPromiseRef = useRef<AuthPromiseCallback>()
+  const authConfigRef = useRef<AuthParams>({})
+  const returnPathRef = useRef<string>(location.pathname)
 
   const authenticate = useCallback(
     ({ actionType = 'request', redirectTo }: AuthParams = {}) => {
-      const targetPath = `/passcode-${requiresSetup ? 'setup' : actionType}`;
+      const targetPath = `/passcode-${requiresSetup ? 'setup' : actionType}`
 
-      returnPathRef.current = location.pathname;
-      authConfigRef.current = { redirectTo };
+      returnPathRef.current = location.pathname
+      authConfigRef.current = { redirectTo }
 
-      navigate(targetPath, { replace: true });
+      navigate(targetPath, { replace: true })
 
       return new Promise<string>((resolve) => {
-        authPromiseRef.current = resolve;
-      });
+        authPromiseRef.current = resolve
+      })
     },
-    [requiresSetup]
-  );
+    [requiresSetup],
+  )
 
   const handlePasscodeSuccess = useCallback(
     (enteredPasscode: string) => {
-      saveHashedPasscodeToStorage(enteredPasscode);
+      saveHashedPasscodeToStorage(enteredPasscode)
 
       try {
         setAuthStore({
           requiresSetup: false,
           isAuthenticated: true,
-          passcode: enteredPasscode
-        });
+          passcode: enteredPasscode,
+        })
 
         navigate(
-          authConfigRef.current?.redirectTo ??
-            (actions.includes(returnPathRef.current) ? ROUTES.HOME : returnPathRef.current),
-          { replace: true }
-        );
-        authPromiseRef.current?.(enteredPasscode);
-      } catch (error) {
-        console.error('Error saving passcode:', error);
+          authConfigRef.current?.redirectTo
+          ?? (actions.includes(returnPathRef.current) ? ROUTES.HOME : returnPathRef.current),
+          { replace: true },
+        )
+        authPromiseRef.current?.(enteredPasscode)
+      }
+      catch (error) {
+        console.error('Error saving passcode:', error)
       }
     },
-    [setAuthStore]
-  );
+    [setAuthStore],
+  )
 
   const initializePasscode = useCallback(async () => {
     try {
-      const hashedPasscode = await getHashedPasscodeFromStorage();
+      const hashedPasscode = await getHashedPasscodeFromStorage()
 
       if (hashedPasscode) {
-        setAuthStore({ hashedPasscode, requiresSetup: false });
-      } else {
-        setAuthStore({ requiresSetup: true });
+        setAuthStore({ hashedPasscode, requiresSetup: false })
       }
-    } catch (error) {
-      console.error('Error fetching passcode:', error);
-      setAuthStore({ requiresSetup: true });
+      else {
+        setAuthStore({ requiresSetup: true })
+      }
     }
-  }, [setAuthStore]);
+    catch (error) {
+      console.error('Error fetching passcode:', error)
+      setAuthStore({ requiresSetup: true })
+    }
+  }, [setAuthStore])
 
-  useEffectOnce(initializePasscode);
+  useEffectOnce(initializePasscode)
 
   const value = useMemo(
     () => ({
@@ -91,10 +96,11 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       passcode,
       authenticated: isAuthenticated,
       _passcodeHash: passcodeHash,
-      _onPasscodeSuccess: handlePasscodeSuccess
+      _onPasscodeSuccess: handlePasscodeSuccess,
     }),
-    [authenticate, resetStore, passcode, isAuthenticated, passcodeHash, handlePasscodeSuccess]
-  );
+    [authenticate, resetStore, passcode, isAuthenticated, passcodeHash, handlePasscodeSuccess],
+  )
 
-  return <authContext.Provider value={value}>{children}</authContext.Provider>;
-};
+  // @ts-expect-error
+  return <authContext.Provider value={value}>{children}</authContext.Provider>
+}

@@ -1,35 +1,39 @@
-import { Check } from 'lucide-react';
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useAppSettingsStore } from '@/entities/app-settings'
+import { supportedLanguages } from '@/shared/constants/languages'
+import { Button } from '@/shared/ui/button'
 
-import { useAppSettingsStore } from '@/entities/app-settings';
-import { supportedLanguages } from '@/shared/constants/languages';
-import { Button } from '@/shared/ui/button';
 import {
-	Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger
-} from '@/shared/ui/drawer';
-import { Separator } from '@/shared/ui/separator';
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/shared/ui/drawer'
+import { Separator } from '@/shared/ui/separator'
+import { Check } from 'lucide-react'
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
-export const LanguageDrawer = () => {
-  const [isOpened, setIsOpened] = useState(false);
+export function LanguageDrawer() {
+  const [isOpened, setIsOpened] = useState(false)
 
-  const updateSettings = useAppSettingsStore((store) => store.updateSettings);
-  const { t, i18n } = useTranslation();
+  const updateSettings = useAppSettingsStore(store => store.updateSettings)
+  const { t, i18n } = useTranslation()
 
-  const langCode = t('shared.lang.code') as keyof typeof supportedLanguages;
-  const isLast = (index: number) => index === Object.values(supportedLanguages).length - 1;
+  const langCode = t('shared.lang.code') as keyof typeof supportedLanguages
+  const isLast = (index: number) => index === Object.values(supportedLanguages).length - 1
 
   const handleChangeLanguage = (language: string) => {
-    i18n.changeLanguage(language);
-    updateSettings({ language });
+    i18n.changeLanguage(language)
+    updateSettings({ language })
 
-    setIsOpened(false);
-  };
+    setIsOpened(false)
+  }
 
   return (
     <Drawer open={isOpened} onOpenChange={setIsOpened}>
       <DrawerTrigger asChild>
-        <Button variant={'outline'} className="h-10">
+        <Button variant="outline" className="h-10">
           {supportedLanguages[langCode]}
         </Button>
       </DrawerTrigger>
@@ -54,5 +58,5 @@ export const LanguageDrawer = () => {
         ))}
       </DrawerContent>
     </Drawer>
-  );
-};
+  )
+}

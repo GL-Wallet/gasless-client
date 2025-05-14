@@ -1,5 +1,5 @@
-import styles from './styles.module.css';
+import styles from './styles.module.css'
 
-export const SpinnerLoader = () => {
+export function SpinnerLoader() {
   return <div className={styles.spinner} />
-};
+}

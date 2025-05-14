@@ -1,16 +1,16 @@
-import { useTranslation } from 'react-i18next';
+import type { AVAILABLE_TOKENS } from '@/shared/enums/tokens'
 
-import { TransactionList } from '@/entities/transaction';
-import { AVAILABLE_TOKENS } from '@/shared/enums/tokens';
-import { ResponsivePageHeader } from '@/shared/ui/responsive-page-header';
+import { TransactionList } from '@/entities/transaction'
+import { ResponsivePageHeader } from '@/shared/ui/responsive-page-header'
+import { useTranslation } from 'react-i18next'
 
-export const TransactionListPage = ({ token }: { token: string }) => {
-  const { t } = useTranslation();
+export function TransactionListPage({ token }: { token: string }) {
+  const { t } = useTranslation()
 
   return (
-    <div className="max-w-sm overflow-x-hidden">
+    <div className="flex-1">
       <ResponsivePageHeader title={`${token} ${t('transaction.list.title')}`} />
       <TransactionList token={token as AVAILABLE_TOKENS} />
     </div>
-  );
-};
+  )
+}

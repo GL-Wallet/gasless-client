@@ -1,17 +1,17 @@
-import { PropsWithClassname } from '@/shared/types/react';
-import { ChevronRight } from 'lucide-react';
-import { ReactNode } from 'react';
-import { cn } from '../lib/utils';
-import { Link } from 'wouter';
+import type { PropsWithClassname } from '@/shared/types/react'
+import type { ReactNode } from 'react'
+import { ChevronRight } from 'lucide-react'
+import { Link } from 'wouter'
+import { cn } from '../lib/utils'
 
-type Props = {
-  href: string;
-  title?: ReactNode;
-  description?: ReactNode;
-  icon?: ReactNode;
-};
+interface Props {
+  href: string
+  title?: ReactNode
+  description?: ReactNode
+  icon?: ReactNode
+}
 
-export const LinkItem = ({ href, title, description, icon, className }: PropsWithClassname<Props>) => {
+export function LinkItem({ href, title, description, icon, className }: PropsWithClassname<Props>) {
   return (
     <Link
       href={href}
@@ -27,5 +27,5 @@ export const LinkItem = ({ href, title, description, icon, className }: PropsWit
 
       <ChevronRight className="h-8 w-8 text-muted-foreground" />
     </Link>
-  );
-};
+  )
+}

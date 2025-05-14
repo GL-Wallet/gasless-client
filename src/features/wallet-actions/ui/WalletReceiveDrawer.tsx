@@ -1,17 +1,23 @@
-import { QrCode } from 'lucide-react';
-import React, { memo, ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
-import QRCode from 'react-qr-code';
-
-import { Button } from '@/shared/ui/button';
-import { CopyToClipboard } from '@/shared/ui/copy-to-clipboard';
+import type { ReactNode } from 'react'
+import { Button } from '@/shared/ui/button'
+import { CopyToClipboard } from '@/shared/ui/copy-to-clipboard'
 import {
-	Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerTitle, DrawerTrigger
-} from '@/shared/ui/drawer';
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerFooter,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/shared/ui/drawer'
 
-type WalletReceiveDrawerProps = {
-  address: string;
-};
+import { QrCode } from 'lucide-react'
+import React, { memo } from 'react'
+import { useTranslation } from 'react-i18next'
+import QRCode from 'react-qr-code'
+
+interface WalletReceiveDrawerProps {
+  address: string
+}
 
 const MemoizedDrawerContent = memo(({ address, t }: WalletReceiveDrawerProps & { t: (value: string) => ReactNode }) => (
   <DrawerContent className="mt-6 flex flex-col items-center space-y-8 px-6 pb-6">
@@ -31,19 +37,19 @@ const MemoizedDrawerContent = memo(({ address, t }: WalletReceiveDrawerProps & {
       </DrawerClose>
     </DrawerFooter>
   </DrawerContent>
-));
+))
 
 export const WalletReceiveDrawer: React.FC<WalletReceiveDrawerProps> = ({ address }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <Button className="space-x-2 h-12" variant="ghost" size={'icon'}>
+        <Button className="space-x-2 h-12" variant="ghost" size="icon">
           <QrCode className="size-5" />
         </Button>
       </DrawerTrigger>
       <MemoizedDrawerContent address={address} t={t} />
     </Drawer>
-  );
-};
+  )
+}

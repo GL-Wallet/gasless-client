@@ -1,1 +1,1 @@
-export const WALLET_STORAGE_KEY = 'wallet-storage';
+export const WALLET_STORAGE_KEY = 'wallet-storage'

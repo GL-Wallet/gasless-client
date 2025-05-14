@@ -1,24 +1,24 @@
-import { SetStateAction } from 'react';
+import type { SetStateAction } from 'react'
 
-import { isDesktop } from '@/shared/utils/isDesktop';
+import type { Passcode } from '../model/types'
 
-import { Passcode } from '../model/types';
-import { PasscodeOTP } from './PasscodeOTP';
-import { PasscodePad } from './PasscodePad';
+import { isDesktop } from '@/shared/utils/isDesktop'
+import { PasscodeOTP } from './PasscodeOTP'
+import { PasscodePad } from './PasscodePad'
 
-type Props = {
-  passcode: Passcode;
-  isBiometryEnabled?: boolean;
-  setPasscode(passcode: SetStateAction<Passcode>): void;
-  handleBiometry?: () => void;
-};
+interface Props {
+  passcode: Passcode
+  isBiometryEnabled?: boolean
+  setPasscode: (passcode: SetStateAction<Passcode>) => void
+  handleBiometry?: () => void
+}
 
-export const PasscodeInput = (props: Props) => {
-  const isDt = isDesktop();
+export function PasscodeInput(props: Props) {
+  const isDt = isDesktop()
 
   if (isDt) {
-    return <PasscodeOTP passcode={props.passcode} setPasscode={props.setPasscode} />;
+    return <PasscodeOTP passcode={props.passcode} setPasscode={props.setPasscode} />
   }
 
-  return <PasscodePad {...props} />;
-};
+  return <PasscodePad {...props} />
+}

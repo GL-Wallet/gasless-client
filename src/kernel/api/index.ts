@@ -1,2 +1,2 @@
-export { api } from './model/queries';
-export type { TransferInfoResponse, ExchangeResponse, ExchangeInfoResponse } from './model/types';
+export { api } from './model/queries'
+export type { ExchangeInfoResponse, ExchangeResponse, TransferInfoResponse } from './model/types'

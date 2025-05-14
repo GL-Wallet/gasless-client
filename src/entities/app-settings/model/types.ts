@@ -1,4 +1,4 @@
-import { settingsSchema } from './schema';
-import { z } from 'zod';
+import type { z } from 'zod'
+import type { settingsSchema } from './schema'
 
-export type Settings = z.infer<typeof settingsSchema>;
+export type Settings = z.infer<typeof settingsSchema>

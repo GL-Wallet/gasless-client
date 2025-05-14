@@ -27,5 +27,12 @@ export enum ROUTES {
   REFERRAL = '/referral',
 
   BACKUP_MNEMONIC = '/backup-mnemonic',
-  BACKUP_PRIVATE_KEY = '/backup-private-key'
+  BACKUP_PRIVATE_KEY = '/backup-private-key',
+
+  BATCH = '/batch',
+  BATCH_PARAMS = '/batch/:id',
+  CREATE_BATCH = '/create-batch',
+  UPDATE_BATCH = '/update-batch',
+  UPDATE_BATCH_PARAMS = '/update-batch/:id',
+  PREPARE_BATCH = '/prepare-batch',
 }

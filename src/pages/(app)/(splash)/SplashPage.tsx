@@ -1,10 +1,10 @@
-import { Clock, Lock, LucideCircleCheck } from 'lucide-react';
-import { memo } from 'react';
+import AnimatedShinyText from '@/shared/magicui/animated-shiny-text'
+import { LogoDark } from '@/shared/ui/logo/logo-dark'
 
-import AnimatedShinyText from '@/shared/magicui/animated-shiny-text';
-import { LogoDark } from '@/shared/ui/logo/logo-dark';
-import { LogoLight } from '@/shared/ui/logo/logo-light';
-import { useTheme } from '@/shared/ui/theme-provider';
+import { LogoLight } from '@/shared/ui/logo/logo-light'
+import { useTheme } from '@/shared/ui/theme-provider'
+import { Clock, Lock, LucideCircleCheck } from 'lucide-react'
+import { memo } from 'react'
 
 export const Roadmap = memo(() => {
   return (
@@ -33,18 +33,18 @@ export const Roadmap = memo(() => {
         </div>
       </div>
     </div>
-  );
-});
+  )
+})
 
 export const SplashPage = memo(() => {
-  const { theme } = useTheme();
+  const { theme } = useTheme()
 
-  const Comp = theme === 'light' ? LogoLight : LogoDark;
+  const Comp = theme === 'light' ? LogoLight : LogoDark
 
   return (
-    <div className="relative h-full flex flex-col justify-center items-center">
+    <div className="relative flex-1 flex flex-col justify-center items-center">
       <Comp className="size-72" />
       {/* <Roadmap /> */}
     </div>
-  );
-});
+  )
+})

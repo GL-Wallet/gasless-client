@@ -1,24 +1,24 @@
-import { create } from 'zustand';
-import { Transaction } from './types';
+import type { Transaction } from './types'
+import { create } from 'zustand'
 
-type State = {
-  transactions: Transaction[];
-};
+interface State {
+  transactions: Transaction[]
+}
 
-type Actions = {
-  getTransaction(txid: string): Transaction | null;
-  setTransactions(transactions: Transaction[]): void;
-};
+interface Actions {
+  getTransaction: (txid: string) => Transaction | null
+  setTransactions: (transactions: Transaction[]) => void
+}
 
 export const useTransactionStore = create<State & Actions>((set, get) => ({
   transactions: [],
 
   getTransaction(txid) {
-    const { transactions } = get();
-    return transactions.find((t) => t.txid === txid) || null;
+    const { transactions } = get()
+    return transactions.find(t => t.txid === txid) || null
   },
 
   setTransactions(transactions) {
-    set({ transactions });
+    set({ transactions })
   },
-}));
+}))

@@ -1,48 +1,59 @@
+/* eslint-disable ts/no-redeclare */
+import type { Dispatch, PropsWithChildren, ReactNode, SetStateAction } from 'react'
 import {
-	createContext, Dispatch, memo, PropsWithChildren, ReactNode, SetStateAction, useContext, useState
-} from 'react';
+  createContext,
+  memo,
+  useContext,
+  useState,
+} from 'react'
 
 import {
-	AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription,
-	AlertDialogFooter, AlertDialogHeader, AlertDialogTitle
-} from '../alert-dialog';
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '../alert-dialog'
 
-type AlertState = {
-  title: ReactNode;
-  description: ReactNode;
-};
+interface AlertState {
+  title: ReactNode
+  description: ReactNode
+}
 
-type AlertActions = {
-  handleCancel: () => void;
-  handleContinue: () => void;
-};
+interface AlertActions {
+  handleCancel: () => void
+  handleContinue: () => void
+}
 
-type AlertContext = {
-  isOpen: boolean;
-  state: AlertState;
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
-  setState: Dispatch<SetStateAction<AlertState>>;
-  setActions: Dispatch<SetStateAction<Partial<AlertActions> | null>>;
-};
+interface AlertContext {
+  isOpen: boolean
+  state: AlertState
+  setIsOpen: Dispatch<SetStateAction<boolean>>
+  setState: Dispatch<SetStateAction<AlertState>>
+  setActions: Dispatch<SetStateAction<Partial<AlertActions> | null>>
+}
 
-const initialState: AlertState = { title: '', description: '' };
+const initialState: AlertState = { title: '', description: '' }
 
-const AlertContext = createContext({} as AlertContext);
+const AlertContext = createContext({} as AlertContext)
 
 export const AlertProvider = memo(({ children }: PropsWithChildren) => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [state, setState] = useState<AlertState>(initialState);
-  const [actions, setActions] = useState<Partial<AlertActions> | null>(null);
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [state, setState] = useState<AlertState>(initialState)
+  const [actions, setActions] = useState<Partial<AlertActions> | null>(null)
 
   const handleCancel = () => {
-    actions?.handleCancel?.();
-    setIsOpen(false);
-  };
+    actions?.handleCancel?.()
+    setIsOpen(false)
+  }
 
   const handleContinue = () => {
-    actions?.handleContinue?.();
-    setIsOpen(false);
-  };
+    actions?.handleContinue?.()
+    setIsOpen(false)
+  }
 
   return (
     <AlertContext.Provider value={{ isOpen, state, setActions, setIsOpen, setState }}>
@@ -64,13 +75,13 @@ export const AlertProvider = memo(({ children }: PropsWithChildren) => {
       </AlertDialog>
       {children}
     </AlertContext.Provider>
-  );
-});
+  )
+})
 
-export const useAlert = () => {
-  const context = useContext(AlertContext);
+export function useAlert() {
+  const context = useContext(AlertContext)
   if (!context) {
-    throw new Error('useAlert must be used within a AlertProvider');
+    throw new Error('useAlert must be used within a AlertProvider')
   }
-  return context;
-};
+  return context
+}

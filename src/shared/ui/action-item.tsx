@@ -1,14 +1,14 @@
-import { PropsWithClassname } from '../types/react';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react'
+import type { PropsWithClassname } from '../types/react'
 
-type Props = {
-  title?: string;
-  description?: string;
-  icon?: ReactNode;
-  onClick?: () => void;
-};
+interface Props {
+  title?: string
+  description?: string
+  icon?: ReactNode
+  onClick?: () => void
+}
 
-export const ActionItem = ({ title, description, icon, onClick }: PropsWithClassname<Props>) => {
+export function ActionItem({ title, description, icon, onClick }: PropsWithClassname<Props>) {
   return (
     <div onClick={onClick} className="flex items-center justify-between w-full pl-4 pr-2 py-4 border rounded-md">
       <div className="flex items-center space-x-4">
@@ -19,5 +19,5 @@ export const ActionItem = ({ title, description, icon, onClick }: PropsWithClass
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import { z } from 'zod'
 
 export const userSchema = z.object({
-  id: z.string()
-});
+  id: z.string(),
+})
 
 export const userDataSchema = z.object({
   id: z.string(),
@@ -17,10 +17,10 @@ export const userDataSchema = z.object({
   totalPartnerReward: z.number().optional(),
   isPartner: z.boolean().default(false),
   partnerRewardGrid: z.array(z.number()).default([]),
-  createdAt: z.string()
-});
+  createdAt: z.string(),
+})
 
 export const createUserSchema = z.object({
   userName: z.string().optional(),
-  referrerId: z.string().optional()
-});
+  referrerId: z.string().optional(),
+})

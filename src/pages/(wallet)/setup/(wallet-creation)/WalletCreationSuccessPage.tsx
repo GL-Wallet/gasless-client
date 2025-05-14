@@ -1,22 +1,22 @@
-import { AlertCircle } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
-import { navigate } from 'wouter/use-browser-location';
+import { ROUTES } from '@/shared/constants/routes'
+import AnimatedShinyText from '@/shared/magicui/animated-shiny-text'
+import ShinyButton from '@/shared/magicui/shiny-button'
 
-import { ROUTES } from '@/shared/constants/routes';
-import AnimatedShinyText from '@/shared/magicui/animated-shiny-text';
-import ShinyButton from '@/shared/magicui/shiny-button';
-import { Alert, AlertTitle } from '@/shared/ui/alert';
+import { Alert, AlertTitle } from '@/shared/ui/alert'
+import { AlertCircle } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import { navigate } from 'wouter/use-browser-location'
 
-export const WalletCreationSuccessPage = () => {
-  const { t } = useTranslation();
+export function WalletCreationSuccessPage() {
+  const { t } = useTranslation()
 
   return (
-    <div className="h-full flex flex-col justify-between items-center">
+    <div className="flex-1 flex flex-col justify-between items-center">
       <div>
         <h3 className="text-2xl text-center font-bold mt-16 primary-gradient">{t('wallet.setup.success.title')}</h3>
         <div className="mt-3 text-muted-foreground max-w-72 space-y-5">
-          <div className='space-y-2'>
-            <AnimatedShinyText className='text-nowrap'>{t('wallet.setup.success.primaryDescription.1')}</AnimatedShinyText>
+          <div className="space-y-2">
+            <AnimatedShinyText className="text-nowrap">{t('wallet.setup.success.primaryDescription.1')}</AnimatedShinyText>
             <AnimatedShinyText>{t('wallet.setup.success.primaryDescription.2')}</AnimatedShinyText>
           </div>
           <Alert className="bg-card/20 text-muted-foreground">
@@ -33,5 +33,5 @@ export const WalletCreationSuccessPage = () => {
         className="w-full"
       />
     </div>
-  );
-};
+  )
+}

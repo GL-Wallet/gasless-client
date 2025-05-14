@@ -1,6 +1,6 @@
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react'
 
-export const MainLayout = (props: PropsWithChildren) => {
+export function MainLayout(props: PropsWithChildren) {
   return (
     <>
       <div className="fixed left-0 top-0 -z-10 h-full w-full">
@@ -9,7 +9,7 @@ export const MainLayout = (props: PropsWithChildren) => {
         </div>
       </div>
 
-      <main className="relative h-screen px-6 pt-4 pb-8">{props.children}</main>
+      <main className="flex relative min-h-svh min-w-svw px-6 pt-4 pb-8">{props.children}</main>
     </>
-  );
-};
+  )
+}

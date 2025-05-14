@@ -90,6 +90,10 @@
       "sign": "Sign",
       "reject": "Reject"
     },
+    "tabs": {
+      "single": "Single",
+      "multiple": "Multiple"
+    },
     "error": {
       "waitForFeeToLoad": "Wait for the fee to load.",
       "notEnoughBalance": "Not enough balance.",
@@ -102,6 +106,224 @@
       "alert": {
         "title": "Transaction Failed with Optimized Fee",
         "description": "We couldn’t process your transaction with the optimized fee. Would you like to try again with the standard fee?"
+      }
+    }
+  },
+  "batch": {
+    "title": "Batch Transfers",
+    "button": {
+      "confirm": "Confirm",
+      "continue": "Continue",
+      "retry": "Retry",
+      "cancel": "Cancel",
+      "overview": "View Batch"
+    },
+    "error": {
+      "insufficientTRXBalance": "Not enough TRX to cover fees.",
+      "insufficientUSDTBalance": "Insufficient USDT balance for transfers.",
+      "default": "An unexpected error occurred. Please try again."
+    },
+    "items": {
+      "title": "Your Batch Transfers",
+      "empty": "No transactions added.",
+      "tabs": {
+        "all": "All",
+        "success": "Completed",
+        "failed": "Failed",
+        "pending": "In Progress"
+      }
+    },
+    "list": {
+      "title": "Transfer Batches",
+      "item": {
+        "title": "Transactions",
+        "status": {
+          "idle": "Pending",
+          "pending": "Processing",
+          "partially": "Partially Completed",
+          "success": "Completed",
+          "failed": "Failed"
+        }
+      },
+      "button": {
+        "retry": "Try Again"
+      },
+      "empty": "No transfer batches found."
+    },
+    "alert": {
+      "token": {
+        "title": "Only USDT Transfers Supported",
+        "description": "This batch only supports USDT transfers. Please use USDT for all entries."
+      },
+      "count": {
+        "min": {
+          "label": "Minimum number of transactions required"
+        },
+        "max": {
+          "label": "Maximum number of transactions allowed (temporary limit)"
+        }
+      },
+      "valid": "Valid",
+      "invalid": "Invalid"
+    },
+    "fee": {
+      "policy": {
+        "title": "Fee Policy",
+        "description": "We temporarily lock the maximum fee per transaction. After completion, unused fees are automatically refunded."
+      }
+    },
+    "summary": {
+      "balance": "Your Balance:",
+      "totalAmount": "Total Transfer Amount:",
+      "fee": "Estimated Fee:",
+      "additionalFee": "Extra Fee:",
+      "totalFee": "Total Estimated Fee:"
+    },
+    "example": {
+      "button": "View Example",
+      "title": "Input Format Example",
+      "paragraph": {
+        "1": {
+          "text": "Add one transaction per line using the format:",
+          "code": "RecipientAddress Amount"
+        },
+        "2": {
+          "text": "Each line represents a TRC20 USDT transfer. Example:"
+        }
+      },
+      "rules": {
+        "title": "Formatting Rules",
+        "1": "Amounts must be positive numbers",
+        "2": "Separate address and amount with a single space",
+        "3": "TRON addresses must start with"
+      }
+    },
+    "steps": {
+      "initialization": {
+        "idle": {
+          "title": "Getting Ready",
+          "description": "Preparing to initialize the batch process."
+        },
+        "pending": {
+          "title": "Initializing Batch",
+          "description": "The batch process is starting up. Please hold on a moment."
+        },
+        "error": {
+          "title": "Initialization Failed",
+          "description": "Could not start the batch process."
+        },
+        "success": {
+          "title": "Batch Initialized",
+          "description": "Ready for the next step."
+        }
+      },
+      "feeLoading": {
+        "idle": {
+          "title": "Fee Calculation Pending",
+          "description": "Waiting to calculate transaction fees."
+        },
+        "pending": {
+          "title": "Calculating Fees",
+          "description": "Analyzing the cost of the transactions. Please wait..."
+        },
+        "error": {
+          "title": "Fee Calculation Error",
+          "description": "We couldn't calculate the required fees."
+        },
+        "success": {
+          "title": "Fees Calculated",
+          "description": "All fees have been calculated successfully."
+        }
+      },
+      "transactionPreparation": {
+        "idle": {
+          "title": "Waiting for Preparation",
+          "description": "Awaiting the preparation of your batch transactions."
+        },
+        "pending": {
+          "title": "Preparing Transactions",
+          "description": "Creating and organizing all transactions in the batch."
+        },
+        "error": {
+          "title": "Transaction Preparation Failed",
+          "description": "We couldn't prepare the batch transactions."
+        },
+        "success": {
+          "title": "Transactions Prepared",
+          "description": "All transactions have been prepared and are ready to be sent."
+        }
+      },
+      "feeTransactionPreparation": {
+        "idle": {
+          "title": "Waiting for Fee Setup",
+          "description": "Awaiting the preparation of fee transactions."
+        },
+        "pending": {
+          "title": "Preparing Fee Transactions",
+          "description": "Setting up internal transactions to cover fees."
+        },
+        "error": {
+          "title": "Fee Transaction Preparation Failed",
+          "description": "We couldn't prepare fee-related transactions. Please try again."
+        },
+        "success": {
+          "title": "Fee Transactions Ready",
+          "description": "All fee transactions have been prepared successfully."
+        }
+      },
+      "transactionSending": {
+        "idle": {
+          "title": "Waiting to Send",
+          "description": "Awaiting confirmation to send the transactions."
+        },
+        "pending": {
+          "title": "Sending Transactions",
+          "description": "Broadcasting your transactions to the server."
+        },
+        "error": {
+          "title": "Transaction Sending Failed",
+          "description": "There was an issue sending the transactions. Please try again."
+        },
+        "success": {
+          "title": "Transactions Sent",
+          "description": "All transactions have been successfully sent to the server."
+        }
+      },
+      "cashback": {
+        "idle": {
+          "title": "Awaiting Cashback",
+          "description": "Waiting to process cashback or post-transaction rewards."
+        },
+        "pending": {
+          "title": "Processing Cashback",
+          "description": "Applying any applicable cashback or post-transaction benefits."
+        },
+        "error": {
+          "title": "Cashback Failed",
+          "description": "There was a problem processing your cashback."
+        },
+        "success": {
+          "title": "Cashback Applied",
+          "description": "Your cashback or rewards have been successfully processed."
+        }
+      }
+    },
+    "workflow": {
+      "succeeded": {
+        "title": "Batch Successfully Processed",
+        "description": "All transactions have been validated and sent to the server."
+      },
+      "failed": {
+        "title": "Batch Process Failed",
+        "description": "The batch process encountered an unrecoverable error. Please check the details and try again if applicable."
+      },
+      "cancelled": {
+        "title": "Batch Cancelled",
+        "description": "You cancelled the batch transaction process before completion."
+      },
+      "interrupted": {
+        "title": "Batch Interrupted",
+        "description": "The batch process was interrupted unexpectedly. Some transactions may not have completed."
       }
     }
   },

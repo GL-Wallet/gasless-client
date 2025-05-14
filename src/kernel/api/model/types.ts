@@ -1,26 +1,26 @@
-export type TransferInfoResponse = {
-  address: string;
-  fee: number;
-  optimization: boolean;
-};
+export interface TransferInfoResponse {
+  address: string
+  fee: number
+  optimization: boolean
+}
 
-export type ExchangeInfoResponse = {
-  rate: number;
-  minAmount: number;
-  fee: number;
-  balance: number;
-  optimization: boolean;
-};
+export interface ExchangeInfoResponse {
+  rate: number
+  minAmount: number
+  fee: number
+  balance: number
+  optimization: boolean
+}
 
-export type ExchangeResponse = {
-  txid: string;
-};
+export interface ExchangeResponse {
+  txid: string
+}
 
-export type TransferResponse = {
-  txid: string;
-};
+export interface TransferResponse {
+  txid: string
+}
 
-export type ClaimRewardResponse = {
-  txid: string;
-  amount: number;
-};
+export interface ClaimRewardResponse {
+  txid: string
+  amount: number
+}

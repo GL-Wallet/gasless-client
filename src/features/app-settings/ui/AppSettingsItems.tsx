@@ -1,21 +1,21 @@
-import { FilePenLine, Fingerprint, KeyRound, Wallet2 } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/kernel/auth'
+import { ROUTES } from '@/shared/constants/routes'
 
-import { useAuth } from '@/kernel/auth';
-import { ROUTES } from '@/shared/constants/routes';
-import { ActionItem } from '@/shared/ui/action-item';
-import { LinkItem } from '@/shared/ui/link-item';
-import { SwitchItem } from '@/shared/ui/switch-item';
+import { ActionItem } from '@/shared/ui/action-item'
+import { LinkItem } from '@/shared/ui/link-item'
+import { SwitchItem } from '@/shared/ui/switch-item'
+import { FilePenLine, Fingerprint, KeyRound, Wallet2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
-import { useSettingsItems } from '../model/useSettingsItems';
-import { LanguageDrawer } from './LanguageDrawer';
+import { useSettingsItems } from '../model/useSettingsItems'
+import { LanguageDrawer } from './LanguageDrawer'
 
-export const AppSettingsItems = () => {
-  const { isBiometryEnabled, handleSwitchBiometry } = useSettingsItems();
+export function AppSettingsItems() {
+  const { isBiometryEnabled, handleSwitchBiometry } = useSettingsItems()
 
-  const { authenticate } = useAuth();
+  const { authenticate } = useAuth()
 
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   return (
     <div className="space-y-4">
@@ -53,5 +53,5 @@ export const AppSettingsItems = () => {
         className="bg-transparent"
       />
     </div>
-  );
-};
+  )
+}

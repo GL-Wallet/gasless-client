@@ -1,10 +1,13 @@
-import { UserData } from '@/entities/user';
-import { axiosInstance } from '@/shared/lib/axios';
+import type { UserData } from '@/entities/user'
+import type {
+  ClaimRewardResponse,
+  ExchangeInfoResponse,
+  ExchangeResponse,
+  TransferInfoResponse,
+  TransferResponse,
+} from './types'
 
-import {
-  ClaimRewardResponse, ExchangeInfoResponse, ExchangeResponse, TransferInfoResponse,
-  TransferResponse
-} from './types';
+import { axiosInstance } from '@/shared/lib/axios'
 
 export const api = {
   transfer: async <T>(id: string, data: T) =>
@@ -25,7 +28,7 @@ export const api = {
 
   getReferrals: async (
     id: string,
-    { page = 1, limit = 10 }: { page?: number; limit?: number } = { page: 1, limit: 10 }
+    { page = 1, limit = 10 }: { page?: number, limit?: number } = { page: 1, limit: 10 },
   ) => (await axiosInstance.get(`/referral/referrals/${id}`, { params: { page, limit } })).data as UserData[],
   getReferralsCount: async (id: string) => (await axiosInstance.get(`/referral/referrals/count/${id}`)).data as number,
 
@@ -38,5 +41,5 @@ export const api = {
 
   subscribe: async (address: string) => (await axiosInstance.post('/bot/subscribe', { address })).data,
   unsubscribe: async (address: string) => (await axiosInstance.post('/bot/unsubscribe', { address })).data,
-  unsubscribeAll: async () => (await axiosInstance.post('/bot/unsubscribe-all')).data
-};
+  unsubscribeAll: async () => (await axiosInstance.post('/bot/unsubscribe-all')).data,
+}

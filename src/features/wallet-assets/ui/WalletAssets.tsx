@@ -1,35 +1,35 @@
-import { Send } from 'lucide-react';
-import React, { useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Link } from 'wouter';
-import { navigate } from 'wouter/use-browser-location';
+import type { PropsWithClassname } from '@/shared/types/react'
+import { useWallet } from '@/entities/wallet'
+import { ROUTES } from '@/shared/constants/routes'
+import { AVAILABLE_TOKENS } from '@/shared/enums/tokens'
+import { cn } from '@/shared/lib/utils'
 
-import { useWallet } from '@/entities/wallet';
-import { ROUTES } from '@/shared/constants/routes';
-import { AVAILABLE_TOKENS } from '@/shared/enums/tokens';
-import { cn } from '@/shared/lib/utils';
-import AnimatedShinyText from '@/shared/magicui/animated-shiny-text';
-import { PropsWithClassname } from '@/shared/types/react';
-import { Button } from '@/shared/ui/button';
-import { FormattedNumber } from '@/shared/ui/formatted-number';
-import { urlJoin } from '@/shared/utils/urlJoin';
+import AnimatedShinyText from '@/shared/magicui/animated-shiny-text'
+import { Button } from '@/shared/ui/button'
+import { FormattedNumber } from '@/shared/ui/formatted-number'
+import { urlJoin } from '@/shared/utils/urlJoin'
+import { Send } from 'lucide-react'
+import React, { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Link } from 'wouter'
+import { navigate } from 'wouter/use-browser-location'
 
 const Icons: Record<AVAILABLE_TOKENS, string> = {
   TRX: '/icons/tron.png',
-  USDT: '/icons/usdt.png'
-};
+  USDT: '/icons/usdt.png',
+}
 
-export const WalletAssets = ({ className }: PropsWithClassname) => {
-  const wallet = useWallet();
-  const { t } = useTranslation();
+export function WalletAssets({ className }: PropsWithClassname) {
+  const wallet = useWallet()
+  const { t } = useTranslation()
 
   const handleNavigate = useCallback(
     (token: AVAILABLE_TOKENS) => (e: React.MouseEvent) => {
-      e.preventDefault();
-      navigate(urlJoin(ROUTES.WALLET_TRANSFER, token));
+      e.preventDefault()
+      navigate(urlJoin(ROUTES.WALLET_TRANSFER, token))
     },
-    []
-  );
+    [],
+  )
 
   return (
     <div className={cn('w-full space-y-3', className)}>
@@ -56,8 +56,8 @@ export const WalletAssets = ({ className }: PropsWithClassname) => {
               </span>
 
               <Button
-                variant={'outline'}
-                size={'icon'}
+                variant="outline"
+                size="icon"
                 onClick={handleNavigate(token as AVAILABLE_TOKENS)}
                 className="border border-gray-300 dark:border-neutral-700"
               >
@@ -68,5 +68,5 @@ export const WalletAssets = ({ className }: PropsWithClassname) => {
         ))}
       </div>
     </div>
-  );
-};
+  )
+}

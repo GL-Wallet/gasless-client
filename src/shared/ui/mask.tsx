@@ -1,15 +1,15 @@
-import { EyeOff } from 'lucide-react';
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { EyeOff } from 'lucide-react'
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
-export const Mask = ({ onHideMask }: { onHideMask?: () => void }) => {
-  const [isShowMask, setIsShowMask] = useState(true);
-  const { t } = useTranslation();
+export function Mask({ onHideMask }: { onHideMask?: () => void }) {
+  const [isShowMask, setIsShowMask] = useState(true)
+  const { t } = useTranslation()
 
   const handleHideMask = () => {
-    setIsShowMask(false);
-    onHideMask && onHideMask();
-  };
+    setIsShowMask(false)
+    onHideMask && onHideMask()
+  }
 
   return (
     isShowMask && (
@@ -25,5 +25,5 @@ export const Mask = ({ onHideMask }: { onHideMask?: () => void }) => {
         </div>
       </div>
     )
-  );
-};
+  )
+}

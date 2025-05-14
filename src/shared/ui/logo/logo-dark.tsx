@@ -1,6 +1,6 @@
-import { PropsWithClassname } from '@/shared/types/react';
+import type { PropsWithClassname } from '@/shared/types/react'
 
-export const LogoDark = ({ className }: PropsWithClassname) => {
+export function LogoDark({ className }: PropsWithClassname) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -68,5 +68,5 @@ export const LogoDark = ({ className }: PropsWithClassname) => {
         </g>
       </g>
     </svg>
-  );
-};
+  )
+}

@@ -1,1 +1,1 @@
-export { WalletTransferForm } from './ui/WalletTransferForm';
+export { WalletTransferForm } from './ui/WalletTransferForm'

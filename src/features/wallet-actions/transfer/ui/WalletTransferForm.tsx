@@ -1,88 +1,92 @@
-import { Alert, AlertDescription, AlertTitle } from '@/shared/ui/alert';
-import { Balances, TransactionID } from '@/kernel/tron/model/types';
-import { CircleAlert, LucideArrowDown, Wallet2 } from 'lucide-react';
+/* eslint-disable ts/no-use-before-define */
+import type { TransferInfoResponse } from '@/kernel/api'
+import type { Balances, TransactionID } from '@/kernel/tron/model/types'
+import type { UseFormReturn } from 'react-hook-form'
+import { useWallet } from '@/entities/wallet'
+import { api } from '@/kernel/api'
+import { useAuth } from '@/kernel/auth'
+import { ROUTES } from '@/shared/constants/routes'
+import { AVAILABLE_TOKENS } from '@/shared/enums/tokens'
+
+import ShinyButton from '@/shared/magicui/shiny-button'
+import { Alert, AlertDescription, AlertTitle } from '@/shared/ui/alert'
+import { useAlert } from '@/shared/ui/alert/Alert'
+import { Button } from '@/shared/ui/button'
 import {
   Drawer,
   DrawerClose,
   DrawerContent,
   DrawerFooter,
   DrawerHeader,
-  DrawerTitle
-} from '@/shared/ui/drawer';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
-import { TransferInfoResponse, api } from '@/kernel/api';
-import { UseFormReturn, useForm } from 'react-hook-form';
-import { useCallback, useState } from 'react';
-
-import { AVAILABLE_TOKENS } from '@/shared/enums/tokens.ts';
-import { Button } from '@/shared/ui/button';
-import { FormattedNumber } from '@/shared/ui/formatted-number';
-import { Input } from '@/shared/ui/input';
-import { QrScannerButton } from '@/shared/ui/qr-scanner-button';
-import { ROUTES } from '@/shared/constants/routes';
-import { Separator } from '@/shared/ui/separator';
-import ShinyButton from '@/shared/magicui/shiny-button';
-import { TronWeb } from 'tronweb';
-import { TrxPurchaseLink } from './TrxPurchaseLink';
-import { navigate } from 'wouter/use-browser-location';
-import toast from 'react-hot-toast';
-import { truncateString } from '@/shared/utils/truncateString';
-import { urlJoin } from '@/shared/utils/urlJoin';
-import { useAlert } from '@/shared/ui/alert/Alert';
-import { useAuth } from '@/kernel/auth';
-import { useTranslation } from 'react-i18next';
-import { useTrc20Transfer } from '../model/useUsdtTransfer';
-import { useTrxTransfer } from '../model/useTrxTransfer';
-import { useWallet } from '@/entities/wallet';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
+  DrawerTitle,
+} from '@/shared/ui/drawer'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form'
+import { FormattedNumber } from '@/shared/ui/formatted-number'
+import { Input } from '@/shared/ui/input'
+import { QrScannerButton } from '@/shared/ui/qr-scanner-button'
+import { Separator } from '@/shared/ui/separator'
+import { truncateString } from '@/shared/utils/truncateString'
+import { urlJoin } from '@/shared/utils/urlJoin'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery } from '@tanstack/react-query'
+import { CircleAlert, LucideArrowDown, Wallet2 } from 'lucide-react'
+import { useCallback, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
+import { TronWeb } from 'tronweb'
+import { navigate } from 'wouter/use-browser-location'
+import { z } from 'zod'
+import { useTrxTransfer } from '../model/useTrxTransfer'
+import { useTrc20Transfer } from '../model/useUsdtTransfer'
+import { TokenPicker } from './TokenPicker'
+import { TrxPurchaseLink } from './TrxPurchaseLink'
 
 // Validation schema for form fields
-const tronAddressRegex = /^T[1-9A-HJ-NP-Za-km-z]{33}$/;
+const tronAddressRegex = /^T[1-9A-HJ-NP-Za-km-z]{33}$/
 
-const BANDWIDTH_COST = 0.345;
-const TRANSACTION_FEE = 13.5;
+const BANDWIDTH_COST = 0.345
+const TRANSACTION_FEE = 13.5
 
 const formSchema = z.object({
   address: z
     .string()
-    .refine((address) => tronAddressRegex.test(address), {
-      message: 'transfer.error.invalidTrc20AddressFormat'
+    .refine(address => tronAddressRegex.test(address), {
+      message: 'transfer.error.invalidTrc20AddressFormat',
     })
-    .refine((address) => TronWeb.isAddress(address), {
-      message: 'transfer.error.addressNotExist'
+    .refine(address => TronWeb.isAddress(address), {
+      message: 'transfer.error.addressNotExist',
     }),
   amount: z.coerce
     .number()
-    .min(0.000001, { message: 'transfer.error.youMustEnterAtLeast' })
-    .positive({ message: 'transfer.error.amountMustBePositive' })
-});
+    .positive({ message: 'transfer.error.amountMustBePositive' }),
+})
 
-type FormFields = z.infer<typeof formSchema>;
+type FormFields = z.infer<typeof formSchema>
 
-type Props = {
-  token: string;
-};
+interface Props {
+  token: string
+}
 
-export const WalletTransferForm = ({ token }: Props) => {
-  const { transferUsdt } = useTrc20Transfer();
-  const { transferTrx } = useTrxTransfer();
-  const { authenticate } = useAuth();
-  const { t } = useTranslation();
-  const wallet = useWallet();
-  const alert = useAlert();
+export function WalletTransferForm(props: Props) {
+  const [token, setToken] = useState(props.token ?? AVAILABLE_TOKENS.USDT)
+  const { transferUsdt } = useTrc20Transfer()
+  const { transferTrx } = useTrxTransfer()
+  const { authenticate } = useAuth()
+  const { t } = useTranslation()
+  const wallet = useWallet()
+  const alert = useAlert()
 
   const form = useForm<FormFields>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       address: '',
-      amount: 0
-    }
-  });
+      amount: '' as unknown as number,
+    },
+  })
 
-  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
-  const [formValues, setFormValues] = useState<FormFields>();
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
+  const [formValues, setFormValues] = useState<FormFields>()
   const address = form.watch('address')
 
   const { data: transferInfo } = useQuery({
@@ -90,7 +94,7 @@ export const WalletTransferForm = ({ token }: Props) => {
     queryFn: () => {
       return api.transferInfo(address)
     },
-    enabled: !!address && TronWeb.isAddress(address)
+    enabled: !!address && TronWeb.isAddress(address),
   })
 
   const { data: prevFee } = useQuery({
@@ -99,102 +103,111 @@ export const WalletTransferForm = ({ token }: Props) => {
       const energyCount = await api.getEnergyCountByAddress(address)
       return energyCount * TRANSACTION_FEE
     },
-    enabled: !!address && TronWeb.isAddress(address)
+    enabled: !!address && TronWeb.isAddress(address),
   })
 
-  const isUsdtToken = token === AVAILABLE_TOKENS.USDT;
-  const isOptimizationEnabled = transferInfo?.optimization === true || transferInfo?.optimization === undefined;
+  const isUsdtToken = token === AVAILABLE_TOKENS.USDT
+  const isOptimizationEnabled = transferInfo?.optimization === true || transferInfo?.optimization === undefined
 
   const validateTransaction = useCallback(
     (values: FormFields): boolean => {
-      const sourceBalance = wallet.balances[token as keyof typeof wallet.balances];
-      const feeBalance = wallet.balances.TRX;
+      const sourceBalance = wallet.balances[token as keyof typeof wallet.balances]
+      const feeBalance = wallet.balances.TRX
 
       if (values.amount > sourceBalance) {
-        form.setError('amount', { type: 'manual', message: t('transfer.error.insufficientBalance', { token }) });
-        toast.error(t('transfer.error.notEnoughBalance'));
-        return false;
+        form.setError('amount', { type: 'manual', message: t('transfer.error.insufficientBalance', { token }) })
+        toast.error(t('transfer.error.notEnoughBalance'))
+        return false
       }
 
       if (isUsdtToken && transferInfo?.fee && feeBalance < transferInfo?.fee) {
-        toast.error(t('transfer.error.insufficientBalance', { token: "TRX" }));
-        return false;
+        toast.error(t('transfer.error.insufficientBalance', { token: 'TRX' }))
+        return false
       }
 
       if (values.address === wallet.address) {
-        form.setError('address', { type: 'manual', message: t('transfer.error.cannotUseOwnAddress') });
-        toast.error(t('transfer.error.cannotUseOwnAddress'));
-        return false;
+        form.setError('address', { type: 'manual', message: t('transfer.error.cannotUseOwnAddress') })
+        toast.error(t('transfer.error.cannotUseOwnAddress'))
+        return false
       }
 
-      form.clearErrors('amount');
-      return true;
+      form.clearErrors('amount')
+      return true
     },
-    [form, isUsdtToken, t, token, transferInfo?.fee, wallet]
-  );
+    [form, isUsdtToken, t, token, transferInfo?.fee, wallet],
+  )
 
   const handleFormSubmit = useCallback(
     (values: FormFields) => {
       if (validateTransaction(values)) {
-        setFormValues(values);
-        setIsDrawerOpen(true);
+        setFormValues(values)
+        setIsDrawerOpen(true)
       }
     },
-    [validateTransaction]
-  );
+    [validateTransaction],
+  )
 
   const handleAuthenticateAndSign = async () => {
-    const passcode = await authenticate();
+    const passcode = await authenticate()
     if (passcode) {
-      if (!formValues?.address || !formValues.amount) return;
+      if (!formValues?.address || !formValues.amount)
+        return
 
       try {
-        const transactionId = await handleProcessTransaction(formValues.address, formValues.amount, passcode);
-        navigateToTransactionResult(transactionId);
-        processTransferResult(transactionId, formValues.address, formValues.amount, passcode);
-      } catch (error) {
-        console.error(`Transaction processing error:`, error);
-        navigateToTransactionResult(undefined);
+        const transactionId = await handleProcessTransaction(formValues.address, formValues.amount, passcode)
+        navigateToTransactionResult(transactionId)
+        processTransferResult(transactionId, formValues.address, formValues.amount, passcode)
+      }
+      catch (error) {
+        console.error(`Transaction processing error:`, error)
+        navigateToTransactionResult(undefined)
       }
     }
-  };
+  }
 
   const processTransferResult = (
     txid: TransactionID | undefined,
     address: string,
     amount: number,
-    passcode: string
+    passcode: string,
   ) => {
     if (!txid && token === AVAILABLE_TOKENS.USDT) {
       alert.setState({
         title: t('transfer.error.alert.title'),
         description: (
           <span>
-            {t('transfer.error.alert.description')} <br />
+            {t('transfer.error.alert.description')}
+            {' '}
+            <br />
             <span className="text-md font-bold">
-              (~{prevFee} {AVAILABLE_TOKENS.TRX})
+              (~
+              {prevFee}
+              {' '}
+              {AVAILABLE_TOKENS.TRX}
+              )
             </span>
             ?
           </span>
-        )
-      });
-      alert.setIsOpen(true);
+        ),
+      })
+      alert.setIsOpen(true)
       alert.setActions({
         async handleContinue() {
-          const transactionId = await handleProcessTransaction(address, amount, passcode, false);
-          navigateToTransactionResult(transactionId);
-        }
-      });
+          const transactionId = await handleProcessTransaction(address, amount, passcode, false)
+          navigateToTransactionResult(transactionId)
+        },
+      })
     }
-  };
+  }
 
   const handleProcessTransaction = useCallback(
     async (address: string, amount: number, passcode: string, optimization?: boolean): Promise<string | undefined> => {
-      if (!transferInfo?.address || !transferInfo?.fee) return;
+      if (!transferInfo?.address || !transferInfo?.fee)
+        return
 
       switch (token) {
         case AVAILABLE_TOKENS.USDT:
-          navigate(ROUTES.TRANSACTION_IN_PROGRESS);
+          navigate(ROUTES.TRANSACTION_IN_PROGRESS)
 
           return await transferUsdt({
             recipientAddress: address,
@@ -202,49 +215,62 @@ export const WalletTransferForm = ({ token }: Props) => {
             transferAmount: amount,
             transactionFee: transferInfo.fee,
             userPasscode: passcode,
-            optimization: optimization ?? transferInfo.optimization
-          });
+            optimization: optimization ?? transferInfo.optimization,
+          })
         case AVAILABLE_TOKENS.TRX:
-          return await transferTrx({ recipientAddress: address, transferAmount: amount, userPasscode: passcode });
+          return await transferTrx({ recipientAddress: address, transferAmount: amount, userPasscode: passcode })
         default:
-          console.error(`Unsupported token: ${token}`);
-          return undefined;
+          console.error(`Unsupported token: ${token}`)
+          return undefined
       }
     },
-    [token, transferInfo, transferTrx, transferUsdt]
-  );
+    [token, transferInfo, transferTrx, transferUsdt],
+  )
 
   const navigateToTransactionResult = useCallback((transactionId?: string) => {
     const resultRoute = transactionId
       ? urlJoin(ROUTES.TRANSACTION_RESULT, transactionId)
-      : urlJoin(ROUTES.TRANSACTION_RESULT, 'no-txid');
+      : urlJoin(ROUTES.TRANSACTION_RESULT, 'no-txid')
 
-    navigate(resultRoute);
-  }, []);
+    navigate(resultRoute)
+  }, [])
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleFormSubmit)} className="h-full flex flex-col justify-between">
         <div className="space-y-2">
-          <div className="relative py-3 px-3 dark:bg-secondary/40 border dark:border-neutral-700 rounded-lg space-y-4">
+          <div className="relative py-3 space-y-4">
             <AddressInput form={form} />
 
-            <TokenAmountInput form={form} balances={wallet.balances} token={token} />
+            <TokenAmountInput
+              form={form}
+              balances={wallet.balances}
+              token={token}
+              onTokenChange={setToken}
+            />
           </div>
 
           {isUsdtToken && <TrxPurchaseLink need={transferInfo?.fee} balances={wallet.balances} />}
 
-          <div className="flex flex-col gap-4 py-4 px-3 dark:bg-secondary/40 border dark:border-neutral-700 rounded-lg">
+          <div className="flex flex-col gap-4 bg-secondary/50 p-4 rounded-md">
             <div className="flex items-center justify-between">
-              <span className="text-sm">{t('transfer.available')}:</span>
               <span className="text-sm">
-                {wallet.balances[token as keyof typeof wallet.balances]} {token}
+                {t('transfer.available')}
+                :
+              </span>
+              <span className="text-sm">
+                {wallet.balances[token as keyof typeof wallet.balances]}
+                {' '}
+                {token}
               </span>
             </div>
 
             {isUsdtToken && isOptimizationEnabled && (
               <div className="flex items-center justify-between">
-                <span>{t('transfer.fee')}:</span>
+                <span>
+                  {t('transfer.fee')}
+                  :
+                </span>
                 <div className="text-md space-x-1">
                   <span>
                     <ReducedFee form={form} transferInfo={transferInfo} prevFee={prevFee} />
@@ -263,15 +289,20 @@ export const WalletTransferForm = ({ token }: Props) => {
             <Separator className="mt-2" />
 
             <div className="flex items-center justify-between">
-              <span className="text-lg">{t('transfer.total')}:</span>
               <span className="text-lg">
-                {form.watch('amount')} {token}
+                {t('transfer.total')}
+                :
+              </span>
+              <span className="text-lg">
+                {form.watch('amount')}
+                {' '}
+                {token}
               </span>
             </div>
           </div>
         </div>
 
-        <Button className="dark:text-white bg-secondary/80 dark:border-neutral-500" variant={'outline'} type="submit">
+        <Button className="dark:text-white bg-secondary/80 dark:border-neutral-500" variant="outline" type="submit">
           {t('transfer.button.send')}
         </Button>
 
@@ -285,20 +316,20 @@ export const WalletTransferForm = ({ token }: Props) => {
         />
       </form>
     </Form>
-  );
-};
+  )
+}
 
-const ReducedFee = ({
+function ReducedFee({
   transferInfo,
   prevFee,
-  form
+  form,
 }: {
-  transferInfo: TransferInfoResponse | undefined;
-  prevFee: number | undefined;
-  form: UseFormReturn<FormFields>;
-}) => {
+  transferInfo: TransferInfoResponse | undefined
+  prevFee: number | undefined
+  form: UseFormReturn<FormFields>
+}) {
   if (!transferInfo?.fee || !form.watch('address')) {
-    return <span>-</span>;
+    return <span>-</span>
   }
 
   return (
@@ -307,15 +338,17 @@ const ReducedFee = ({
         <FormattedNumber number={prevFee!} />
       </span>
       <span className="flex text-md">
-        <FormattedNumber number={transferInfo?.fee + BANDWIDTH_COST} /> {AVAILABLE_TOKENS.TRX}
+        <FormattedNumber number={transferInfo?.fee + BANDWIDTH_COST} />
+        {' '}
+        {AVAILABLE_TOKENS.TRX}
       </span>
     </div>
-  );
-};
+  )
+}
 
 // Address input component
-const AddressInput = ({ form }: { form: UseFormReturn<FormFields> }) => {
-  const { t } = useTranslation();
+function AddressInput({ form }: { form: UseFormReturn<FormFields> }) {
+  const { t } = useTranslation()
 
   return (
     <FormField
@@ -323,12 +356,18 @@ const AddressInput = ({ form }: { form: UseFormReturn<FormFields> }) => {
       name="address"
       render={({ field }) => (
         <FormItem>
-          <FormLabel className="text-lg primary-gradient">{t('transfer.sendTo')}</FormLabel>
+          <FormLabel className="text-lg primary-gradient">
+            {t('transfer.sendTo')}
+          </FormLabel>
           <FormControl>
             <div className="relative">
-              <Input {...field} placeholder={t('transfer.address')} className="h-14 bg-transparent pr-12 text-[12px]" />
+              <Input
+                {...field}
+                placeholder={t('transfer.address')}
+                className="h-14 bg-transparent pr-12 text-[12px] dark:border-white/40"
+              />
               <QrScannerButton
-                setValue={(value) => form.setValue('address', value)}
+                setValue={value => form.setValue('address', value)}
                 className="absolute top-1/2 -translate-y-1/2 right-1"
                 size={7}
               />
@@ -338,70 +377,85 @@ const AddressInput = ({ form }: { form: UseFormReturn<FormFields> }) => {
         </FormItem>
       )}
     />
-  );
-};
+  )
+}
 
 // Token amount input component
-const TokenAmountInput: React.FC<{ form: UseFormReturn<FormFields>; balances: Balances; token: string }> = ({
-  form,
-  balances,
-  token
-}) => {
-  const { t } = useTranslation();
+const TokenAmountInput: React.FC<{
+  form: UseFormReturn<FormFields>
+  balances: Balances
+  token: string
+  onTokenChange: (token: string) => void
+}>
+  = ({
+    form,
+    balances,
+    token,
+    onTokenChange,
+  }) => {
+    const { t } = useTranslation()
 
-  return (
-    <FormField
-      control={form.control}
-      name="amount"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel className="text-lg primary-gradient">{t('transfer.amount')}</FormLabel>
-          <FormControl>
-            <div className="relative">
-              <Input
-                className="bg-transparent h-14 text-lg"
-                type="number"
-                min="0"
-                inputMode="decimal"
-                pattern="[0-9]*"
-                step="any"
-                {...field}
-                // temporary
-                onFocus={(e) => {
-                  const value = e.target.value;
-                  if (+value === 0) {
-                    form.setValue('amount', value.replace(/^0+/, '') as unknown as number);
-                  }
-                }}
-              />
-              <div className="absolute top-1/2 right-12 -translate-y-1/2 text-sm text-muted-foreground">{token}</div>
-              <div
-                className="absolute top-1/2 right-3 -translate-y-1/2 text-sm dark:text-white"
-                onClick={() => {
-                  form.setValue('amount', balances[token as keyof typeof balances]);
-                }}
-              >
-                MAX
+    return (
+      <FormField
+        control={form.control}
+        name="amount"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel className="text-lg primary-gradient">
+              {t('transfer.amount')}
+            </FormLabel>
+            <FormControl>
+              <div className="relative">
+                <Input
+                  className="bg-transparent h-14 text-lg dark:border-white/40 placeholder:text-sm"
+                  type="number"
+                  min="0"
+                  inputMode="decimal"
+                  pattern="[0-9]*"
+                  step="any"
+                  placeholder="Amount"
+                  {...field}
+                  // temporary
+                  onFocus={(e) => {
+                    const value = e.target.value
+                    if (+value === 0) {
+                      form.setValue('amount', value.replace(/^0+/, '') as unknown as number)
+                    }
+                  }}
+                />
+                <div
+                  className="absolute top-1/2 right-24 -translate-y-1/2 text-sm dark:text-white text-blue-500"
+                  onClick={() => {
+                    form.setValue('amount', balances[token as keyof typeof balances])
+                  }}
+                >
+                  MAX
+                </div>
+
+                <div
+                  className="absolute top-1/2 right-3 -translate-y-1/2"
+                >
+                  <TokenPicker value={token} onValueChange={onTokenChange} />
+                </div>
               </div>
-            </div>
-          </FormControl>
-          <FormMessage tOptions={{ value: 0.1 }} />
-        </FormItem>
-      )}
-    />
-  );
-};
+            </FormControl>
+            <FormMessage tOptions={{ value: 0.1 }} />
+          </FormItem>
+        )}
+      />
+    )
+  }
 
 // Transaction drawer component
 const TransactionDrawer: React.FC<{
-  token: string;
-  isOpen: boolean;
-  onClose: () => void;
-  values?: FormFields;
-  walletAddress: string;
-  onSign: () => void;
+  token: string
+  isOpen: boolean
+  onClose: () => void
+  values?: FormFields
+  walletAddress: string
+  onSign: () => void
 }> = ({ token, isOpen, onClose, values, walletAddress, onSign }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   return (
     <Drawer open={isOpen} onClose={onClose}>
@@ -431,14 +485,14 @@ const TransactionDrawer: React.FC<{
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
-  );
-};
+  )
+}
 
 // Transaction alert component
-const TransactionAlert: React.FC<{ title: string; description: string }> = ({ title, description }) => (
+const TransactionAlert: React.FC<{ title: string, description: string }> = ({ title, description }) => (
   <Alert>
     <Wallet2 className="h-4 w-4" />
     <AlertTitle>{title}</AlertTitle>
     <AlertDescription>{truncateString(description, 14)}</AlertDescription>
   </Alert>
-);
+)
