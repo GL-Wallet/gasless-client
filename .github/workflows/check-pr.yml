@@ -24,12 +24,16 @@ jobs:
     needs: lint
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # ⬅️ Add this to get full git history for Sentry
+
       - uses: actions/setup-node@v3
         with:
           node-version: 20.x
           cache: npm
+
       - run: npm ci
-      - run: npm run build # Your build should include source maps in ./dist
+      - run: npm run build # Ensure this generates source maps in ./dist
 
       - name: Create Sentry release
         uses: getsentry/action-release@v3
@@ -42,3 +46,4 @@ jobs:
           sourcemaps: './dist'
           url_prefix: '~/dist'
           finalize: true
+          ignore_missing: true # Optional: avoids failure if no previous release is found
