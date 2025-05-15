@@ -2,8 +2,8 @@ import './_styles/globals.css';
 
 import TelegramAnalytics from '@telegram-apps/analytics';
 import { MainLayout } from '@/pages/(layouts)/MainLayout';
-import ErrorBoundary from '@/shared/ui/error-boundary';
 import { Toaster } from '@/shared/ui/toaster';
+import * as Sentry from "@sentry/react";
 
 import { Configs } from './_configs';
 import { Loaders } from './_loaders';
@@ -18,7 +18,7 @@ TelegramAnalytics.init({
 export const App = () => {
   return (
     <MainLayout>
-      <ErrorBoundary>
+      <Sentry.ErrorBoundary fallback={<p>An error has occurred</p>}>
         <Providers>
           <Configs>
             <Loaders>
@@ -26,7 +26,7 @@ export const App = () => {
             </Loaders>
           </Configs>
         </Providers>
-      </ErrorBoundary>
+      </Sentry.ErrorBoundary>
       <Toaster />
     </MainLayout>
   );

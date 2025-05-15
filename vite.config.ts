@@ -3,6 +3,7 @@ import { obfuscator } from 'rollup-obfuscator';
 import { defineConfig, loadEnv } from 'vite';
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import { sentryVitePlugin } from "@sentry/vite-plugin";
 
 import { vitePluginCacheBuster } from '@piplup/vite-plugin-cache-buster';
 import basicSsl from '@vitejs/plugin-basic-ssl';
@@ -14,6 +15,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     build: {
+      sourcemap: true,
       outDir: 'dist',
       rollupOptions: {
         output: {
@@ -38,6 +40,12 @@ export default defineConfig(({ mode }) => {
       basicSsl(),
 
       vitePluginCacheBuster(),
+
+      sentryVitePlugin({
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+        org: "xpaid",
+        project: "javascript-react",
+      }),
 
       obfuscator({
         compact: true,
