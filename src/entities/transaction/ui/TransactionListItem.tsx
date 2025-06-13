@@ -1,13 +1,13 @@
 import type { Transaction } from '../model/types'
 
-import { ROUTES } from '@/shared/constants/routes'
 import { Alert, AlertDescription, AlertTitle } from '@/shared/ui/alert'
-import { FormattedNumber } from '@/shared/ui/formatted-number'
-import { urlJoin } from '@/shared/utils/urlJoin'
+import { CopyToClipboard } from '@/shared/ui/copy-to-clipboard'
 
-import { navigate } from 'wouter/use-browser-location'
+import { FormattedNumber } from '@/shared/ui/formatted-number'
+import { useUtils } from '@telegram-apps/sdk-react'
+import { Share } from 'lucide-react'
 import { TransactionListDateOptions } from '../constants'
-import { formatDate, isSentByWallet } from '../model/utils'
+import { formatDate, getTransactionLink, isSentByWallet } from '../model/utils'
 
 interface Props {
   transaction: Transaction
@@ -15,26 +15,37 @@ interface Props {
 }
 
 export function TransactionListItem({ transaction, walletAddress }: Props) {
-  const { txid, amount, from, timestamp } = transaction
+  const { amount, from, timestamp } = transaction
+
+  const utils = useUtils()
 
   const isSent = isSentByWallet(from, walletAddress)
   const isShowTransaction = amount > 0.0001
+
+  const transactionLink = getTransactionLink(transaction?.txid)
 
   return (
     isShowTransaction && (
       <Alert
         className="dark:bg-card/80 cursor-pointer rounded-sm"
-        onClick={() => navigate(urlJoin(ROUTES.TRANSACTION, txid))}
       >
-        <AlertTitle className="primary-gradient font-bold text-lg">
-          {isSent ? '-' : '+'}
-          <FormattedNumber number={amount} />
-        </AlertTitle>
-        <AlertDescription>
-          <span className="text-sm text-muted-foreground truncate">
-            {formatDate(new Date(timestamp), TransactionListDateOptions)}
-          </span>
-        </AlertDescription>
+        <div className="flex justify-between items-center">
+          <div>
+            <AlertTitle className="primary-gradient font-bold text-lg">
+              {isSent ? '-' : '+'}
+              <FormattedNumber number={amount} />
+            </AlertTitle>
+            <AlertDescription>
+              <span className="text-sm text-muted-foreground truncate">
+                {formatDate(new Date(timestamp), TransactionListDateOptions)}
+              </span>
+            </AlertDescription>
+          </div>
+          <div className="flex items-center gap-4" onClick={e => e.stopPropagation()}>
+            <CopyToClipboard value={transactionLink} />
+            <Share className="size-5" onClick={() => utils.shareURL(transactionLink)} />
+          </div>
+        </div>
       </Alert>
     )
   )

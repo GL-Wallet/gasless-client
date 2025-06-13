@@ -10,28 +10,16 @@ import React, { useEffect, useState } from 'react' // Import React
 
 import { useTranslation } from 'react-i18next'
 import { TransactionDateOptions } from '../constants'
-import { useTransactionStore } from '../model/store'
 import { formatDate, getTransactionLink, getTronscanLink, isSentByWallet } from '../model/utils'
 import { TransactionLink } from './TransactionLink'
 
 // Wrap TransactionLink with React.memo
 const MemoizedTransactionLink = React.memo(TransactionLink)
 
-export function Transaction({ txid, walletAddress }: { txid: string, walletAddress: string }) {
-  const [transaction, setTransaction] = useState<TransactionType | null>(null)
+export function Transaction({ transaction }: { transaction: TransactionType }) {
   const [status, setStatus] = useState<string | null>(null)
 
   const { t } = useTranslation()
-
-  const getTransaction = useTransactionStore(store => store.getTransaction)
-
-  useEffect(() => {
-    const transactionFromStore = getTransaction(txid)
-
-    if (transactionFromStore && transactionFromStore !== transaction) {
-      setTransaction(transactionFromStore)
-    }
-  }, [getTransaction, transaction, txid])
 
   useEffect(() => {
     const privateKey = getPrivateKey()
@@ -39,8 +27,8 @@ export function Transaction({ txid, walletAddress }: { txid: string, walletAddre
     if (!privateKey)
       return
 
-    tronService.getTransactionStatus(txid, privateKey).then(status => setStatus(status))
-  }, [txid])
+    tronService.getTransactionStatus(transaction.txid, privateKey).then(status => setStatus(status))
+  }, [transaction.txid])
 
   const tronscanLink = getTronscanLink(transaction?.txid)
   const transactionLink = getTransactionLink(transaction?.txid)
@@ -49,7 +37,7 @@ export function Transaction({ txid, walletAddress }: { txid: string, walletAddre
     transaction && (
       <div className="flex flex-col items-center pt-6">
         <h2 className="primary-gradient text-center whitespace-pre-wrap text-3xl font-medium tracking-tighter">
-          {isSentByWallet(transaction.from, walletAddress) ? '-' : '+'}
+          {isSentByWallet(transaction.from, transaction.from) ? '-' : '+'}
           <FormattedNumber number={transaction.amount} />
           {' '}
           <span className="text-2xl text-muted-foreground">{transaction.token}</span>

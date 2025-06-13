@@ -41,6 +41,7 @@ export function CreateBatch({ id, txs }: BatchProps) {
     retryStep,
     abortBatch,
     totalEstimatedFee,
+    lastError,
   } = store
 
   useEffect(() => {
@@ -91,6 +92,16 @@ export function CreateBatch({ id, txs }: BatchProps) {
       setIsLoading(false)
     }
   }
+
+  useEffect(() => {
+    if (currentProcessingStep) {
+      console.warn(steps[currentProcessingStep])
+    }
+
+    if (lastError) {
+      console.warn(lastError)
+    }
+  }, [currentProcessingStep, lastError, steps])
 
   return (
     <div className="flex-1 flex flex-col justify-between space-y-8">

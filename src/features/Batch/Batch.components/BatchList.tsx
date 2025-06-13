@@ -18,7 +18,7 @@ export function BatchList({ data }: { data: BatchTypesDto.BatchDto[] | undefined
     PARTIALLY_COMPLETED: <span className="text-orange-400">{t('batch.list.item.status.partially')}</span>,
     SUCCESS: <span className="text-green-500">{t('batch.list.item.status.success')}</span>,
     FAILED: <span className="text-rose-500">{t('batch.list.item.status.failed')}</span>,
-  }), [])
+  }), [t])
 
   return data
     ? data.length > 0
