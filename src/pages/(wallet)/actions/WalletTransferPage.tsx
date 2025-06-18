@@ -22,8 +22,8 @@ export function WalletTransferPage(props: { token?: string }) {
       </div>
       <Tabs defaultValue="single" className="flex-1">
         <TabsList className="w-full">
-          <TabsTrigger value="single" className="w-full">{t('transfer.tabs.single')}</TabsTrigger>
-          <TabsTrigger value="multiple" className="w-full">{t('transfer.tabs.multiple')}</TabsTrigger>
+          <TabsTrigger value="single" className="w-full text-sm px-2">{t('transfer.tabs.single')}</TabsTrigger>
+          <TabsTrigger value="multiple" className="w-full text-sm px-2">{t('transfer.tabs.multiple')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="single" className="h-[90%]">
