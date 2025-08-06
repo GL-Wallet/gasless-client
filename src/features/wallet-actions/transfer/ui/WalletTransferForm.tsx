@@ -120,7 +120,7 @@ export function WalletTransferForm(props: Props) {
         return false
       }
 
-      if (isUsdtToken && transferInfo?.fee && feeBalance < transferInfo?.fee) {
+      if (isUsdtToken && transferInfo?.fee && feeBalance < transferInfo?.fee + BANDWIDTH_COST) {
         toast.error(t('transfer.error.insufficientBalance', { token: 'TRX' }))
         return false
       }
