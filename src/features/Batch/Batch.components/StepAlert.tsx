@@ -49,8 +49,10 @@ export function StepAlert({
   const { t } = useTranslation()
 
   // Check if this is an insufficient fee error and we have details
-  const isInsufficientFeeError = errorDetails?.actualBalance !== undefined
-    && errorDetails?.requiredFee !== undefined
+  const actualBalance = errorDetails?.actualBalance
+  const requiredFee = errorDetails?.requiredFee
+  const isInsufficientFeeError = actualBalance !== undefined
+    && requiredFee !== undefined
     && errorDetails?.errorType === 'InsufficientFeeError'
 
   // Use the appropriate translation key based on the step
@@ -58,11 +60,11 @@ export function StepAlert({
     ? 'batch.steps.feeTransactionPreparation.error.insufficientFee.detailed'
     : 'batch.steps.feeTransactionPreparation.error.insufficientFee.detailed' // Can be reused for other steps
 
-  const description = isInsufficientFeeError
+  const description = isInsufficientFeeError && actualBalance !== undefined && requiredFee !== undefined
     ? t(insufficientFeeKey, {
-      actualBalance: errorDetails.actualBalance,
-      requiredFee: errorDetails.requiredFee,
-      missing: (errorDetails.requiredFee - errorDetails.actualBalance).toFixed(2),
+      actualBalance,
+      requiredFee,
+      missing: (requiredFee - actualBalance).toFixed(2),
     })
     : t(descriptionKey)
 
