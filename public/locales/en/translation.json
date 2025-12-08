@@ -264,7 +264,10 @@
         },
         "error": {
           "title": "Fee Transaction Preparation Failed",
-          "description": "We couldn't prepare fee-related transactions. Please try again."
+          "description": "We couldn't prepare fee-related transactions. Please try again.",
+          "insufficientFee": {
+            "detailed": "Insufficient TRX balance for fees. Your balance: {{actualBalance}} TRX. Required: {{requiredFee}} TRX. You need {{missing}} TRX more to complete this transaction."
+          }
         },
         "success": {
           "title": "Fee Transactions Ready",

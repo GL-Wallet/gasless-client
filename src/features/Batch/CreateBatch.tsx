@@ -251,7 +251,10 @@ export function CreateBatch({ id, txs }: BatchProps) {
         steps[EBatchStep.FeeTransactionPreparation].status === EStepStatus.Error,
       ].every(Boolean) && (
         <>
-          <StepAlert {...stepAlertContentMap.FeeTransactionPreparation.error!} />
+          <StepAlert
+            {...stepAlertContentMap.FeeTransactionPreparation.error!}
+            errorDetails={extractErrorDetails(steps[EBatchStep.FeeTransactionPreparation].error)}
+          />
           <Button type="button" onClick={() => retryStep(EBatchStep.FeeTransactionPreparation)}>
             {t('batch.button.retry')}
           </Button>
@@ -274,7 +277,10 @@ export function CreateBatch({ id, txs }: BatchProps) {
         steps[EBatchStep.TransactionSending].status === EStepStatus.Error,
       ].every(Boolean) && (
         <>
-          <StepAlert {...stepAlertContentMap.TransactionSending.error!} />
+          <StepAlert
+            {...stepAlertContentMap.TransactionSending.error!}
+            errorDetails={extractErrorDetails(steps[EBatchStep.TransactionSending].error)}
+          />
           <Button type="button" onClick={() => retryStep(EBatchStep.TransactionSending)}>
             {t('batch.button.retry')}
           </Button>
@@ -317,4 +323,82 @@ export function CircleLoader({ progress }: { progress: number }) {
       />
     </div>
   )
+}
+
+/**
+ * Extracts error details from API errors, specifically for InsufficientFeeError
+ */
+function extractErrorDetails(error: any): {
+  actualBalance?: number
+  requiredFee?: number
+  errorType?: string
+} | undefined {
+  if (!error)
+    return undefined
+
+  // Check if error is an AxiosError with response data
+  const errorData = error?.response?.data || error?.data || error
+  const errorMessage = error?.message || errorData?.message || String(error || '')
+
+  // Check if it's an InsufficientFeeError
+  const isInsufficientFeeError = errorMessage.includes('InsufficientFeeError')
+    || errorMessage.includes('balance is less than required fee')
+    || errorMessage.includes('required fee minimum')
+    || errorData?.name === 'InsufficientFeeError'
+    || error?.name === 'InsufficientFeeError'
+
+  if (isInsufficientFeeError) {
+    // Try to extract from error data (backend may send structured error)
+    let actualBalance = errorData?.actualBalance
+    let requiredFee = errorData?.requiredFee || errorData?.expectedMinFee
+
+    // If not in data, try to parse from message
+    // Example: "User balance is less than required fee minimum (28)."
+    if (actualBalance === undefined || requiredFee === undefined) {
+      // Try to extract required fee from message (e.g., "minimum (28)")
+      const feeMatch = errorMessage.match(/minimum\s*\((\d+(?:\.\d*)?)\)|required\D*(\d+\.?\d*)/i)
+      if (feeMatch) {
+        requiredFee = Number.parseFloat(feeMatch[1] || feeMatch[2])
+      }
+
+      // Try to extract actual balance from message or error data
+      if (actualBalance === undefined) {
+        // Check if there's a balance mentioned in the error
+        const balanceMatch = errorMessage.match(/balance\D*(\d+\.?\d*)/i)
+        if (balanceMatch) {
+          actualBalance = Number.parseFloat(balanceMatch[1])
+        }
+        // Also check error data for actualBalance
+        else if (errorData?.actualBalance !== undefined) {
+          actualBalance = typeof errorData.actualBalance === 'number'
+            ? errorData.actualBalance
+            : Number.parseFloat(errorData.actualBalance)
+        }
+      }
+
+      // If we still don't have requiredFee, try to get it from error data
+      if (requiredFee === undefined && errorData?.expectedMinFee !== undefined) {
+        requiredFee = typeof errorData.expectedMinFee === 'number'
+          ? errorData.expectedMinFee
+          : Number.parseFloat(errorData.expectedMinFee)
+      }
+    }
+    else {
+      // Convert to numbers if they're strings
+      actualBalance = typeof actualBalance === 'number' ? actualBalance : Number.parseFloat(actualBalance)
+      requiredFee = typeof requiredFee === 'number' ? requiredFee : Number.parseFloat(requiredFee)
+    }
+
+    // Only return if we have both values
+    if (actualBalance !== undefined && !Number.isNaN(actualBalance)
+      && requiredFee !== undefined && !Number.isNaN(requiredFee)) {
+      return {
+        actualBalance,
+        requiredFee,
+        errorType: 'InsufficientFeeError',
+      }
+    }
+  }
+
+  return undefined
 }

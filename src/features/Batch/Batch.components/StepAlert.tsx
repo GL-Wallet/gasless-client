@@ -29,6 +29,11 @@ interface StepAlertProps {
   icon?: React.ElementType<LucideProps>
   className?: string
   isLoading?: boolean // To show a spinning loader icon
+  errorDetails?: {
+    actualBalance?: number
+    requiredFee?: number
+    errorType?: string
+  }
 }
 
 export function StepAlert({
@@ -38,9 +43,28 @@ export function StepAlert({
   icon: IconComponent,
   className,
   isLoading = false,
+  errorDetails,
 }: StepAlertProps) {
   const ActualIcon = isLoading ? AlertLoaderIcon : IconComponent
   const { t } = useTranslation()
+
+  // Check if this is an insufficient fee error and we have details
+  const isInsufficientFeeError = errorDetails?.actualBalance !== undefined
+    && errorDetails?.requiredFee !== undefined
+    && errorDetails?.errorType === 'InsufficientFeeError'
+
+  // Use the appropriate translation key based on the step
+  const insufficientFeeKey = descriptionKey.includes('feeTransactionPreparation')
+    ? 'batch.steps.feeTransactionPreparation.error.insufficientFee.detailed'
+    : 'batch.steps.feeTransactionPreparation.error.insufficientFee.detailed' // Can be reused for other steps
+
+  const description = isInsufficientFeeError
+    ? t(insufficientFeeKey, {
+      actualBalance: errorDetails.actualBalance,
+      requiredFee: errorDetails.requiredFee,
+      missing: (errorDetails.requiredFee - errorDetails.actualBalance).toFixed(2),
+    })
+    : t(descriptionKey)
 
   return (
     <Alert variant={variant} className={className}>
@@ -48,7 +72,7 @@ export function StepAlert({
         <ActualIcon className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
       )}
       <AlertTitle>{t(titleKey)}</AlertTitle>
-      <AlertDescription>{t(descriptionKey)}</AlertDescription>
+      <AlertDescription>{description}</AlertDescription>
     </Alert>
   )
 }
