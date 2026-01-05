@@ -16,7 +16,15 @@ import { getTrxBalance } from './queries'
 
 // Create a TronWeb instance
 function createTronWebInstance(privateKey: PrivateKey): TronWeb {
-  return new TronWeb(FULL_NODE, SOLIDITY_NODE, EVENT_SERVER, privateKey)
+  return new TronWeb({
+    fullHost: FULL_NODE,
+    solidityNode: SOLIDITY_NODE,
+    eventServer: EVENT_SERVER,
+    privateKey,
+    headers: {
+      'TRON-PRO-API-KEY': import.meta.env.VITE_TRONGRID_API_KEY,
+    },
+  })
 }
 
 // Send TRX
