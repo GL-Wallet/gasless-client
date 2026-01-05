@@ -1,6 +1,6 @@
 export const SERVER_PORT = 8000
 
-export const TRON_MAINNET_WEB3PROVIDER = 'https://api.trongrid.io'
+export const TRON_MAINNET_WEB3PROVIDER = 'https://old-wiser-sponge.tron-mainnet.quiknode.pro'
 export const TRON_TESTNET_WEB3PROVIDER = 'https://api.shasta.trongrid.io'
 
 const isDev = import.meta.env.DEV
