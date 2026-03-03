@@ -5,7 +5,6 @@ import { ActionItem } from '@/shared/ui/action-item'
 import { LinkItem } from '@/shared/ui/link-item'
 import { SwitchItem } from '@/shared/ui/switch-item'
 import {
-  Database,
   FilePenLine,
   Fingerprint,
   KeyRound,
@@ -59,13 +58,6 @@ export function AppSettingsItems() {
         className="bg-transparent"
       />
 
-      <ActionItem
-        title="Cloud Storage Debug"
-        description="View all stored data"
-        onClick={() => authenticate({ redirectTo: ROUTES.CLOUD_STORAGE_DEBUG })}
-        icon={<Database className="size-5" />}
-        className="bg-transparent"
-      />
     </div>
   )
 }
