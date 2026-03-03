@@ -43,6 +43,7 @@ const BackButtonVisibleConfig: Record<ROUTES, boolean> = {
   [ROUTES.REFERRAL]: true,
   [ROUTES.BACKUP_MNEMONIC]: true,
   [ROUTES.BACKUP_PRIVATE_KEY]: true,
+  [ROUTES.CLOUD_STORAGE_DEBUG]: true,
   [ROUTES.BATCH]: true,
   [ROUTES.BATCH_PARAMS]: true,
   [ROUTES.CREATE_BATCH]: true,

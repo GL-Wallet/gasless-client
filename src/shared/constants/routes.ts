@@ -28,6 +28,7 @@ export enum ROUTES {
 
   BACKUP_MNEMONIC = '/backup-mnemonic',
   BACKUP_PRIVATE_KEY = '/backup-private-key',
+  CLOUD_STORAGE_DEBUG = '/cloud-storage-debug',
 
   BATCH = '/batch',
   BATCH_PARAMS = '/batch/:id',

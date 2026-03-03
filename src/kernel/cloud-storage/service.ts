@@ -32,6 +32,25 @@ class CloudStorageService {
     }
   }
 
+  async getAll(): Promise<Record<string, string>> {
+    try {
+      const keys = await this.cloudStorage.getKeys()
+      if (!keys.length)
+        return {}
+
+      const entries: Record<string, string> = {}
+      for (const key of keys) {
+        const raw = await this.cloudStorage.get(key)
+        entries[key] = raw ?? ''
+      }
+      return entries
+    }
+    catch (error) {
+      console.error('Failed to retrieve all from CloudStorage:', error)
+      return {}
+    }
+  }
+
   async reset() {
     try {
       const keys = await this.cloudStorage.getKeys()

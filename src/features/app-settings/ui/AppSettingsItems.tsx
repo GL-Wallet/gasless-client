@@ -4,7 +4,7 @@ import { ROUTES } from '@/shared/constants/routes'
 import { ActionItem } from '@/shared/ui/action-item'
 import { LinkItem } from '@/shared/ui/link-item'
 import { SwitchItem } from '@/shared/ui/switch-item'
-import { FilePenLine, Fingerprint, KeyRound, Wallet2 } from 'lucide-react'
+import { Database, FilePenLine, Fingerprint, KeyRound, Wallet2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { useSettingsItems } from '../model/useSettingsItems'
@@ -50,6 +50,14 @@ export function AppSettingsItems() {
         title={t('setting.backupPrivateKey')}
         onClick={() => authenticate({ redirectTo: ROUTES.BACKUP_PRIVATE_KEY })}
         icon={<KeyRound className="size-5" />}
+        className="bg-transparent"
+      />
+
+      <ActionItem
+        title="Cloud Storage Debug"
+        description="View all stored data"
+        onClick={() => authenticate({ redirectTo: ROUTES.CLOUD_STORAGE_DEBUG })}
+        icon={<Database className="size-5" />}
         className="bg-transparent"
       />
     </div>

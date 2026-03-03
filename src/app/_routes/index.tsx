@@ -9,6 +9,7 @@ import { PasscodeStartupPage } from '@/pages/(app)/(passcode)/PasscodeStartupPag
 import { PasscodeUpdatePage } from '@/pages/(app)/(passcode)/PasscodeUpdatePage'
 import { ReferralPage } from '@/pages/(app)/(referral)/ReferralPage'
 import { AppSettingsPage } from '@/pages/(app)/(settings)/AppSettingsPage'
+import { CloudStorageDebugPage } from '@/pages/(app)/(settings)/CloudStorageDebugPage'
 import { HomePage } from '@/pages/(app)/HomePage'
 import { BackupMnemonic } from '@/pages/(wallet)/(backup)/BackupMnemonic'
 import { BackupPrivateKey } from '@/pages/(wallet)/(backup)/BackupPrivateKey'
@@ -99,6 +100,9 @@ export function Routes() {
         {/* Backup */}
         <Route path={ROUTES.BACKUP_MNEMONIC} component={BackupMnemonic} />
         <Route path={ROUTES.BACKUP_PRIVATE_KEY} component={BackupPrivateKey} />
+
+        {/* Debug */}
+        <Route path={ROUTES.CLOUD_STORAGE_DEBUG} component={CloudStorageDebugPage} />
 
         <Route path={ROUTES.BATCH} component={BatchPage} />
         <Route path={ROUTES.BATCH_PARAMS} component={BatchBySlugPage} />
