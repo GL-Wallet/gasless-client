@@ -46,7 +46,7 @@ function now() {
 export function CloudStorageDebugPage() {
   const [data, setData] = useState<Record<string, string> | null>(null)
   const [loading, setLoading] = useState(true)
-  const [expandedKeys, setExpandedKeys] = useState<Set<string>>(new Set())
+  const [expandedKeys, setExpandedKeys] = useState(() => new Set<string>())
   const [logs, setLogs] = useState<LogEntry[]>([])
   const [showLogs, setShowLogs] = useState(false)
   const { copy, isCopied } = useCopyToClipboard()
@@ -238,8 +238,12 @@ export function CloudStorageDebugPage() {
     if (data) {
       const formatted: Record<string, unknown> = {}
       for (const [k, v] of Object.entries(data)) {
-        try { formatted[k] = JSON.parse(v) }
-        catch { formatted[k] = v }
+        try {
+          formatted[k] = JSON.parse(v)
+        }
+        catch {
+          formatted[k] = v
+        }
       }
       copy(JSON.stringify(formatted, null, 2))
     }
