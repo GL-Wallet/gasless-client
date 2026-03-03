@@ -19,27 +19,34 @@ interface WalletReceiveDrawerProps {
   address: string
 }
 
-const MemoizedDrawerContent = memo(({ address, t }: WalletReceiveDrawerProps & { t: (value: string) => ReactNode }) => (
-  <DrawerContent className="mt-6 flex flex-col items-center space-y-8 px-6 pb-6">
-    <DrawerTitle>{t('receive.title')}</DrawerTitle>
-    <div className="p-4 border border-input rounded-md bg-transparent">
-      <QRCode value={address} size={200} />
-    </div>
+const MemoizedDrawerContent = memo(
+  ({
+    address,
+    t,
+  }: WalletReceiveDrawerProps & { t: (value: string) => ReactNode }) => (
+    <DrawerContent className="mt-6 flex flex-col items-center space-y-8 px-6 pb-6">
+      <DrawerTitle>{t('receive.title')}</DrawerTitle>
+      <div className="p-4 border border-input rounded-md bg-transparent">
+        <QRCode value={address} size={200} />
+      </div>
 
-    <div className="flex space-x-2">
-      <p className="text-[13px]">{address}</p>
-      <CopyToClipboard value={address} />
-    </div>
+      <div className="flex space-x-2">
+        <p className="text-[13px]">{address}</p>
+        <CopyToClipboard value={address} />
+      </div>
 
-    <DrawerFooter className="w-full px-0">
-      <DrawerClose asChild>
-        <Button variant="outline">{t('receive.button.close')}</Button>
-      </DrawerClose>
-    </DrawerFooter>
-  </DrawerContent>
-))
+      <DrawerFooter className="w-full px-0">
+        <DrawerClose asChild>
+          <Button variant="outline">{t('receive.button.close')}</Button>
+        </DrawerClose>
+      </DrawerFooter>
+    </DrawerContent>
+  ),
+)
 
-export const WalletReceiveDrawer: React.FC<WalletReceiveDrawerProps> = ({ address }) => {
+export const WalletReceiveDrawer: React.FC<WalletReceiveDrawerProps> = ({
+  address,
+}) => {
   const { t } = useTranslation()
 
   return (

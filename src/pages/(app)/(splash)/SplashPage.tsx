@@ -24,12 +24,16 @@ export const Roadmap = memo(() => {
 
         <div className="flex items-center space-x-2 p-4 bg-card rounded-xl border border-neutral-700">
           <Clock className="text-neutral-500 size-5" />
-          <AnimatedShinyText className="text-xl font-medium transition ease-out">Goal 3</AnimatedShinyText>
+          <AnimatedShinyText className="text-xl font-medium transition ease-out">
+            Goal 3
+          </AnimatedShinyText>
         </div>
 
         <div className="flex items-center space-x-2 p-4 bg-card rounded-xl">
           <Lock className="text-neutral-500 size-5" />
-          <AnimatedShinyText className="text-xl font-medium transition ease-out">Goal 4</AnimatedShinyText>
+          <AnimatedShinyText className="text-xl font-medium transition ease-out">
+            Goal 4
+          </AnimatedShinyText>
         </div>
       </div>
     </div>

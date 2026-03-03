@@ -4,7 +4,8 @@ import { AUTH_STORAGE_KEY } from '../constants'
 
 export async function getHashedPasscodeFromStorage(): Promise<string | null> {
   try {
-    const hashedPasscode = await cloudStorageService.get<string>(AUTH_STORAGE_KEY)
+    const hashedPasscode
+      = await cloudStorageService.get<string>(AUTH_STORAGE_KEY)
 
     if (hashedPasscode) {
       return hashedPasscode

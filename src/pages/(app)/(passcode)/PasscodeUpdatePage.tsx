@@ -5,7 +5,10 @@ export function PasscodeUpdatePage() {
 
   return (
     <div className="flex-1 flex justify-center items-center">
-      <PasscodeUpdate passcodeHash={_passcodeHash} onPasscodeSuccess={_onPasscodeSuccess} />
+      <PasscodeUpdate
+        passcodeHash={_passcodeHash}
+        onPasscodeSuccess={_onPasscodeSuccess}
+      />
     </div>
   )
 }

@@ -4,7 +4,11 @@ import { useAuth } from '@/kernel/auth'
 
 import { ROUTES } from '@/shared/constants/routes'
 import { useTheme } from '@/shared/ui/theme-provider'
-import { postEvent, useBackButton, useSettingsButton } from '@telegram-apps/sdk-react'
+import {
+  postEvent,
+  useBackButton,
+  useSettingsButton,
+} from '@telegram-apps/sdk-react'
 import { useEffect, useState } from 'react'
 import { navigate, usePathname } from 'wouter/use-browser-location'
 
@@ -53,7 +57,8 @@ const BackButtonVisibleConfig: Record<ROUTES, boolean> = {
 }
 
 function getColorBasedOnTheme(theme: string): RGB {
-  return (Config.COLOR[theme as keyof typeof Config.COLOR] ?? Config.COLOR.dark) as RGB
+  return (Config.COLOR[theme as keyof typeof Config.COLOR]
+    ?? Config.COLOR.dark) as RGB
 }
 
 export function MiniAppConfig(props: PropsWithChildren) {
@@ -73,9 +78,15 @@ export function MiniAppConfig(props: PropsWithChildren) {
       color: getColorBasedOnTheme(theme),
     })
 
-    postEvent('web_app_setup_main_button', { is_visible: Config.MAIN_BUTTON_VISIBLE })
-    postEvent('web_app_setup_back_button', { is_visible: Config.BACK_BUTTON_VISIBLE })
-    postEvent('web_app_setup_settings_button', { is_visible: Config.SETTINGS_BUTTON_VISIBLE })
+    postEvent('web_app_setup_main_button', {
+      is_visible: Config.MAIN_BUTTON_VISIBLE,
+    })
+    postEvent('web_app_setup_back_button', {
+      is_visible: Config.BACK_BUTTON_VISIBLE,
+    })
+    postEvent('web_app_setup_settings_button', {
+      is_visible: Config.SETTINGS_BUTTON_VISIBLE,
+    })
     postEvent('web_app_setup_swipe_behavior', {
       allow_vertical_swipe: Config.ALLOW_VERTICAL_SWIPE,
     })
@@ -103,7 +114,9 @@ export function MiniAppConfig(props: PropsWithChildren) {
 
     if (
       BackButtonVisibleConfig[pathname as ROUTES]
-      || pathname.split('/').some(path => BackButtonVisibleConfig[(`/${path}`) as ROUTES])
+      || pathname
+        .split('/')
+        .some(path => BackButtonVisibleConfig[`/${path}` as ROUTES])
     ) {
       bb.show()
     }
@@ -120,9 +133,12 @@ export function MiniAppConfig(props: PropsWithChildren) {
 
   useEffect(() => {
     sb.on('click', () => {
-      ![ROUTES.WALLET_SETUP, ROUTES.PASSCODE_SETUP, ROUTES.PASSCODE_STARTUP, ROUTES.PASSCODE_REQUEST].includes(
-        pathname as ROUTES,
-      )
+      ![
+        ROUTES.WALLET_SETUP,
+        ROUTES.PASSCODE_SETUP,
+        ROUTES.PASSCODE_STARTUP,
+        ROUTES.PASSCODE_REQUEST,
+      ].includes(pathname as ROUTES)
       && passcode
       && navigate(ROUTES.APP_SETTINGS, { state: { path: ROUTES.HOME } })
     })

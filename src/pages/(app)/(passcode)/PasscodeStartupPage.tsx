@@ -20,7 +20,9 @@ import { useTranslation } from 'react-i18next'
 import { navigate } from 'wouter/use-browser-location'
 
 export function PasscodeStartupPage() {
-  const isBiometryEnabled = useAppSettingsStore(store => store.isBiometryEnabled)
+  const isBiometryEnabled = useAppSettingsStore(
+    store => store.isBiometryEnabled,
+  )
   const { _passcodeHash, _onPasscodeSuccess } = useAuth()
 
   const { t } = useTranslation()
@@ -55,11 +57,17 @@ export function PasscodeStartupPage() {
         </AlertDialogTrigger>
         <AlertDialogContent className="max-w-[90%] rounded-md">
           <AlertDialogHeader>
-            <AlertDialogTitle>{t('setting.signOut.modal.title')}</AlertDialogTitle>
-            <AlertDialogDescription>{t('setting.signOut.modal.description')}</AlertDialogDescription>
+            <AlertDialogTitle>
+              {t('setting.signOut.modal.title')}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('setting.signOut.modal.description')}
+            </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t('setting.signOut.modal.button.cancel')}</AlertDialogCancel>
+            <AlertDialogCancel>
+              {t('setting.signOut.modal.button.cancel')}
+            </AlertDialogCancel>
 
             <AnimatedSubscribeButton
               buttonColor="#000000"

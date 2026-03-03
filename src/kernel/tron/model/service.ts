@@ -10,7 +10,12 @@ import type {
 } from './types'
 
 import { TronWeb } from 'tronweb'
-import { EVENT_SERVER, FULL_NODE, SOLIDITY_NODE, USDT_CONTRACT_ADDRESS } from '../config'
+import {
+  EVENT_SERVER,
+  FULL_NODE,
+  SOLIDITY_NODE,
+  USDT_CONTRACT_ADDRESS,
+} from '../config'
 import { usdtAbi } from '../usdt-abi'
 import { getTrxBalance } from './queries'
 
@@ -28,12 +33,20 @@ function createTronWebInstance(privateKey: PrivateKey): TronWeb {
 }
 
 // Send TRX
-async function sendTrx(to: WalletAddress, amount: Amount, privateKey: PrivateKey): Promise<TransactionID> {
+async function sendTrx(
+  to: WalletAddress,
+  amount: Amount,
+  privateKey: PrivateKey,
+): Promise<TransactionID> {
   try {
     const tronWeb = createTronWebInstance(privateKey)
-    const transaction = await tronWeb.transactionBuilder.sendTrx(to, Math.floor(amount * 1e6))
+    const transaction = await tronWeb.transactionBuilder.sendTrx(
+      to,
+      Math.floor(amount * 1e6),
+    )
     const signedTx = await tronWeb.trx.sign(transaction, privateKey)
-    const broadcastTx: TransactionResponse = await tronWeb.trx.sendRawTransaction(signedTx)
+    const broadcastTx: TransactionResponse
+      = await tronWeb.trx.sendRawTransaction(signedTx)
     return broadcastTx.transaction.txID
   }
   catch (error) {
@@ -43,11 +56,17 @@ async function sendTrx(to: WalletAddress, amount: Amount, privateKey: PrivateKey
 }
 
 // Send TRC20 Token
-async function sendUsdt(to: WalletAddress, amount: Amount, privateKey: PrivateKey): Promise<TransactionID> {
+async function sendUsdt(
+  to: WalletAddress,
+  amount: Amount,
+  privateKey: PrivateKey,
+): Promise<TransactionID> {
   try {
     const tronWeb = createTronWebInstance(privateKey)
     const contract = tronWeb.contract(usdtAbi, USDT_CONTRACT_ADDRESS)
-    const resp = await contract.methods.transfer(to, Math.floor(amount * 1e6)).send()
+    const resp = await contract.methods
+      .transfer(to, Math.floor(amount * 1e6))
+      .send()
     return resp
   }
   catch (error) {
@@ -56,7 +75,12 @@ async function sendUsdt(to: WalletAddress, amount: Amount, privateKey: PrivateKe
   }
 }
 
-async function createAndSignTrc20Transaction(address: WalletAddress, amount: Amount, privateKey: PrivateKey, expiration?: number) {
+async function createAndSignTrc20Transaction(
+  address: WalletAddress,
+  amount: Amount,
+  privateKey: PrivateKey,
+  expiration?: number,
+) {
   const tronWeb = createTronWebInstance(privateKey)
 
   const senderAddress = tronWeb.address.fromPrivateKey(privateKey)
@@ -87,7 +111,11 @@ async function createAndSignTrc20Transaction(address: WalletAddress, amount: Amo
   )
 
   if (expiration) {
-    const extendExpirationObj = await tronWeb.transactionBuilder.extendExpiration(tx.transaction, expiration)
+    const extendExpirationObj
+      = await tronWeb.transactionBuilder.extendExpiration(
+        tx.transaction,
+        expiration,
+      )
     Object.assign(tx, {
       transaction: extendExpirationObj,
     })
@@ -98,18 +126,30 @@ async function createAndSignTrc20Transaction(address: WalletAddress, amount: Amo
   return signedTx
 }
 
-async function createAndSignTrxTransaction(address: WalletAddress, amount: Amount, privateKey: PrivateKey, expiration?: number) {
+async function createAndSignTrxTransaction(
+  address: WalletAddress,
+  amount: Amount,
+  privateKey: PrivateKey,
+  expiration?: number,
+) {
   const tronWeb = createTronWebInstance(privateKey)
 
   const senderAddres = tronWeb.address.fromPrivateKey(privateKey)
   if (!senderAddres)
     return
 
-  let transaction = await tronWeb.transactionBuilder.sendTrx(address, amount * 1e6, senderAddres)
+  let transaction = await tronWeb.transactionBuilder.sendTrx(
+    address,
+    amount * 1e6,
+    senderAddres,
+  )
 
   if (expiration) {
     // @ts-expect-error
-    transaction = await tronWeb.transactionBuilder.extendExpiration(transaction, expiration)
+    transaction = await tronWeb.transactionBuilder.extendExpiration(
+      transaction,
+      expiration,
+    )
   }
 
   const signedTx = await tronWeb.trx.sign(transaction)
@@ -118,7 +158,10 @@ async function createAndSignTrxTransaction(address: WalletAddress, amount: Amoun
 }
 
 // Fetch Balances
-async function fetchBalances(address: WalletAddress, privateKey: PrivateKey): Promise<Balances> {
+async function fetchBalances(
+  address: WalletAddress,
+  privateKey: PrivateKey,
+): Promise<Balances> {
   if (!address) {
     throw new Error('User wallet address is required.')
   }
@@ -191,10 +234,15 @@ async function getBandwidthByAddress(address: string, privateKey: string) {
 }
 
 // Get Transaction Status
-async function getTransactionStatus(transactionId: string, privateKey: string): Promise<string> {
+async function getTransactionStatus(
+  transactionId: string,
+  privateKey: string,
+): Promise<string> {
   try {
     const tronWeb = createTronWebInstance(privateKey)
-    const transaction = (await tronWeb.trx.getTransaction(transactionId)) as Types.Transaction & {
+    const transaction = (await tronWeb.trx.getTransaction(
+      transactionId,
+    )) as Types.Transaction & {
       ret: { contractRet: string }[]
     }
 
@@ -217,7 +265,9 @@ async function getTransactionStatus(transactionId: string, privateKey: string): 
 const createWallet = () => TronWeb.createRandom()
 
 // Restore Wallet
-function restoreWallet(mnemonic: string): ReturnType<typeof TronWeb.fromMnemonic> {
+function restoreWallet(
+  mnemonic: string,
+): ReturnType<typeof TronWeb.fromMnemonic> {
   if (!mnemonic) {
     throw new Error('Mnemonic is required to restore wallet.')
   }

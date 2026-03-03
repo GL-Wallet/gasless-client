@@ -36,10 +36,18 @@ export function BatchBySlugPage() {
 
       <Tabs value={tab} onValueChange={setTab} className="space-y-4">
         <TabsList>
-          <TabsTrigger value={EBatchTxTabs.All}>{t('batch.items.tabs.all')}</TabsTrigger>
-          <TabsTrigger value={EBatchTxTabs.Success}>{t('batch.items.tabs.success')}</TabsTrigger>
-          <TabsTrigger value={EBatchTxTabs.Failed}>{t('batch.items.tabs.failed')}</TabsTrigger>
-          <TabsTrigger value={EBatchTxTabs.Pending}>{t('batch.items.tabs.pending')}</TabsTrigger>
+          <TabsTrigger value={EBatchTxTabs.All}>
+            {t('batch.items.tabs.all')}
+          </TabsTrigger>
+          <TabsTrigger value={EBatchTxTabs.Success}>
+            {t('batch.items.tabs.success')}
+          </TabsTrigger>
+          <TabsTrigger value={EBatchTxTabs.Failed}>
+            {t('batch.items.tabs.failed')}
+          </TabsTrigger>
+          <TabsTrigger value={EBatchTxTabs.Pending}>
+            {t('batch.items.tabs.pending')}
+          </TabsTrigger>
         </TabsList>
         {data
           ? (
@@ -48,15 +56,24 @@ export function BatchBySlugPage() {
                   <BatchTxList data={data?.txs ?? []} />
                 </TabsContent>
                 <TabsContent value={EBatchTxTabs.Success}>
-                  <BatchTxList data={data?.txs.filter(tx => tx.status === 'SUCCESS') ?? []} />
+                  <BatchTxList
+                    data={data?.txs.filter(tx => tx.status === 'SUCCESS') ?? []}
+                  />
                 </TabsContent>
                 <TabsContent value={EBatchTxTabs.Pending}>
-                  <BatchTxList data={data?.txs.filter(tx => tx.status === 'PENDING' || tx.status === 'IDLE') ?? []} />
+                  <BatchTxList
+                    data={
+                      data?.txs.filter(
+                        tx => tx.status === 'PENDING' || tx.status === 'IDLE',
+                      ) ?? []
+                    }
+                  />
                 </TabsContent>
                 <TabsContent value={EBatchTxTabs.Failed}>
-                  <BatchTxList data={data?.txs.filter(tx => tx.status === 'FAILED') ?? []} />
+                  <BatchTxList
+                    data={data?.txs.filter(tx => tx.status === 'FAILED') ?? []}
+                  />
                 </TabsContent>
-
               </div>
             )
           : (
@@ -67,7 +84,6 @@ export function BatchBySlugPage() {
               </div>
             )}
       </Tabs>
-
     </div>
   )
 }

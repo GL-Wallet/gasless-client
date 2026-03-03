@@ -18,16 +18,10 @@ import { TransactionListPage } from '@/pages/(wallet)/(transaction)/TransactionL
 import { TransactionResultPage } from '@/pages/(wallet)/(transaction)/TransactionResultPage'
 import { WalletExchangePage } from '@/pages/(wallet)/actions/WalletExchangePage'
 import { WalletTransferPage } from '@/pages/(wallet)/actions/WalletTransferPage'
-import {
-  SeedPhraseConfirmationPage,
-} from '@/pages/(wallet)/setup/(wallet-creation)/SeedPhraseConfirmationPage'
+import { SeedPhraseConfirmationPage } from '@/pages/(wallet)/setup/(wallet-creation)/SeedPhraseConfirmationPage'
 import { SeedPhrasePage } from '@/pages/(wallet)/setup/(wallet-creation)/SeedPhrasePage'
-import {
-  WalletCreationSuccessPage,
-} from '@/pages/(wallet)/setup/(wallet-creation)/WalletCreationSuccessPage'
-import {
-  WalletCustomizationPage,
-} from '@/pages/(wallet)/setup/(wallet-creation)/WalletCustomizationPage'
+import { WalletCreationSuccessPage } from '@/pages/(wallet)/setup/(wallet-creation)/WalletCreationSuccessPage'
+import { WalletCustomizationPage } from '@/pages/(wallet)/setup/(wallet-creation)/WalletCustomizationPage'
 import { WalletImportPage } from '@/pages/(wallet)/setup/(wallet-import)/WalletImportPage'
 import { WalletSetupPage } from '@/pages/(wallet)/setup/WalletSetupPage'
 import { WalletUpdatePage } from '@/pages/(wallet)/update/WalletUpdatePage'
@@ -48,26 +42,41 @@ export function Routes() {
         <Route
           path={ROUTES.HOME}
           component={withOnboarding(
-            withWallet(withAuth(HomePage, { actionType: 'startup' }), ROUTES.WALLET_SETUP),
+            withWallet(
+              withAuth(HomePage, { actionType: 'startup' }),
+              ROUTES.WALLET_SETUP,
+            ),
             <OnboardingPage />,
           )}
         />
 
         {/* App settings */}
-        <Route path={ROUTES.APP_SETTINGS} component={withWallet(AppSettingsPage, ROUTES.WALLET_SETUP)} />
+        <Route
+          path={ROUTES.APP_SETTINGS}
+          component={withWallet(AppSettingsPage, ROUTES.WALLET_SETUP)}
+        />
 
         {/* Wallet setup flow routes */}
         <Route path={ROUTES.WALLET_SETUP} component={WalletSetupPage} />
         <Route path={ROUTES.WALLET_IMPORT} component={WalletImportPage} />
-        <Route path={ROUTES.WALLET_CUSTOMIZATION} component={WalletCustomizationPage} />
-        <Route path={ROUTES.WALLET_CREATION_SUCCESS} component={WalletCreationSuccessPage} />
+        <Route
+          path={ROUTES.WALLET_CUSTOMIZATION}
+          component={WalletCustomizationPage}
+        />
+        <Route
+          path={ROUTES.WALLET_CREATION_SUCCESS}
+          component={WalletCreationSuccessPage}
+        />
 
         {/* Wallet update flow routes */}
         <Route path={ROUTES.WALLET_UPDATE} component={WalletUpdatePage} />
 
         {/* Seed phrase management routes */}
         <Route path={ROUTES.SEED_PHRASE} component={SeedPhrasePage} />
-        <Route path={ROUTES.SEED_PHRASE_CONFIRMATION} component={SeedPhraseConfirmationPage} />
+        <Route
+          path={ROUTES.SEED_PHRASE_CONFIRMATION}
+          component={SeedPhraseConfirmationPage}
+        />
 
         {/* Seed phrase management routes */}
         <Route path={ROUTES.PASSCODE_STARTUP} component={PasscodeStartupPage} />
@@ -76,23 +85,35 @@ export function Routes() {
         <Route path={ROUTES.PASSCODE_UPDATE} component={PasscodeUpdatePage} />
 
         {/* Token actions flow */}
-        <Route path={ROUTES.WALLET_TRANSFER} component={() => <WalletTransferPage />} />
+        <Route
+          path={ROUTES.WALLET_TRANSFER}
+          component={() => <WalletTransferPage />}
+        />
         <Route
           path={ROUTES.WALLET_TRANSFER_PARAMS}
-          component={({ params: { token } }) => <WalletTransferPage token={token} />}
+          component={({ params: { token } }) => (
+            <WalletTransferPage token={token} />
+          )}
         />
         <Route path={ROUTES.WALLET_EXCHANGE} component={WalletExchangePage} />
 
         {/* Transactions */}
         <Route
           path={ROUTES.TRANSACTION_RESULT_PARAMS}
-          component={({ params: { txid } }) => <TransactionResultPage txid={txid} />}
+          component={({ params: { txid } }) => (
+            <TransactionResultPage txid={txid} />
+          )}
         />
         <Route
           path={ROUTES.TRANSACTIONS_PARAMS}
-          component={({ params: { token } }) => <TransactionListPage token={token} />}
+          component={({ params: { token } }) => (
+            <TransactionListPage token={token} />
+          )}
         />
-        <Route path={ROUTES.TRANSACTION_IN_PROGRESS} component={TransactionInProgress} />
+        <Route
+          path={ROUTES.TRANSACTION_IN_PROGRESS}
+          component={TransactionInProgress}
+        />
 
         {/* Referral */}
         <Route path={ROUTES.REFERRAL} component={ReferralPage} />
@@ -102,7 +123,10 @@ export function Routes() {
         <Route path={ROUTES.BACKUP_PRIVATE_KEY} component={BackupPrivateKey} />
 
         {/* Debug */}
-        <Route path={ROUTES.CLOUD_STORAGE_DEBUG} component={CloudStorageDebugPage} />
+        <Route
+          path={ROUTES.CLOUD_STORAGE_DEBUG}
+          component={CloudStorageDebugPage}
+        />
 
         <Route path={ROUTES.BATCH} component={BatchPage} />
         <Route path={ROUTES.BATCH_PARAMS} component={BatchBySlugPage} />

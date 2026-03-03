@@ -1,5 +1,12 @@
 import ShinyButton from '@/shared/magicui/shiny-button'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/shared/ui/form'
 import { Input } from '@/shared/ui/input'
 
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -19,7 +26,11 @@ const formSchema = z.object({
   }),
 })
 
-export function WalletCustomizationForm({ isLoading, onSubmit, defaultValues = { name: '' } }: Props) {
+export function WalletCustomizationForm({
+  isLoading,
+  onSubmit,
+  defaultValues = { name: '' },
+}: Props) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues,
@@ -53,7 +64,13 @@ export function WalletCustomizationForm({ isLoading, onSubmit, defaultValues = {
           )}
         />
 
-        <ShinyButton disabled={isLoading} animate={false} text={t('wallet.setup.customize.button')} className="w-full" type="submit" />
+        <ShinyButton
+          disabled={isLoading}
+          animate={false}
+          text={t('wallet.setup.customize.button')}
+          className="w-full"
+          type="submit"
+        />
       </form>
     </Form>
   )

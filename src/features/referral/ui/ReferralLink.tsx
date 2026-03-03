@@ -18,7 +18,9 @@ export function ReferralLink({ className }: PropsWithClassname) {
       )}
       onClick={() => navigate(ROUTES.REFERRAL)}
     >
-      <AnimatedShinyText className="mx-0 text-[13px] text-wrap min-w-2/3">{t('referral.link')}</AnimatedShinyText>
+      <AnimatedShinyText className="mx-0 text-[13px] text-wrap min-w-2/3">
+        {t('referral.link')}
+      </AnimatedShinyText>
       <ChevronRight className="size-7 text-muted-foreground" />
     </div>
   )

@@ -5,10 +5,12 @@ import { useBiometry } from '@/shared/hooks/useBiometry'
 export function useSettingsItems() {
   const { isEnabled, requestAccess, updateToken } = useBiometry()
 
-  const { isBiometryEnabled, updateSettings } = useAppSettingsStore(store => ({
-    isBiometryEnabled: store.isBiometryEnabled,
-    updateSettings: store.updateSettings,
-  }))
+  const { isBiometryEnabled, updateSettings } = useAppSettingsStore(
+    store => ({
+      isBiometryEnabled: store.isBiometryEnabled,
+      updateSettings: store.updateSettings,
+    }),
+  )
 
   const { passcode } = useAuthStore()
 

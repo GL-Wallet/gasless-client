@@ -17,7 +17,13 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/shared/ui/drawer'
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/shared/ui/form'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from '@/shared/ui/form'
 import { FormattedNumber } from '@/shared/ui/formatted-number'
 import { Input } from '@/shared/ui/input'
 import { Separator } from '@/shared/ui/separator'
@@ -42,7 +48,9 @@ const formSchema = z.object({
 type FormFields = z.infer<typeof formSchema>
 
 export function WalletExchangeForm() {
-  const [exchangeInfo, setExchangeInfo] = useState<ExchangeInfoResponse | null>(null)
+  const [exchangeInfo, setExchangeInfo] = useState<ExchangeInfoResponse | null>(
+    null,
+  )
   const [isDrawerOpened, setIsDrawerOpened] = useState(false)
 
   const { t } = useTranslation()
@@ -70,12 +78,15 @@ export function WalletExchangeForm() {
     if (!exchangeInfo)
       return
 
-    const balance = wallet.balances[AVAILABLE_TOKENS.USDT as keyof typeof wallet.balances]
+    const balance
+      = wallet.balances[AVAILABLE_TOKENS.USDT as keyof typeof wallet.balances]
 
     if (values.amount > balance) {
       form.setError('amount', {
         type: 'manual',
-        message: t('exchange.error.insufficientBalance', { token: AVAILABLE_TOKENS.USDT }),
+        message: t('exchange.error.insufficientBalance', {
+          token: AVAILABLE_TOKENS.USDT,
+        }),
       })
       toast.error(t('exchange.error.notEnoughBalance'))
       return
@@ -95,7 +106,10 @@ export function WalletExchangeForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="h-full flex flex-col justify-between w-full">
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="h-full flex flex-col justify-between w-full"
+      >
         <div className="space-y-2">
           <div className="relative w-full flex flex-col dark:bg-secondary/40 border dark:border-neutral-600 p-4 rounded-lg">
             <TokenAmountInput
@@ -110,7 +124,11 @@ export function WalletExchangeForm() {
             </div>
           </div>
 
-          <Receive balances={wallet.balances} token={AVAILABLE_TOKENS.TRX} receive={receive} />
+          <Receive
+            balances={wallet.balances}
+            token={AVAILABLE_TOKENS.TRX}
+            receive={receive}
+          />
 
           <div className="relative w-full flex flex-col justify-between  gap-2 dark:bg-secondary/40 border p-4 rounded-lg">
             <div className="w-full flex items-center justify-between">
@@ -154,7 +172,11 @@ export function WalletExchangeForm() {
           </div>
         </div>
 
-        <Button className="dark:text-white bg-secondary/80 dark:border-neutral-500" variant="outline" type="submit">
+        <Button
+          className="dark:text-white bg-secondary/80 dark:border-neutral-500"
+          variant="outline"
+          type="submit"
+        >
           {t('exchange.button.buy')}
         </Button>
 
@@ -199,7 +221,10 @@ function TokenAmountInput({
               <div
                 className="text-sm dark:text-white"
                 onClick={() => {
-                  form.setValue('amount', balances[token as keyof typeof balances])
+                  form.setValue(
+                    'amount',
+                    balances[token as keyof typeof balances],
+                  )
                 }}
               >
                 MAX
@@ -223,7 +248,10 @@ function TokenAmountInput({
                 onFocus={(e) => {
                   const value = e.target.value
                   if (+value === 0) {
-                    form.setValue('amount', value.replace(/^0+/, '') as unknown as number)
+                    form.setValue(
+                      'amount',
+                      value.replace(/^0+/, '') as unknown as number,
+                    )
                   }
                 }}
               />
@@ -236,7 +264,15 @@ function TokenAmountInput({
   )
 }
 
-function Receive({ balances, token, receive }: { balances: Balances, token: AVAILABLE_TOKENS, receive: number }) {
+function Receive({
+  balances,
+  token,
+  receive,
+}: {
+  balances: Balances
+  token: AVAILABLE_TOKENS
+  receive: number
+}) {
   const { t } = useTranslation()
 
   return (
@@ -290,7 +326,9 @@ function TransactionDrawer({
     <Drawer open={isOpen} onClose={onClose}>
       <DrawerContent className="px-6 h-fit">
         <DrawerHeader>
-          <DrawerTitle className="text-2xl primary-gradient">{t('exchange.title')}</DrawerTitle>
+          <DrawerTitle className="text-2xl primary-gradient">
+            {t('exchange.title')}
+          </DrawerTitle>
         </DrawerHeader>
 
         <div className="flex flex-col items-center">
@@ -308,7 +346,10 @@ function TransactionDrawer({
             </h3>
           </div>
           <div className="flex flex-col items-center mt-6">
-            <ExchangeAlert title={t('exchange.wallet')} description={walletAddress} />
+            <ExchangeAlert
+              title={t('exchange.wallet')}
+              description={walletAddress}
+            />
           </div>
         </div>
 
@@ -325,7 +366,10 @@ function TransactionDrawer({
   )
 }
 
-const ExchangeAlert: React.FC<{ title: string, description: string }> = ({ title, description }) => (
+const ExchangeAlert: React.FC<{ title: string, description: string }> = ({
+  title,
+  description,
+}) => (
   <Alert>
     <Wallet2 className="h-4 w-4" />
     <AlertTitle>{title}</AlertTitle>

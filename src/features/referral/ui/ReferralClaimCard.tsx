@@ -14,20 +14,36 @@ interface Props {
   handleClaimReward: () => void
 }
 
-export function ReferralClaimCard({ reward, minRewardLimit, isZeroReward, isLoading, handleClaimReward }: Props) {
+export function ReferralClaimCard({
+  reward,
+  minRewardLimit,
+  isZeroReward,
+  isLoading,
+  handleClaimReward,
+}: Props) {
   const { t } = useTranslation()
   const isNullishRewardValue = reward === null
 
   return (
     <div className="relative flex justify-between items-start light-border dark:bg-secondary/60 rounded-md shadow-md p-4">
       <div className="flex flex-col space-y-1">
-        <span className="text-sm text-muted-foreground">{t('referral.claimCard.title')}</span>
+        <span className="text-sm text-muted-foreground">
+          {t('referral.claimCard.title')}
+        </span>
         <div className="flex items-center space-x-2">
-          <span className="text-lg primary-gradient">{AVAILABLE_TOKENS.TRX}</span>
+          <span className="text-lg primary-gradient">
+            {AVAILABLE_TOKENS.TRX}
+          </span>
           {!isNullishRewardValue
             ? (
                 <span className="text-lg font-medium">
-                  {isZeroReward ? reward.toFixed(2) : <FormattedNumber number={reward} />}
+                  {isZeroReward
+                    ? (
+                        reward.toFixed(2)
+                      )
+                    : (
+                        <FormattedNumber number={reward} />
+                      )}
                 </span>
               )
             : (
@@ -36,7 +52,10 @@ export function ReferralClaimCard({ reward, minRewardLimit, isZeroReward, isLoad
         </div>
         <div className="relative flex items-center space-x-1 text-[11px] text-muted-foreground">
           <AlertCircle className="size-4" />
-          <span className="absolute left-4 bottom-0" style={{ whiteSpace: 'nowrap' }}>
+          <span
+            className="absolute left-4 bottom-0"
+            style={{ whiteSpace: 'nowrap' }}
+          >
             {t('referral.claimCard.minPayLimit')}
             :
             {minRewardLimit}
@@ -49,7 +68,12 @@ export function ReferralClaimCard({ reward, minRewardLimit, isZeroReward, isLoad
         variant="outline"
         className="space-x-2 dark:border-neutral-700"
         isLoading={isLoading}
-        disabled={isZeroReward || isNullishRewardValue || !minRewardLimit || reward < minRewardLimit}
+        disabled={
+          isZeroReward
+          || isNullishRewardValue
+          || !minRewardLimit
+          || reward < minRewardLimit
+        }
       >
         <span>{t('referral.claimCard.claim')}</span>
         <HandCoins className="size-4" />

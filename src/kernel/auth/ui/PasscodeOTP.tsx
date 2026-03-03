@@ -15,9 +15,12 @@ interface Props {
 }
 
 export function PasscodeOTP({ passcode, setPasscode }: Props) {
-  const handleChange = useCallback((value: string) => {
-    setPasscode(value)
-  }, [setPasscode])
+  const handleChange = useCallback(
+    (value: string) => {
+      setPasscode(value)
+    },
+    [setPasscode],
+  )
 
   return (
     <InputOTP

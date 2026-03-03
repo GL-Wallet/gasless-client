@@ -17,7 +17,10 @@ interface UseFetchReferralsReturn {
   fetchNextReferrals: () => Promise<void>
 }
 
-export function useFetchReferrals({ currentPage, pageSize }: UseFetchReferralsProps): UseFetchReferralsReturn {
+export function useFetchReferrals({
+  currentPage,
+  pageSize,
+}: UseFetchReferralsProps): UseFetchReferralsReturn {
   const user = useUser()
 
   const [referralList, setReferralList] = useState<UserData[]>([])
@@ -30,7 +33,10 @@ export function useFetchReferrals({ currentPage, pageSize }: UseFetchReferralsPr
 
     setIsLoading(true)
     try {
-      const response = await api.getReferrals(user?.id, { page: currentPage.current, limit: pageSize.current })
+      const response = await api.getReferrals(user?.id, {
+        page: currentPage.current,
+        limit: pageSize.current,
+      })
 
       if (!response)
         return
@@ -55,7 +61,10 @@ export function useFetchReferrals({ currentPage, pageSize }: UseFetchReferralsPr
     setIsLoading(true)
     setHasMoreReferrals(false)
     try {
-      const response = await api.getReferrals(user.id, { page: currentPage.current, limit: pageSize.current })
+      const response = await api.getReferrals(user.id, {
+        page: currentPage.current,
+        limit: pageSize.current,
+      })
 
       if (!response)
         return
@@ -73,5 +82,11 @@ export function useFetchReferrals({ currentPage, pageSize }: UseFetchReferralsPr
     }
   }, [currentPage, pageSize, user])
 
-  return { referralList, hasMoreReferrals, isLoading, fetchReferralList, fetchNextReferrals }
+  return {
+    referralList,
+    hasMoreReferrals,
+    isLoading,
+    fetchReferralList,
+    fetchNextReferrals,
+  }
 }

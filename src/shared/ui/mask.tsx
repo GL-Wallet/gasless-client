@@ -21,7 +21,9 @@ export function Mask({ onHideMask }: { onHideMask?: () => void }) {
         <EyeOff className="h-9 w-9" />
         <div className="mt-2 text-center">
           <h3 className="text-sm font-medium">{t('shared.mask.title')}</h3>
-          <p className="text-[12px] text-muted-foreground">{t('shared.mask.description')}</p>
+          <p className="text-[12px] text-muted-foreground">
+            {t('shared.mask.description')}
+          </p>
         </div>
       </div>
     )

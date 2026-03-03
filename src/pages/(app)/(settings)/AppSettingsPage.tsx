@@ -26,7 +26,11 @@ export function AppSettingsPage() {
       <AppSettingsItems />
 
       <div className="flex flex-col items-center space-y-3">
-        <Button onClick={handleRemoveWallet} variant="outline" className="w-full bg-transparent">
+        <Button
+          onClick={handleRemoveWallet}
+          variant="outline"
+          className="w-full bg-transparent"
+        >
           {t('setting.signOut.button.signOutWallet')}
           {' '}
           <span className="underline font-fold ml-1">{wallet.name}</span>

@@ -29,7 +29,8 @@ export const useAppSettingsStore = create<State & Actions>((set, get) => ({
     const { updateLanguage } = get()
 
     try {
-      const rawDataFromCloudStorage = await cloudStorageService.get<Settings>(USER_STORAGE_KEY)
+      const rawDataFromCloudStorage
+        = await cloudStorageService.get<Settings>(USER_STORAGE_KEY)
       const data = settingsSchema.parse(rawDataFromCloudStorage)
 
       updateLanguage(data.language)

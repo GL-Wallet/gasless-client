@@ -26,7 +26,13 @@ export function ReferralPage() {
   const currentPage = useRef<number>(1)
   const limit = useRef<number>(4)
 
-  const { referralList, hasMoreReferrals, isLoading, fetchReferralList, fetchNextReferrals } = useFetchReferrals({
+  const {
+    referralList,
+    hasMoreReferrals,
+    isLoading,
+    fetchReferralList,
+    fetchNextReferrals,
+  } = useFetchReferrals({
     currentPage,
     pageSize: limit,
   })
@@ -75,10 +81,15 @@ export function ReferralPage() {
 
       <div className="space-y-4">
         <div className="flex justify-between items-center">
-          <h3 className="text-lg font-bold primary-gradient">{t('referral.friends')}</h3>
+          <h3 className="text-lg font-bold primary-gradient">
+            {t('referral.friends')}
+          </h3>
           <div className="space-x-2 text-sm text-muted-foreground">
             <span>{t('referral.referralsInvited')}</span>
-            <Badge className="border-none dark:border-neutral-700" variant="outline">
+            <Badge
+              className="border-none dark:border-neutral-700"
+              variant="outline"
+            >
               {referralsCount ?? '...'}
             </Badge>
           </div>

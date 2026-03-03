@@ -1,6 +1,10 @@
 import numeral from 'numeral'
 
-export function FormattedNumber({ number }: { number: string | number | undefined }) {
+export function FormattedNumber({
+  number,
+}: {
+  number: string | number | undefined
+}) {
   if (!number) {
     return 0
   }

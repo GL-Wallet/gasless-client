@@ -7,7 +7,9 @@ export function useSignOut() {
   const cloudStorage = useCloudStorage()
   const resetWalletStore = useWalletStore(store => store.resetStore)
   const resetUserStore = useUserStore(store => store.resetStore)
-  const resetAppSettingsStore = useAppSettingsStore(store => store.resetStore)
+  const resetAppSettingsStore = useAppSettingsStore(
+    store => store.resetStore,
+  )
 
   const signOut = async () => {
     resetWalletStore()

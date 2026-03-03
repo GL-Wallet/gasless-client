@@ -33,7 +33,9 @@ export function WalletAssets({ className }: PropsWithClassname) {
 
   return (
     <div className={cn('w-full space-y-3', className)}>
-      <h3 className="text-neutral-600 text-md font-bold dark:text-muted-foreground mb-1">{t('wallet.assets.title')}</h3>
+      <h3 className="text-neutral-600 text-md font-bold dark:text-muted-foreground mb-1">
+        {t('wallet.assets.title')}
+      </h3>
 
       <div className="w-full flex flex-col space-y-2">
         {Object.keys(AVAILABLE_TOKENS).map((token, idx) => (
@@ -52,7 +54,9 @@ export function WalletAssets({ className }: PropsWithClassname) {
             </div>
             <div className="space-x-4">
               <span className="primary-gradient">
-                <FormattedNumber number={wallet.balances[token as AVAILABLE_TOKENS]} />
+                <FormattedNumber
+                  number={wallet.balances[token as AVAILABLE_TOKENS]}
+                />
               </span>
 
               <Button

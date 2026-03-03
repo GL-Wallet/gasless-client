@@ -31,7 +31,10 @@ export function useImportWallet() {
       }
 
       const { address, publicKey } = wallet
-      const encryptedMnemonic = encrypt(wallet.mnemonic.phrase, currentPasscode)
+      const encryptedMnemonic = encrypt(
+        wallet.mnemonic.phrase,
+        currentPasscode,
+      )
 
       await addNewWallet({
         address,

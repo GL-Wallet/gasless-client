@@ -23,9 +23,15 @@ export function SeedPhrasePage() {
         className="h-[25%]"
       />
 
-      <SeedPhrase seedPhrase={seedPhrase} onHideMask={() => setIsDisabled(false)} />
+      <SeedPhrase
+        seedPhrase={seedPhrase}
+        onHideMask={() => setIsDisabled(false)}
+      />
 
-      <CopyToClipboardButton value={seedPhrase?.join(' ')} disabled={isDisabled} />
+      <CopyToClipboardButton
+        value={seedPhrase?.join(' ')}
+        disabled={isDisabled}
+      />
 
       <ShinyButton
         onClick={() => navigate(ROUTES.SEED_PHRASE_CONFIRMATION)}

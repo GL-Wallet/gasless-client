@@ -24,7 +24,11 @@
 .side {
   width: 70px;
   height: 70px;
-  background: linear-gradient(to bottom right, #26A17B, #1F8A70); /* Tether colors */
+  background: linear-gradient(
+    to bottom right,
+    #26a17b,
+    #1f8a70
+  ); /* Tether colors */
   position: absolute;
   top: 0;
   left: 0;
@@ -32,33 +36,49 @@
   bottom: 0;
   margin: auto;
   transform-origin: center top;
-  clipPath: polygon(50% 0%, 0% 100%, 100% 100%);
+  clippath: polygon(50% 0%, 0% 100%, 100% 100%);
 }
 
 .side1 {
   transform: rotateZ(-30deg) rotateY(90deg);
-  background: linear-gradient(to bottom right, #1F8A70, #26A17B); /* Tether colors */
+  background: linear-gradient(
+    to bottom right,
+    #1f8a70,
+    #26a17b
+  ); /* Tether colors */
 }
 
 .side2 {
   transform: rotateZ(30deg) rotateY(90deg);
-  background: linear-gradient(to bottom right, #26A17B, #1F8A70); /* Tether colors */
+  background: linear-gradient(
+    to bottom right,
+    #26a17b,
+    #1f8a70
+  ); /* Tether colors */
 }
 
 .side3 {
   transform: rotateX(30deg);
-  background: linear-gradient(to bottom right, #1F8A70, #26A17B); /* Tether colors */
+  background: linear-gradient(
+    to bottom right,
+    #1f8a70,
+    #26a17b
+  ); /* Tether colors */
 }
 
 .side4 {
   transform: rotateX(-30deg);
-  background: linear-gradient(to bottom right, #26A17B, #1F8A70); /* Tether colors */
+  background: linear-gradient(
+    to bottom right,
+    #26a17b,
+    #1f8a70
+  ); /* Tether colors */
 }
 
 .shadow {
   width: 60px;
   height: 60px;
-  background: #1F8A70; /* Slightly darker Tether green */
+  background: #1f8a70; /* Slightly darker Tether green */
   position: absolute;
   top: 0;
   left: 0;

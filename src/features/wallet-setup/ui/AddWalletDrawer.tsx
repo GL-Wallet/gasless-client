@@ -35,7 +35,10 @@ export function AddWalletDrawer() {
     <Drawer>
       <div className="flex justify-center">
         <DrawerTrigger asChild>
-          <ShinyButton text={t('wallet.manager.add.button.addWallet')} className="w-full" />
+          <ShinyButton
+            text={t('wallet.manager.add.button.addWallet')}
+            className="w-full"
+          />
         </DrawerTrigger>
       </div>
 
@@ -50,7 +53,13 @@ export function AddWalletDrawer() {
 
         <div className="space-y-2">
           {Actions.map(({ title, description, icon, href }, idx) => (
-            <LinkItem href={href} title={t(title)} description={t(description)} icon={icon} key={idx} />
+            <LinkItem
+              href={href}
+              title={t(title)}
+              description={t(description)}
+              icon={icon}
+              key={idx}
+            />
           ))}
         </div>
       </DrawerContent>

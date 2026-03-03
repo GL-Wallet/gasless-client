@@ -1,5 +1,10 @@
 import type { z } from 'zod'
-import type { BatchDtoSchema, BatchesDtoSchema, BatchTxDtoSchema, CreateBatchDtoSchema } from './batch.contracts'
+import type {
+  BatchDtoSchema,
+  BatchesDtoSchema,
+  BatchTxDtoSchema,
+  CreateBatchDtoSchema,
+} from './batch.contracts'
 
 export type BatchesDto = z.infer<typeof BatchesDtoSchema>
 export type BatchDto = z.infer<typeof BatchDtoSchema>

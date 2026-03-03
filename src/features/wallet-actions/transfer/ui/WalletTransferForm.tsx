@@ -20,7 +20,14 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/shared/ui/drawer'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/shared/ui/form'
 import { FormattedNumber } from '@/shared/ui/formatted-number'
 import { Input } from '@/shared/ui/input'
 import { QrScannerButton } from '@/shared/ui/qr-scanner-button'
@@ -107,26 +114,39 @@ export function WalletTransferForm(props: Props) {
   })
 
   const isUsdtToken = token === AVAILABLE_TOKENS.USDT
-  const isOptimizationEnabled = transferInfo?.optimization === true || transferInfo?.optimization === undefined
+  const isOptimizationEnabled
+    = transferInfo?.optimization === true
+      || transferInfo?.optimization === undefined
 
   const validateTransaction = useCallback(
     (values: FormFields): boolean => {
-      const sourceBalance = wallet.balances[token as keyof typeof wallet.balances]
+      const sourceBalance
+        = wallet.balances[token as keyof typeof wallet.balances]
       const feeBalance = wallet.balances.TRX
 
       if (values.amount > sourceBalance) {
-        form.setError('amount', { type: 'manual', message: t('transfer.error.insufficientBalance', { token }) })
+        form.setError('amount', {
+          type: 'manual',
+          message: t('transfer.error.insufficientBalance', { token }),
+        })
         toast.error(t('transfer.error.notEnoughBalance'))
         return false
       }
 
-      if (isUsdtToken && transferInfo?.fee && feeBalance < transferInfo?.fee + BANDWIDTH_COST) {
+      if (
+        isUsdtToken
+        && transferInfo?.fee
+        && feeBalance < transferInfo?.fee + BANDWIDTH_COST
+      ) {
         toast.error(t('transfer.error.insufficientBalance', { token: 'TRX' }))
         return false
       }
 
       if (values.address === wallet.address) {
-        form.setError('address', { type: 'manual', message: t('transfer.error.cannotUseOwnAddress') })
+        form.setError('address', {
+          type: 'manual',
+          message: t('transfer.error.cannotUseOwnAddress'),
+        })
         toast.error(t('transfer.error.cannotUseOwnAddress'))
         return false
       }
@@ -154,9 +174,18 @@ export function WalletTransferForm(props: Props) {
         return
 
       try {
-        const transactionId = await handleProcessTransaction(formValues.address, formValues.amount, passcode)
+        const transactionId = await handleProcessTransaction(
+          formValues.address,
+          formValues.amount,
+          passcode,
+        )
         navigateToTransactionResult(transactionId)
-        processTransferResult(transactionId, formValues.address, formValues.amount, passcode)
+        processTransferResult(
+          transactionId,
+          formValues.address,
+          formValues.amount,
+          passcode,
+        )
       }
       catch (error) {
         console.error(`Transaction processing error:`, error)
@@ -193,7 +222,12 @@ export function WalletTransferForm(props: Props) {
       alert.setIsOpen(true)
       alert.setActions({
         async handleContinue() {
-          const transactionId = await handleProcessTransaction(address, amount, passcode, false)
+          const transactionId = await handleProcessTransaction(
+            address,
+            amount,
+            passcode,
+            false,
+          )
           navigateToTransactionResult(transactionId)
         },
       })
@@ -201,7 +235,12 @@ export function WalletTransferForm(props: Props) {
   }
 
   const handleProcessTransaction = useCallback(
-    async (address: string, amount: number, passcode: string, optimization?: boolean): Promise<string | undefined> => {
+    async (
+      address: string,
+      amount: number,
+      passcode: string,
+      optimization?: boolean,
+    ): Promise<string | undefined> => {
       if (!transferInfo?.address || !transferInfo?.fee)
         return
 
@@ -218,7 +257,11 @@ export function WalletTransferForm(props: Props) {
             optimization: optimization ?? transferInfo.optimization,
           })
         case AVAILABLE_TOKENS.TRX:
-          return await transferTrx({ recipientAddress: address, transferAmount: amount, userPasscode: passcode })
+          return await transferTrx({
+            recipientAddress: address,
+            transferAmount: amount,
+            userPasscode: passcode,
+          })
         default:
           console.error(`Unsupported token: ${token}`)
           return undefined
@@ -237,7 +280,10 @@ export function WalletTransferForm(props: Props) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleFormSubmit)} className="h-full flex flex-col justify-between">
+      <form
+        onSubmit={form.handleSubmit(handleFormSubmit)}
+        className="h-full flex flex-col justify-between"
+      >
         <div className="space-y-2">
           <div className="relative py-3 space-y-4">
             <AddressInput form={form} />
@@ -250,7 +296,12 @@ export function WalletTransferForm(props: Props) {
             />
           </div>
 
-          {isUsdtToken && <TrxPurchaseLink need={transferInfo?.fee} balances={wallet.balances} />}
+          {isUsdtToken && (
+            <TrxPurchaseLink
+              need={transferInfo?.fee}
+              balances={wallet.balances}
+            />
+          )}
 
           <div className="flex flex-col gap-4 bg-secondary/50 p-4 rounded-md">
             <div className="flex items-center justify-between">
@@ -273,7 +324,11 @@ export function WalletTransferForm(props: Props) {
                 </span>
                 <div className="text-md space-x-1">
                   <span>
-                    <ReducedFee form={form} transferInfo={transferInfo} prevFee={prevFee} />
+                    <ReducedFee
+                      form={form}
+                      transferInfo={transferInfo}
+                      prevFee={prevFee}
+                    />
                   </span>
                 </div>
               </div>
@@ -282,7 +337,9 @@ export function WalletTransferForm(props: Props) {
             {transferInfo?.optimization === false && (
               <div className="flex items-center space-x-1 text-muted-foreground">
                 <CircleAlert className="size-4" />
-                <span className="text-sm">{t('transfer.optimizationDisabled')}</span>
+                <span className="text-sm">
+                  {t('transfer.optimizationDisabled')}
+                </span>
               </div>
             )}
 
@@ -302,7 +359,11 @@ export function WalletTransferForm(props: Props) {
           </div>
         </div>
 
-        <Button className="dark:text-white bg-secondary/80 dark:border-neutral-500" variant="outline" type="submit">
+        <Button
+          className="dark:text-white bg-secondary/80 dark:border-neutral-500"
+          variant="outline"
+          type="submit"
+        >
           {t('transfer.button.send')}
         </Button>
 
@@ -386,65 +447,63 @@ const TokenAmountInput: React.FC<{
   balances: Balances
   token: string
   onTokenChange: (token: string) => void
-}>
-  = ({
-    form,
-    balances,
-    token,
-    onTokenChange,
-  }) => {
-    const { t } = useTranslation()
+}> = ({ form, balances, token, onTokenChange }) => {
+  const { t } = useTranslation()
 
-    return (
-      <FormField
-        control={form.control}
-        name="amount"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className="text-lg primary-gradient">
-              {t('transfer.amount')}
-            </FormLabel>
-            <FormControl>
-              <div className="relative">
-                <Input
-                  className="bg-transparent h-14 text-lg dark:border-white/40 placeholder:text-sm"
-                  type="number"
-                  min="0"
-                  inputMode="decimal"
-                  pattern="[0-9]*"
-                  step="any"
-                  placeholder="Amount"
-                  {...field}
-                  // temporary
-                  onFocus={(e) => {
-                    const value = e.target.value
-                    if (+value === 0) {
-                      form.setValue('amount', value.replace(/^0+/, '') as unknown as number)
-                    }
-                  }}
-                />
-                <div
-                  className="absolute top-1/2 right-24 -translate-y-1/2 text-sm dark:text-white text-blue-500"
-                  onClick={() => {
-                    form.setValue('amount', balances[token as keyof typeof balances])
-                  }}
-                >
-                  MAX
-                </div>
-
-                <div
-                  className="absolute top-1/2 right-3 -translate-y-1/2"
-                >
-                  <TokenPicker value={token} onValueChange={onTokenChange} />
-                </div>
+  return (
+    <FormField
+      control={form.control}
+      name="amount"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel className="text-lg primary-gradient">
+            {t('transfer.amount')}
+          </FormLabel>
+          <FormControl>
+            <div className="relative">
+              <Input
+                className="bg-transparent h-14 text-lg dark:border-white/40 placeholder:text-sm"
+                type="number"
+                min="0"
+                inputMode="decimal"
+                pattern="[0-9]*"
+                step="any"
+                placeholder="Amount"
+                {...field}
+                // temporary
+                onFocus={(e) => {
+                  const value = e.target.value
+                  if (+value === 0) {
+                    form.setValue(
+                      'amount',
+                      value.replace(/^0+/, '') as unknown as number,
+                    )
+                  }
+                }}
+              />
+              <div
+                className="absolute top-1/2 right-24 -translate-y-1/2 text-sm dark:text-white text-blue-500"
+                onClick={() => {
+                  form.setValue(
+                    'amount',
+                    balances[token as keyof typeof balances],
+                  )
+                }}
+              >
+                MAX
               </div>
-            </FormControl>
-            <FormMessage tOptions={{ value: 0.1 }} />
-          </FormItem>
-        )}
-      />
-    )
-  }
+
+              <div className="absolute top-1/2 right-3 -translate-y-1/2">
+                <TokenPicker value={token} onValueChange={onTokenChange} />
+              </div>
+            </div>
+          </FormControl>
+          <FormMessage tOptions={{ value: 0.1 }} />
+        </FormItem>
+      )}
+    />
+  )
+}
 
 // Transaction drawer component
 const TransactionDrawer: React.FC<{
@@ -470,9 +529,15 @@ const TransactionDrawer: React.FC<{
             <span>{token}</span>
           </h3>
           <div className="flex flex-col items-center mt-12">
-            <TransactionAlert title={t('transfer.from')} description={walletAddress} />
+            <TransactionAlert
+              title={t('transfer.from')}
+              description={walletAddress}
+            />
             <LucideArrowDown className="my-4" />
-            <TransactionAlert title={t('transfer.to')} description={values?.address ?? ''} />
+            <TransactionAlert
+              title={t('transfer.to')}
+              description={values?.address ?? ''}
+            />
           </div>
         </div>
         <DrawerFooter className="space-y-2 mt-10">
@@ -489,7 +554,10 @@ const TransactionDrawer: React.FC<{
 }
 
 // Transaction alert component
-const TransactionAlert: React.FC<{ title: string, description: string }> = ({ title, description }) => (
+const TransactionAlert: React.FC<{ title: string, description: string }> = ({
+  title,
+  description,
+}) => (
   <Alert>
     <Wallet2 className="h-4 w-4" />
     <AlertTitle>{title}</AlertTitle>

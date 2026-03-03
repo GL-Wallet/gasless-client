@@ -21,7 +21,8 @@ const statusTitles: Record<PasscodeSetupStatus, string> = {
 export function PasscodeSetup({ onPasscodeSuccess }: Props) {
   const [passcode, setPasscode] = useState<Passcode>(null)
   const [confirmedPasscode, setConfirmedPasscode] = useState<Passcode>(null)
-  const [setupStatus, setSetupStatus] = useState<PasscodeSetupStatus>('initial')
+  const [setupStatus, setSetupStatus]
+    = useState<PasscodeSetupStatus>('initial')
 
   const { t } = useTranslation()
 
@@ -38,7 +39,13 @@ export function PasscodeSetup({ onPasscodeSuccess }: Props) {
         onPasscodeSuccess(confirmedPasscode)
       }
     }
-  }, [passcode, confirmedPasscode, setupStatus, cloudStorage, onPasscodeSuccess])
+  }, [
+    passcode,
+    confirmedPasscode,
+    setupStatus,
+    cloudStorage,
+    onPasscodeSuccess,
+  ])
 
   return (
     <div className="flex flex-col justify-center items-center space-y-8">

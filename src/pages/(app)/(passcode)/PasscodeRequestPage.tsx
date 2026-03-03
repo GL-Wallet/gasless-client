@@ -2,7 +2,9 @@ import { useAppSettingsStore } from '@/entities/app-settings'
 import { PasscodeRequired, useAuth } from '@/kernel/auth'
 
 export function PasscodeRequestPage() {
-  const isBiometryEnabled = useAppSettingsStore(store => store.isBiometryEnabled)
+  const isBiometryEnabled = useAppSettingsStore(
+    store => store.isBiometryEnabled,
+  )
   const { _passcodeHash, _onPasscodeSuccess } = useAuth()
 
   return (

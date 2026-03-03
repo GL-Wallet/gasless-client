@@ -27,5 +27,9 @@
     "isolatedModules": true,
     "skipLibCheck": true
   },
-  "include": ["src", "src/pages", "src/v1/features/wallet-assets/ui/WalletAssets.tsx"]
+  "include": [
+    "src",
+    "src/pages",
+    "src/v1/features/wallet-assets/ui/WalletAssets.tsx"
+  ]
 }

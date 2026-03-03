@@ -11,7 +11,10 @@ import { navigate } from 'wouter/use-browser-location'
 
 import { generateUniqueRandomNumbers } from '../helpers/generateUniqueRandomNumbers'
 
-export function SeedPhraseConfirmation({ className, seedPhrase }: PropsWithClassname<{ seedPhrase: string[] }>) {
+export function SeedPhraseConfirmation({
+  className,
+  seedPhrase,
+}: PropsWithClassname<{ seedPhrase: string[] }>) {
   const [selectedWords, setSelectedWords] = useState<string[]>([])
   const [isPrevWordCorrect, setIsPrevWordCorrect] = useState(false)
   const [isButtonDisabled, setIsButtonDisabled] = useState(true)
@@ -21,16 +24,28 @@ export function SeedPhraseConfirmation({ className, seedPhrase }: PropsWithClass
   const [isSuccess, setIsSuccess] = useState(false)
 
   // Generate unique random numbers and correct words based on those numbers
-  const randomNumbers = useMemo(() => generateUniqueRandomNumbers(3, 0, seedPhrase.length - 1), [seedPhrase])
+  const randomNumbers = useMemo(
+    () => generateUniqueRandomNumbers(3, 0, seedPhrase.length - 1),
+    [seedPhrase],
+  )
 
-  const correctWords = useMemo(() => randomNumbers.map(number => seedPhrase[number]), [randomNumbers, seedPhrase])
+  const correctWords = useMemo(
+    () => randomNumbers.map(number => seedPhrase[number]),
+    [randomNumbers, seedPhrase],
+  )
 
   // Shuffle the seed phrase for display
   const shuffledSeedPhrase = useMemo(() => shuffle(seedPhrase), [seedPhrase])
 
   // Determine if a word is selected or correct
-  const isSelectedWord = useCallback((word: string) => selectedWords.includes(word), [selectedWords])
-  const isCorrectWord = useCallback((word: string, index: number) => correctWords[index] === word, [correctWords])
+  const isSelectedWord = useCallback(
+    (word: string) => selectedWords.includes(word),
+    [selectedWords],
+  )
+  const isCorrectWord = useCallback(
+    (word: string, index: number) => correctWords[index] === word,
+    [correctWords],
+  )
 
   useEffect(() => {
     const lastSelectedWord = selectedWords[selectedWords.length - 1]
@@ -47,7 +62,11 @@ export function SeedPhraseConfirmation({ className, seedPhrase }: PropsWithClass
 
   const handleWordClick = useCallback(
     (word: string) => {
-      if (selectedWords.length < 3 && !isSelectedWord(word) && (isPrevWordCorrect || selectedWords.length === 0)) {
+      if (
+        selectedWords.length < 3
+        && !isSelectedWord(word)
+        && (isPrevWordCorrect || selectedWords.length === 0)
+      ) {
         setSelectedWords(prev => [...prev, word])
       }
       else {
@@ -60,7 +79,9 @@ export function SeedPhraseConfirmation({ className, seedPhrase }: PropsWithClass
   const handleCellClick = useCallback(
     (index: number, word: string) => {
       if (!isCorrectWord(word, index) && !isSuccess) {
-        setSelectedWords(prev => prev.filter(selected => selected !== word))
+        setSelectedWords(prev =>
+          prev.filter(selected => selected !== word),
+        )
       }
     },
     [isCorrectWord, isSuccess],
@@ -71,17 +92,24 @@ export function SeedPhraseConfirmation({ className, seedPhrase }: PropsWithClass
   }
 
   return (
-    <div className={cn('grow flex flex-col justify-between space-y-3', className)}>
+    <div
+      className={cn('grow flex flex-col justify-between space-y-3', className)}
+    >
       <div className="grow flex flex-col space-y-3">
         <div className="grid grid-cols-3 gap-x-4">
           {randomNumbers.map((number, idx) => (
             <div
               onClick={() => handleCellClick(idx, selectedWords[idx] || '')}
               className={cn('text-center border px-2 py-3 rounded-md', {
-                'border-green-700': isCorrectWord(selectedWords[idx] || '', idx),
-                'border-red-900': selectedWords[idx] && !isCorrectWord(selectedWords[idx], idx),
+                'border-green-700': isCorrectWord(
+                  selectedWords[idx] || '',
+                  idx,
+                ),
+                'border-red-900':
+                  selectedWords[idx] && !isCorrectWord(selectedWords[idx], idx),
                 'border-dashed':
-                  (selectedWords.length === 0 && idx === 0) || (selectedWords.length === idx && isPrevWordCorrect),
+                  (selectedWords.length === 0 && idx === 0)
+                  || (selectedWords.length === idx && isPrevWordCorrect),
               })}
               key={idx}
             >

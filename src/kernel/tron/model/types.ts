@@ -14,4 +14,8 @@ export interface TransactionResponse {
   }
 }
 
-export type TransferFunction = (to: string, amount: number, passcode: string) => Promise<string | undefined>
+export type TransferFunction = (
+  to: string,
+  amount: number,
+  passcode: string,
+) => Promise<string | undefined>

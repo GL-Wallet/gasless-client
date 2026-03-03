@@ -3,7 +3,14 @@ import { cn } from '@/shared/lib/utils'
 import ShinyButton from '@/shared/magicui/shiny-button'
 
 import { Button } from '@/shared/ui/button'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/shared/ui/form'
 import { Textarea } from '@/shared/ui/textarea'
 import { ScanLine } from 'lucide-react'
 import React from 'react'
@@ -14,20 +21,29 @@ import { useWalletImportForm } from '../model/useWalletImportForm'
 const MemoizedFormMessage = React.memo(FormMessage)
 
 export function WalletImportForm(props: PropsWithClassname) {
-  const { isLoading, form, onSubmit, handleOpenQRScanner } = useWalletImportForm()
+  const { isLoading, form, onSubmit, handleOpenQRScanner }
+    = useWalletImportForm()
 
   const { t } = useTranslation()
 
   return (
     <Form {...form}>
-      <form onSubmit={onSubmit} className={cn('grow flex flex-col justify-between space-y-6', props.className)}>
+      <form
+        onSubmit={onSubmit}
+        className={cn(
+          'grow flex flex-col justify-between space-y-6',
+          props.className,
+        )}
+      >
         <div className="space-y-6 overflow-y-auto">
           <FormField
             control={form.control}
             name="seedPhrase"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-md font-bold primary-gradient">{t('wallet.setup.import.label')}</FormLabel>
+                <FormLabel className="text-md font-bold primary-gradient">
+                  {t('wallet.setup.import.label')}
+                </FormLabel>
                 <FormControl>
                   <div className="relative h-fit">
                     <Textarea

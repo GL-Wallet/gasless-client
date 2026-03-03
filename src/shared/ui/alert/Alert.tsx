@@ -1,11 +1,11 @@
 /* eslint-disable ts/no-redeclare */
-import type { Dispatch, PropsWithChildren, ReactNode, SetStateAction } from 'react'
-import {
-  createContext,
-  memo,
-  useContext,
-  useState,
+import type {
+  Dispatch,
+  PropsWithChildren,
+  ReactNode,
+  SetStateAction,
 } from 'react'
+import { createContext, memo, useContext, useState } from 'react'
 
 import {
   AlertDialog,
@@ -56,7 +56,9 @@ export const AlertProvider = memo(({ children }: PropsWithChildren) => {
   }
 
   return (
-    <AlertContext.Provider value={{ isOpen, state, setActions, setIsOpen, setState }}>
+    <AlertContext.Provider
+      value={{ isOpen, state, setActions, setIsOpen, setState }}
+    >
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
         <AlertDialogContent className="max-w-[90%] rounded-md">
           <AlertDialogHeader>

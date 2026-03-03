@@ -56,7 +56,13 @@ interface ReferralItemProps {
 }
 
 const ReferralItem: React.FC<ReferralItemProps> = ({ user }) => {
-  const { userName, currentReward, currentPartnerReward, totalReward, totalPartnerReward } = user
+  const {
+    userName,
+    currentReward,
+    currentPartnerReward,
+    totalReward,
+    totalPartnerReward,
+  } = user
   const { t } = useTranslation()
 
   return (
@@ -76,13 +82,17 @@ const ReferralItem: React.FC<ReferralItemProps> = ({ user }) => {
             {t('referral.list.item.totalReward')}
             :
             {' '}
-            <FormattedNumber number={user.isPartner ? totalPartnerReward : totalReward} />
+            <FormattedNumber
+              number={user.isPartner ? totalPartnerReward : totalReward}
+            />
           </span>
         </div>
       </div>
       <Badge className="border-neutral-600" variant="outline">
         +
-        <FormattedNumber number={user.isPartner ? currentPartnerReward : currentReward} />
+        <FormattedNumber
+          number={user.isPartner ? currentPartnerReward : currentReward}
+        />
       </Badge>
     </div>
   )

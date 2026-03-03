@@ -30,7 +30,9 @@ export function WalletActionsCard({ className }: PropsWithClassname) {
       <div className="hidden dark:block absolute top-0 z-[-1] bottom-0 left-0 right-0 rounded-md bg-secondary bg-[radial-gradient(ellipse_80%_80%_at_50%_-5%,#505050,rgba(255,255,255,0))]" />
 
       <div className="flex items-center justify-between">
-        <p className="dark:text-muted-foreground">{truncateString(wallet.address, 12)}</p>
+        <p className="dark:text-muted-foreground">
+          {truncateString(wallet.address, 12)}
+        </p>
 
         <div className="flex items-center space-x-2">
           <MemoizedCopyToClipboard value={wallet.address} />

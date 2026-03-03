@@ -12,7 +12,9 @@ export function TransactionInProgress() {
       <Alert className="top-5">
         <CircleAlert className="h-4 w-4" />
         <AlertTitle>{t('transaction.progress.title')}</AlertTitle>
-        <AlertDescription>{t('transaction.progress.description')}</AlertDescription>
+        <AlertDescription>
+          {t('transaction.progress.description')}
+        </AlertDescription>
       </Alert>
 
       <div className="grow flex items-center">

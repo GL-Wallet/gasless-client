@@ -17,7 +17,9 @@ export function FinishSettingUp({ className }: PropsWithClassname) {
   return (
     isShowFinishSettingUp && (
       <div className={cn('w-full space-y-3', className)}>
-        <h3 className="primary-gradient text-md font-bold">{t('setting.finishSettingUp')}</h3>
+        <h3 className="primary-gradient text-md font-bold">
+          {t('setting.finishSettingUp')}
+        </h3>
         <div className="space-y-4">
           {!isBiometryEnabled && (
             <SwitchItem

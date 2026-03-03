@@ -98,5 +98,8 @@ export function createDialogPromiser<
     ? () => () => Promise<TResult>
     : () => (args: TArgs) => Promise<TResult>
 
-  return { usePromise: usePromise as UsePromiseType, promise: promise as UsePromiseType }
+  return {
+    usePromise: usePromise as UsePromiseType,
+    promise: promise as UsePromiseType,
+  }
 }

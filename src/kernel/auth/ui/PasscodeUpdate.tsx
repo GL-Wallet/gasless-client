@@ -33,7 +33,10 @@ export function PasscodeUpdate({ passcodeHash, onPasscodeSuccess }: Props) {
     ? (
         <div className="flex flex-col justify-center items-center space-y-8">
           <PageHeader title={t('auth.update.title')} />
-          <PasscodeInput passcode={enteredPasscode} setPasscode={setEnteredPasscode} />
+          <PasscodeInput
+            passcode={enteredPasscode}
+            setPasscode={setEnteredPasscode}
+          />
         </div>
       )
     : (

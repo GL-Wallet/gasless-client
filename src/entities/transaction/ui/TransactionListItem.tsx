@@ -26,9 +26,7 @@ export function TransactionListItem({ transaction, walletAddress }: Props) {
 
   return (
     isShowTransaction && (
-      <Alert
-        className="dark:bg-card/80 cursor-pointer rounded-sm"
-      >
+      <Alert className="dark:bg-card/80 cursor-pointer rounded-sm">
         <div className="flex justify-between items-center">
           <div>
             <AlertTitle className="primary-gradient font-bold text-lg">
@@ -41,9 +39,15 @@ export function TransactionListItem({ transaction, walletAddress }: Props) {
               </span>
             </AlertDescription>
           </div>
-          <div className="flex items-center gap-4" onClick={e => e.stopPropagation()}>
+          <div
+            className="flex items-center gap-4"
+            onClick={e => e.stopPropagation()}
+          >
             <CopyToClipboard value={transactionLink} />
-            <Share className="size-5" onClick={() => utils.shareURL(transactionLink)} />
+            <Share
+              className="size-5"
+              onClick={() => utils.shareURL(transactionLink)}
+            />
           </div>
         </div>
       </Alert>

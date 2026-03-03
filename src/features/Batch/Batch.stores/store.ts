@@ -1,10 +1,11 @@
 /* eslint-disable ts/ban-ts-comment */
 /* eslint-disable ts/no-use-before-define */
-/* eslint-disable style/max-statements-per-line */
+
 import { getPrivateKey } from '@/entities/wallet' // Assuming this is a synchronous getter or handles its own async
 import { tronService } from '@/kernel/tron' // Your Tron service
 import { batch } from '@/shared/api/batch' // Your batch API service
 import { fee } from '@/shared/api/fee'
+import { delay } from '@/shared/utils/delay'
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
@@ -90,8 +91,16 @@ interface IBatchWorkflowState {
   totalEstimatedFee: number // Store the calculated fee
   // Data from specific steps (could also live within stepState.data, but sometimes useful at top level)
   confirmedTransactions: IBatchTxInput[] // Txs user agreed to process
-  preparedSignatures: Array<{ inputTx: IBatchTxInput, signedTx?: ISignedTxOutput, error?: string }>
-  preparedFeeSignature: { inputTx: IBatchTxInput, signedTx?: ISignedTxOutput, error?: string } | null
+  preparedSignatures: Array<{
+    inputTx: IBatchTxInput
+    signedTx?: ISignedTxOutput
+    error?: string
+  }>
+  preparedFeeSignature: {
+    inputTx: IBatchTxInput
+    signedTx?: ISignedTxOutput
+    error?: string
+  } | null
   transactionSendResults: ITransactionSendResult[]
 
   abortController: AbortController | null
@@ -165,7 +174,9 @@ function makeInitialWorkflowState(): IBatchWorkflowState {
 
 // --- Zustand Store Definition ---
 
-export const useCreateBatchStore = create<IBatchWorkflowState & IBatchWorkflowActions>()(
+export const useCreateBatchStore = create<
+  IBatchWorkflowState & IBatchWorkflowActions
+>()(
   devtools(
     immer((set, get) => {
       // --- Internal Helper Functions ---
@@ -186,11 +197,16 @@ export const useCreateBatchStore = create<IBatchWorkflowState & IBatchWorkflowAc
               step.data = payload.data
             if (payload?.error !== undefined)
               step.error = payload.error
-            if (payload?.progress !== undefined)
-              step.progress = Math.min(MAX_PROGRESS, Math.max(0, payload.progress))
+            if (payload?.progress !== undefined) {
+              step.progress = Math.min(
+                MAX_PROGRESS,
+                Math.max(0, payload.progress),
+              )
+            }
             if (newStatus === EStepStatus.Pending)
               step.attempts += 1
-            if (newStatus === EStepStatus.Idle) { // Reset attempts and error if going back to idle for retry
+            if (newStatus === EStepStatus.Idle) {
+              // Reset attempts and error if going back to idle for retry
               step.attempts = 0
               step.error = undefined
               step.progress = 0
@@ -202,27 +218,46 @@ export const useCreateBatchStore = create<IBatchWorkflowState & IBatchWorkflowAc
       /**
        * Core workflow orchestrator. Determines and executes the next step.
        */
-      const _proceedWorkflow = async (startingStepOverride?: EBatchStep): Promise<void> => {
+      const _proceedWorkflow = async (
+        startingStepOverride?: EBatchStep,
+      ): Promise<void> => {
         const state = get()
-        if (state.workflowStatus === EWorkflowStatus.Aborted || state.abortController?.signal.aborted) {
-          set((draft) => { draft.workflowStatus = EWorkflowStatus.Aborted })
+        if (
+          state.workflowStatus === EWorkflowStatus.Aborted
+          || state.abortController?.signal.aborted
+        ) {
+          set((draft) => {
+            draft.workflowStatus = EWorkflowStatus.Aborted
+          })
           return
         }
 
         let currentStepIndex = -1
         if (startingStepOverride) {
-          currentStepIndex = state.stepOrder.findIndex(id => id === startingStepOverride)
+          currentStepIndex = state.stepOrder.findIndex(
+            id => id === startingStepOverride,
+          )
         }
         else {
-          currentStepIndex = state.stepOrder.findIndex(id => id === state.currentProcessingStep)
-          if (currentStepIndex === -1 || state.steps[state.currentProcessingStep!].status === EStepStatus.Success) {
+          currentStepIndex = state.stepOrder.findIndex(
+            id => id === state.currentProcessingStep,
+          )
+          if (
+            currentStepIndex === -1
+            || state.steps[state.currentProcessingStep!].status
+            === EStepStatus.Success
+          ) {
             // Find next idle or waiting step if current is success or no current step
-            currentStepIndex = state.stepOrder.findIndex(id =>
-              state.steps[id].status === EStepStatus.Idle
-              || state.steps[id].status === EStepStatus.WaitingForUserInput,
+            currentStepIndex = state.stepOrder.findIndex(
+              id =>
+                state.steps[id].status === EStepStatus.Idle
+                || state.steps[id].status === EStepStatus.WaitingForUserInput,
             )
           }
-          else if (state.steps[state.currentProcessingStep!].status === EStepStatus.Error) {
+          else if (
+            state.steps[state.currentProcessingStep!].status
+            === EStepStatus.Error
+          ) {
             // If current step is in error, halt unless retried.
             set((draft) => {
               if (draft.steps[draft.currentProcessingStep!].isCritical) {
@@ -232,8 +267,10 @@ export const useCreateBatchStore = create<IBatchWorkflowState & IBatchWorkflowAc
               else {
                 // Non-critical error, may proceed or be partially completed
                 // Check if any further steps can run
-                const nextRunnableIndex = state.stepOrder.findIndex((id, index) =>
-                  index > currentStepIndex && state.steps[id].status === EStepStatus.Idle,
+                const nextRunnableIndex = state.stepOrder.findIndex(
+                  (id, index) =>
+                    index > currentStepIndex
+                    && state.steps[id].status === EStepStatus.Idle,
                 )
                 if (nextRunnableIndex === -1) {
                   draft.workflowStatus = EWorkflowStatus.PartiallySucceeded
@@ -249,8 +286,14 @@ export const useCreateBatchStore = create<IBatchWorkflowState & IBatchWorkflowAc
 
         if (currentStepIndex === -1) {
           // All steps processed or no actionable step found
-          const hasErrors = state.stepOrder.some(id => state.steps[id].status === EStepStatus.Error && state.steps[id].isCritical)
-          const hasSomeErrors = state.stepOrder.some(id => state.steps[id].status === EStepStatus.Error)
+          const hasErrors = state.stepOrder.some(
+            id =>
+              state.steps[id].status === EStepStatus.Error
+              && state.steps[id].isCritical,
+          )
+          const hasSomeErrors = state.stepOrder.some(
+            id => state.steps[id].status === EStepStatus.Error,
+          )
           set((draft) => {
             draft.workflowStatus = hasErrors
               ? EWorkflowStatus.Failed
@@ -279,8 +322,13 @@ export const useCreateBatchStore = create<IBatchWorkflowState & IBatchWorkflowAc
               break
             case EBatchStep.TransactionConfirmation:
               // This step transitions to WaitingForUserInput, user action will resume.
-              _updateStepState(stepIdToExecute, EStepStatus.WaitingForUserInput)
-              set((draft) => { draft.workflowStatus = EWorkflowStatus.RequiresConfirmation })
+              _updateStepState(
+                stepIdToExecute,
+                EStepStatus.WaitingForUserInput,
+              )
+              set((draft) => {
+                draft.workflowStatus = EWorkflowStatus.RequiresConfirmation
+              })
               return // Halt orchestrator, wait for userConfirmsTransactions or userRejectsTransactions
             case EBatchStep.TransactionPreparation:
               await _executeTransactionPreparation()
@@ -296,11 +344,16 @@ export const useCreateBatchStore = create<IBatchWorkflowState & IBatchWorkflowAc
           }
 
           // If successful and not aborted, proceed to the next step
-          if (get().steps[stepIdToExecute].status === EStepStatus.Success && !get().abortController?.signal.aborted) {
+          if (
+            get().steps[stepIdToExecute].status === EStepStatus.Success
+            && !get().abortController?.signal.aborted
+          ) {
             _proceedWorkflow()
           }
           else if (get().abortController?.signal.aborted) {
-            set((draft) => { draft.workflowStatus = EWorkflowStatus.Aborted })
+            set((draft) => {
+              draft.workflowStatus = EWorkflowStatus.Aborted
+            })
           }
           // If error, _proceedWorkflow will be called by retryStep or will halt.
         }
@@ -325,12 +378,15 @@ export const useCreateBatchStore = create<IBatchWorkflowState & IBatchWorkflowAc
       const _executeInitialization = async () => {
         const stepId = EBatchStep.Initialization
         _updateStepState(stepId, EStepStatus.Pending)
-        // @ts-expect-error
-        const { batchIdToLoad, transactionsToProcess } = get()._tempInitPayload || {} // Assuming payload is temporarily stored
+        const { batchIdToLoad, transactionsToProcess }
+          // @ts-expect-error
+          = get()._tempInitPayload || {} // Assuming payload is temporarily stored
 
         if (!transactionsToProcess && batchIdToLoad) {
           try {
-            const data = await batch.getRetryableBatch.fetcher({ batchId: batchIdToLoad })
+            const data = await batch.getRetryableBatch.fetcher({
+              batchId: batchIdToLoad,
+            })
 
             set((state) => {
               state.rawTransactions = data.txs
@@ -344,11 +400,17 @@ export const useCreateBatchStore = create<IBatchWorkflowState & IBatchWorkflowAc
           }
         }
         else if (transactionsToProcess) {
-          set((state) => { state.rawTransactions = transactionsToProcess })
-          _updateStepState(stepId, EStepStatus.Success, { data: transactionsToProcess })
+          set((state) => {
+            state.rawTransactions = transactionsToProcess
+          })
+          _updateStepState(stepId, EStepStatus.Success, {
+            data: transactionsToProcess,
+          })
         }
         else {
-          const error = new Error('Invalid initialization: Provide batchIdToLoad or transactionsToProcess.')
+          const error = new Error(
+            'Invalid initialization: Provide batchIdToLoad or transactionsToProcess.',
+          )
           _updateStepState(stepId, EStepStatus.Error, { error })
           throw error
         }
@@ -359,7 +421,10 @@ export const useCreateBatchStore = create<IBatchWorkflowState & IBatchWorkflowAc
         _updateStepState(stepId, EStepStatus.Pending, { progress: 0 })
         const transactions = get().rawTransactions
         if (!transactions.length) {
-          _updateStepState(stepId, EStepStatus.Success, { data: 0, progress: MAX_PROGRESS }) // No fee for no txs
+          _updateStepState(stepId, EStepStatus.Success, {
+            data: 0,
+            progress: MAX_PROGRESS,
+          }) // No fee for no txs
           return
         }
 
@@ -367,18 +432,31 @@ export const useCreateBatchStore = create<IBatchWorkflowState & IBatchWorkflowAc
           let calculatedTotalFee = 0
           // Simulate fetching fee for each transaction or a batch fee
           // For demo, using a placeholder. Replace with actual tronService.estimateFee or similar.
-          const { maxFee: feePerTx } = await fee.getFeesRange.fetcher({ network: 'TRON', asset: 'USDT' })
+          const { maxFee: feePerTx } = await fee.getFeesRange.fetcher({
+            network: 'TRON',
+            asset: 'USDT',
+          })
           for (let i = 0; i < transactions.length; i++) {
             if (get().abortController?.signal.aborted)
               throw new Error('Fee loading aborted')
             calculatedTotalFee += feePerTx // Replace with actual fee calculation
-            _updateStepState(stepId, EStepStatus.Pending, { progress: ((i + 1) / transactions.length) * MAX_PROGRESS })
+            _updateStepState(stepId, EStepStatus.Pending, {
+              progress: ((i + 1) / transactions.length) * MAX_PROGRESS,
+            })
           }
-          set((state) => { state.totalEstimatedFee = calculatedTotalFee })
-          _updateStepState(stepId, EStepStatus.Success, { data: calculatedTotalFee, progress: MAX_PROGRESS })
+          set((state) => {
+            state.totalEstimatedFee = calculatedTotalFee
+          })
+          _updateStepState(stepId, EStepStatus.Success, {
+            data: calculatedTotalFee,
+            progress: MAX_PROGRESS,
+          })
         }
         catch (error) {
-          _updateStepState(stepId, EStepStatus.Error, { error, progress: get().steps[stepId].progress })
+          _updateStepState(stepId, EStepStatus.Error, {
+            error,
+            progress: get().steps[stepId].progress,
+          })
           throw error
         }
       }
@@ -395,46 +473,80 @@ export const useCreateBatchStore = create<IBatchWorkflowState & IBatchWorkflowAc
         }
 
         const transactionsToSign = get().confirmedTransactions
-        const preparedSignatures: Array<{ inputTx: IBatchTxInput, signedTx?: ISignedTxOutput, error?: string }> = []
+        const preparedSignatures: Array<{
+          inputTx: IBatchTxInput
+          signedTx?: ISignedTxOutput
+          error?: string
+        }> = []
         let successfulSigns = 0
 
         if (!transactionsToSign.length) {
-          _updateStepState(stepId, EStepStatus.Success, { data: [], progress: MAX_PROGRESS })
+          _updateStepState(stepId, EStepStatus.Success, {
+            data: [],
+            progress: MAX_PROGRESS,
+          })
           return
         }
 
-        const abortSignal = useCreateBatchStore.getState().abortController?.signal
+        const abortSignal
+          = useCreateBatchStore.getState().abortController?.signal
 
         for (let i = 0; i < transactionsToSign.length; i++) {
           const tx = transactionsToSign[i]
 
           if (abortSignal?.aborted) {
             _updateStepState(stepId, EStepStatus.Idle, { progress: 0 })
-            set((state) => { state.preparedSignatures = [] })
+            set((state) => {
+              state.preparedSignatures = []
+            })
 
             return
           }
 
           try {
-            const signedTx = await tronService
-              .createAndSignTrc20Transaction(tx.address, tx.amount, privateKey, 6 * 60 * 60)
+            const signedTx = await tronService.createAndSignTrc20Transaction(
+              tx.address,
+              tx.amount,
+              privateKey,
+              6 * 60 * 60,
+            )
 
             preparedSignatures.push({ inputTx: tx, signedTx })
             successfulSigns++
+
+            // Rate limiting: Add delay between requests to avoid hitting API rate limits
+            // Skip delay for the last transaction
+            if (i < transactionsToSign.length - 1) {
+              await delay(0.1) // 100ms delay between requests
+            }
           }
           catch (error: any) {
-            preparedSignatures.push({ inputTx: tx, error: error.message || 'Signing failed' })
+            preparedSignatures.push({
+              inputTx: tx,
+              error: error.message || 'Signing failed',
+            })
           }
-          _updateStepState(stepId, EStepStatus.Pending, { progress: ((i + 1) / transactionsToSign.length) * MAX_PROGRESS })
+          _updateStepState(stepId, EStepStatus.Pending, {
+            progress: ((i + 1) / transactionsToSign.length) * MAX_PROGRESS,
+          })
         }
-        set((state) => { state.preparedSignatures = preparedSignatures })
+        set((state) => {
+          state.preparedSignatures = preparedSignatures
+        })
 
         if (successfulSigns === 0 && transactionsToSign.length > 0) {
           const error = new Error('All transactions failed to sign.')
-          _updateStepState(stepId, EStepStatus.Error, { error, data: preparedSignatures, progress: MAX_PROGRESS })
+          _updateStepState(stepId, EStepStatus.Error, {
+            error,
+            data: preparedSignatures,
+            progress: MAX_PROGRESS,
+          })
           throw error
         }
-        _updateStepState(stepId, EStepStatus.Success, { data: preparedSignatures, progress: MAX_PROGRESS })
+        _updateStepState(stepId, EStepStatus.Success, {
+          data: preparedSignatures,
+          progress: MAX_PROGRESS,
+        })
       }
 
       const _executeFeeTransactionPreparation = async () => {
@@ -459,11 +571,16 @@ export const useCreateBatchStore = create<IBatchWorkflowState & IBatchWorkflowAc
         }
 
         try {
-          const response = await fee.getFeesDepositAddress.fetcher({ network: 'TRON', asset: 'TRX' })
+          const response = await fee.getFeesDepositAddress.fetcher({
+            network: 'TRON',
+            asset: 'TRX',
+          })
           depositAddress = response.address
         }
         catch {
-          _updateStepState(stepId, EStepStatus.Error, { error: 'Error during loading deposit address.' })
+          _updateStepState(stepId, EStepStatus.Error, {
+            error: 'Error during loading deposit address.',
+          })
         }
 
         if (!depositAddress) {
@@ -473,11 +590,18 @@ export const useCreateBatchStore = create<IBatchWorkflowState & IBatchWorkflowAc
         }
 
         try {
-          const signedTx = await tronService.createAndSignTrxTransaction(depositAddress, totalFee, privateKey)
+          const signedTx = await tronService.createAndSignTrxTransaction(
+            depositAddress,
+            totalFee,
+            privateKey,
+          )
           if (!signedTx)
             throw new Error('Fee transaction failed to sign.')
 
-          _updateStepState(stepId, EStepStatus.Success, { data: signedTx, progress: MAX_PROGRESS })
+          _updateStepState(stepId, EStepStatus.Success, {
+            data: signedTx,
+            progress: MAX_PROGRESS,
+          })
 
           set((state) => {
             state.preparedFeeSignature = {
@@ -500,13 +624,20 @@ export const useCreateBatchStore = create<IBatchWorkflowState & IBatchWorkflowAc
         const signaturesToSend = get()
           .preparedSignatures
           .filter(p => p.signedTx)
-          .map(p => ({ ...p.signedTx!, ...(p.inputTx.id && { id: p.inputTx.id }) }))
+          .map(p => ({
+            ...p.signedTx!,
+            ...(p.inputTx.id && { id: p.inputTx.id }),
+          }))
 
         const feeSignatureToSend = get().preparedFeeSignature
 
         if (!signaturesToSend.length) {
-          if (get().preparedSignatures.length > 0) { // Had txs to sign, but all failed signing
-            _updateStepState(stepId, EStepStatus.Skipped, { data: [], progress: MAX_PROGRESS })
+          if (get().preparedSignatures.length > 0) {
+            // Had txs to sign, but all failed signing
+            _updateStepState(stepId, EStepStatus.Skipped, {
+              data: [],
+              progress: MAX_PROGRESS,
+            })
             return
           }
           const error = new Error('No signed transactions to send.')
@@ -520,7 +651,8 @@ export const useCreateBatchStore = create<IBatchWorkflowState & IBatchWorkflowAc
           throw error
         }
 
-        const abortSignal = useCreateBatchStore.getState().abortController?.signal
+        const abortSignal
+          = useCreateBatchStore.getState().abortController?.signal
 
         try {
           let results: ITransactionSendResult[]
@@ -534,7 +666,10 @@ export const useCreateBatchStore = create<IBatchWorkflowState & IBatchWorkflowAc
               signal: abortSignal,
             })
 
-            results = signaturesToSend.map(tx => ({ txId: tx.txID, sent: true })) // Simplified result
+            results = signaturesToSend.map(tx => ({
+              txId: tx.txID,
+              sent: true,
+            })) // Simplified result
           }
           else {
             // This assumes createBatch returns a batchId and potentially results.
@@ -544,13 +679,24 @@ export const useCreateBatchStore = create<IBatchWorkflowState & IBatchWorkflowAc
               signal: abortSignal,
             })
 
-            results = signaturesToSend.map(tx => ({ txId: tx.txID, sent: true })) // Simplified result
+            results = signaturesToSend.map(tx => ({
+              txId: tx.txID,
+              sent: true,
+            })) // Simplified result
           }
-          set((state) => { state.transactionSendResults = results })
-          _updateStepState(stepId, EStepStatus.Success, { data: results, progress: MAX_PROGRESS })
+          set((state) => {
+            state.transactionSendResults = results
+          })
+          _updateStepState(stepId, EStepStatus.Success, {
+            data: results,
+            progress: MAX_PROGRESS,
+          })
         }
         catch (error) {
-          _updateStepState(stepId, EStepStatus.Error, { error, progress: MAX_PROGRESS }) // Progress max as attempt was made
+          _updateStepState(stepId, EStepStatus.Error, {
+            error,
+            progress: MAX_PROGRESS,
+          }) // Progress max as attempt was made
           throw error
         }
       }
@@ -586,11 +732,16 @@ export const useCreateBatchStore = create<IBatchWorkflowState & IBatchWorkflowAc
           _updateStepState(stepId, EStepStatus.Pending) // Mark as pending while processing confirmation
           try {
             await AskConfirmTx.promise()() // Await the actual UI confirmation
-            set((state) => { state.confirmedTransactions = [...state.rawTransactions] })
-            _updateStepState(stepId, EStepStatus.Success, { data: get().rawTransactions })
+            set((state) => {
+              state.confirmedTransactions = [...state.rawTransactions]
+            })
+            _updateStepState(stepId, EStepStatus.Success, {
+              data: get().rawTransactions,
+            })
             await _proceedWorkflow() // Continue to next step (TransactionPreparation)
           }
-          catch { // User clicked "cancel" or modal closed
+          catch {
+            // User clicked "cancel" or modal closed
             console.warn('User rejected transaction confirmation.')
             _updateStepState(stepId, EStepStatus.WaitingForUserInput)
           }
@@ -598,7 +749,9 @@ export const useCreateBatchStore = create<IBatchWorkflowState & IBatchWorkflowAc
 
         userRejectsTransactions: () => {
           const stepId = EBatchStep.TransactionConfirmation
-          _updateStepState(stepId, EStepStatus.Error, { error: new Error('User rejected confirmation') })
+          _updateStepState(stepId, EStepStatus.Error, {
+            error: new Error('User rejected confirmation'),
+          })
           set((state) => {
             state.workflowStatus = EWorkflowStatus.Failed
             state.lastError = 'User rejected transaction confirmation.'
@@ -609,22 +762,41 @@ export const useCreateBatchStore = create<IBatchWorkflowState & IBatchWorkflowAc
         retryStep: async (stepIdToRetry: EBatchStep) => {
           const step = get().steps[stepIdToRetry]
           if (!step || step.status !== EStepStatus.Error) {
-            console.warn(`Cannot retry step ${stepIdToRetry}: not in error state or does not exist.`)
+            console.warn(
+              `Cannot retry step ${stepIdToRetry}: not in error state or does not exist.`,
+            )
             return
           }
-          if (!step.isCritical && get().workflowStatus === EWorkflowStatus.PartiallySucceeded) {
-            set((state) => { state.workflowStatus = EWorkflowStatus.Running })
+          if (
+            !step.isCritical
+            && get().workflowStatus === EWorkflowStatus.PartiallySucceeded
+          ) {
+            set((state) => {
+              state.workflowStatus = EWorkflowStatus.Running
+            })
           }
-          else if (step.isCritical && get().workflowStatus === EWorkflowStatus.Failed) {
-            set((state) => { state.workflowStatus = EWorkflowStatus.Running })
+          else if (
+            step.isCritical
+            && get().workflowStatus === EWorkflowStatus.Failed
+          ) {
+            set((state) => {
+              state.workflowStatus = EWorkflowStatus.Running
+            })
           }
 
           _updateStepState(stepIdToRetry, EStepStatus.Idle) // Reset status to allow re-execution
           // Reset subsequent steps as their input might change or they shouldn't have run.
           const stepIndex = get().stepOrder.indexOf(stepIdToRetry)
-          get().stepOrder.slice(stepIndex + 1).forEach((id) => {
-            _updateStepState(id, EStepStatus.Idle, { data: undefined, error: undefined, progress: 0 })
-          })
+          get()
+            .stepOrder
+            .slice(stepIndex + 1)
+            .forEach((id) => {
+              _updateStepState(id, EStepStatus.Idle, {
+                data: undefined,
+                error: undefined,
+                progress: 0,
+              })
+            })
           set((state) => {
             state.lastError = null // Clear previous overall error
             // Clear data that depends on steps after the retried one
@@ -649,8 +821,14 @@ export const useCreateBatchStore = create<IBatchWorkflowState & IBatchWorkflowAc
           }
 
           let stepToStartFrom = stepOrder[0] // Default to start
-          if (workflowStatus === EWorkflowStatus.Failed || workflowStatus === EWorkflowStatus.PartiallySucceeded) {
-            const firstFailedCriticalStep = stepOrder.find(id => steps[id].status === EStepStatus.Error && steps[id].isCritical)
+          if (
+            workflowStatus === EWorkflowStatus.Failed
+            || workflowStatus === EWorkflowStatus.PartiallySucceeded
+          ) {
+            const firstFailedCriticalStep = stepOrder.find(
+              id =>
+                steps[id].status === EStepStatus.Error && steps[id].isCritical,
+            )
             if (firstFailedCriticalStep) {
               stepToStartFrom = firstFailedCriticalStep
             }
@@ -658,7 +836,9 @@ export const useCreateBatchStore = create<IBatchWorkflowState & IBatchWorkflowAc
               // If no critical step failed, but workflow is "Failed" or "PartiallySucceeded",
               // it might be due to user rejection or all non-critical steps failing.
               // Restart from the first error or beginning.
-              const firstErrorStep = stepOrder.find(id => steps[id].status === EStepStatus.Error)
+              const firstErrorStep = stepOrder.find(
+                id => steps[id].status === EStepStatus.Error,
+              )
               if (firstErrorStep)
                 stepToStartFrom = firstErrorStep
             }
@@ -666,21 +846,42 @@ export const useCreateBatchStore = create<IBatchWorkflowState & IBatchWorkflowAc
           // Reset all steps from the determined starting point onwards
           const startIndex = stepOrder.indexOf(stepToStartFrom)
           stepOrder.slice(startIndex).forEach((id) => {
-            // @ts-expect-error
-            _updateStepState(id, EStepStatus.Idle, { data: undefined, error: undefined, progress: 0, attempts: 0 })
+            _updateStepState(id, EStepStatus.Idle, {
+              data: undefined,
+              error: undefined,
+              progress: 0,
+              // @ts-expect-error
+              attempts: 0,
+            })
           })
           set((state) => {
             state.workflowStatus = EWorkflowStatus.Idle // Set to Idle before starting
             state.lastError = null
             // Clear relevant data based on where we restart
-            if (startIndex <= state.stepOrder.indexOf(EBatchStep.TransactionConfirmation))
+            if (
+              startIndex
+              <= state.stepOrder.indexOf(EBatchStep.TransactionConfirmation)
+            ) {
               state.confirmedTransactions = []
-            if (startIndex <= state.stepOrder.indexOf(EBatchStep.TransactionPreparation))
+            }
+            if (
+              startIndex
+              <= state.stepOrder.indexOf(EBatchStep.TransactionPreparation)
+            ) {
               state.preparedSignatures = []
-            if (startIndex <= state.stepOrder.indexOf(EBatchStep.FeeTransactionPreparation))
+            }
+            if (
+              startIndex
+              <= state.stepOrder.indexOf(EBatchStep.FeeTransactionPreparation)
+            ) {
               state.preparedFeeSignature = null
-            if (startIndex <= state.stepOrder.indexOf(EBatchStep.TransactionSending))
+            }
+            if (
+              startIndex
+              <= state.stepOrder.indexOf(EBatchStep.TransactionSending)
+            ) {
               state.transactionSendResults = []
+            }
           })
 
           // @ts-expect-error

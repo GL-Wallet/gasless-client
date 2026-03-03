@@ -6,7 +6,8 @@
   position: relative;
 }
 
-.spinner::after,.spinner::before {
+.spinner::after,
+.spinner::before {
   box-sizing: border-box;
   position: absolute;
   content: "";
@@ -27,7 +28,8 @@
 }
 
 @keyframes down {
-  0%, 100% {
+  0%,
+  100% {
     transform: none;
   }
 
@@ -45,7 +47,8 @@
 }
 
 @keyframes up {
-  0%, 100% {
+  0%,
+  100% {
     transform: none;
   }
 

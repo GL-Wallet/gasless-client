@@ -21,7 +21,8 @@ export function LanguageDrawer() {
   const { t, i18n } = useTranslation()
 
   const langCode = t('shared.lang.code') as keyof typeof supportedLanguages
-  const isLast = (index: number) => index === Object.values(supportedLanguages).length - 1
+  const isLast = (index: number) =>
+    index === Object.values(supportedLanguages).length - 1
 
   const handleChangeLanguage = (language: string) => {
     i18n.changeLanguage(language)
@@ -51,7 +52,9 @@ export function LanguageDrawer() {
                 <span>{title}</span>
               </div>
 
-              <div className="flex space-x-2">{langCode === code && <Check className="h-4 w-4" />}</div>
+              <div className="flex space-x-2">
+                {langCode === code && <Check className="h-4 w-4" />}
+              </div>
             </div>
             {!isLast(index) && <Separator />}
           </div>

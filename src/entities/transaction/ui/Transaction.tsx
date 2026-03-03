@@ -10,7 +10,12 @@ import React, { useEffect, useState } from 'react' // Import React
 
 import { useTranslation } from 'react-i18next'
 import { TransactionDateOptions } from '../constants'
-import { formatDate, getTransactionLink, getTronscanLink, isSentByWallet } from '../model/utils'
+import {
+  formatDate,
+  getTransactionLink,
+  getTronscanLink,
+  isSentByWallet,
+} from '../model/utils'
 import { TransactionLink } from './TransactionLink'
 
 // Wrap TransactionLink with React.memo
@@ -27,7 +32,9 @@ export function Transaction({ transaction }: { transaction: TransactionType }) {
     if (!privateKey)
       return
 
-    tronService.getTransactionStatus(transaction.txid, privateKey).then(status => setStatus(status))
+    tronService
+      .getTransactionStatus(transaction.txid, privateKey)
+      .then(status => setStatus(status))
   }, [transaction.txid])
 
   const tronscanLink = getTronscanLink(transaction?.txid)
@@ -40,29 +47,53 @@ export function Transaction({ transaction }: { transaction: TransactionType }) {
           {isSentByWallet(transaction.from, transaction.from) ? '-' : '+'}
           <FormattedNumber number={transaction.amount} />
           {' '}
-          <span className="text-2xl text-muted-foreground">{transaction.token}</span>
+          <span className="text-2xl text-muted-foreground">
+            {transaction.token}
+          </span>
         </h2>
 
         <div className="w-full flex flex-col border dark:bg-card/60 p-4 rounded-md space-y-6 mt-20">
           <div className="flex justify-between">
-            <span className="text-muted-foreground">{t('transaction.date')}</span>
-            <span>{formatDate(new Date(transaction.timestamp), TransactionDateOptions)}</span>
+            <span className="text-muted-foreground">
+              {t('transaction.date')}
+            </span>
+            <span>
+              {formatDate(
+                new Date(transaction.timestamp),
+                TransactionDateOptions,
+              )}
+            </span>
           </div>
 
           <div className="flex justify-between">
-            <span className="text-muted-foreground">{t('transaction.status')}</span>
-            {status ? <span>{capitalize(status)}</span> : <Skeleton className="h-6 w-20" />}
+            <span className="text-muted-foreground">
+              {t('transaction.status')}
+            </span>
+            {status
+              ? (
+                  <span>{capitalize(status)}</span>
+                )
+              : (
+                  <Skeleton className="h-6 w-20" />
+                )}
           </div>
 
           <div className="flex justify-between">
-            <span className="text-muted-foreground">{t('transaction.sender')}</span>
+            <span className="text-muted-foreground">
+              {t('transaction.sender')}
+            </span>
             <span>{truncateString(transaction.from, 10)}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">{t('transaction.receiver')}</span>
+            <span className="text-muted-foreground">
+              {t('transaction.receiver')}
+            </span>
             <span>{truncateString(transaction.to, 10)}</span>
           </div>
-          <MemoizedTransactionLink tronscanLink={tronscanLink} transactionLink={transactionLink} />
+          <MemoizedTransactionLink
+            tronscanLink={tronscanLink}
+            transactionLink={transactionLink}
+          />
         </div>
       </div>
     )

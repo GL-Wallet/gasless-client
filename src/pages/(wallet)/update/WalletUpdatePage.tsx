@@ -8,7 +8,9 @@ import { navigate } from 'wouter/use-browser-location'
 
 export function WalletUpdatePage() {
   const wallet = useWallet()
-  const updateWalletDetails = useWalletStore(store => store.updateWalletDetails)
+  const updateWalletDetails = useWalletStore(
+    store => store.updateWalletDetails,
+  )
 
   const { t } = useTranslation()
 
@@ -25,7 +27,10 @@ export function WalletUpdatePage() {
         className="max-w-64"
       />
 
-      <WalletCustomizationForm defaultValues={{ name: wallet.name! }} onSubmit={onSubmit} />
+      <WalletCustomizationForm
+        defaultValues={{ name: wallet.name! }}
+        onSubmit={onSubmit}
+      />
     </div>
   )
 }

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -69,7 +69,7 @@
   body {
     @apply bg-background text-foreground;
     @apply select-none;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     font-optical-sizing: auto;
     font-weight: 400;
     font-style: normal;
@@ -87,8 +87,8 @@
     overflow: auto;
   }
 
-  input[type='number']::-webkit-inner-spin-button,
-  input[type='number']::-webkit-outer-spin-button {
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }
@@ -102,8 +102,13 @@
   z-index: -1;
   width: 20vw;
   height: 80vh;
-  background-image: linear-gradient(to bottom, hsl(var(--primary)), transparent, transparent);
-  content: '';
+  background-image: linear-gradient(
+    to bottom,
+    hsl(var(--primary)),
+    transparent,
+    transparent
+  );
+  content: "";
   filter: blur(80px) saturate(150%);
   opacity: 0.3;
 }

@@ -4,7 +4,13 @@ import { ROUTES } from '@/shared/constants/routes'
 import { ActionItem } from '@/shared/ui/action-item'
 import { LinkItem } from '@/shared/ui/link-item'
 import { SwitchItem } from '@/shared/ui/switch-item'
-import { Database, FilePenLine, Fingerprint, KeyRound, Wallet2 } from 'lucide-react'
+import {
+  Database,
+  FilePenLine,
+  Fingerprint,
+  KeyRound,
+  Wallet2,
+} from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { useSettingsItems } from '../model/useSettingsItems'

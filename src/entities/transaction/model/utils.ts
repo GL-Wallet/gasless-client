@@ -5,16 +5,25 @@ import { AVAILABLE_TOKENS } from '@/shared/enums/tokens'
 import { TronWeb } from 'tronweb'
 import { TRONSCAN_TRANSACTION_BASE_URL } from '../constants'
 
-export function formatDate(date: Date, options: Intl.DateTimeFormatOptions, locales: string = navigator.language) {
+export function formatDate(
+  date: Date,
+  options: Intl.DateTimeFormatOptions,
+  locales: string = navigator.language,
+) {
   const formatter = new Intl.DateTimeFormat(locales, options)
   return formatter.format(date)
 }
 
-export const isSentByWallet = (from: string, walletAddress: string): boolean => from === walletAddress
+export function isSentByWallet(from: string, walletAddress: string): boolean {
+  return from === walletAddress
+}
 
-export function extractTransactionData(response: TrxResponse | UsdtResponse): Transaction | null {
+export function extractTransactionData(
+  response: TrxResponse | UsdtResponse,
+): Transaction | null {
   if ('transaction_id' in response) {
-    const { transaction_id, block_timestamp, from, to, value } = response as UsdtResponse
+    const { transaction_id, block_timestamp, from, to, value }
+      = response as UsdtResponse
     return {
       txid: transaction_id,
       token: AVAILABLE_TOKENS.USDT,
@@ -28,8 +37,12 @@ export function extractTransactionData(response: TrxResponse | UsdtResponse): Tr
     const { txID, block_timestamp, raw_data } = response as TrxResponse
     const contract = raw_data.contract[0]
     const value = contract.parameter.value.amount || 0
-    const from = TronWeb.address.fromHex(contract.parameter.value.owner_address)
-    const to = TronWeb.address.fromHex(contract.parameter.value.to_address ?? '')
+    const from = TronWeb.address.fromHex(
+      contract.parameter.value.owner_address,
+    )
+    const to = TronWeb.address.fromHex(
+      contract.parameter.value.to_address ?? '',
+    )
 
     return {
       txid: txID,

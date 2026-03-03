@@ -9,7 +9,11 @@ interface Props {
   size?: number
 }
 
-export function QrScannerButton({ setValue, size = 5, className }: PropsWithClassname<Props>) {
+export function QrScannerButton({
+  setValue,
+  size = 5,
+  className,
+}: PropsWithClassname<Props>) {
   const qrScanner = initQRScanner()
 
   const handleScan = async (e: MouseEvent) => {
@@ -30,7 +34,12 @@ export function QrScannerButton({ setValue, size = 5, className }: PropsWithClas
   }
 
   return (
-    <Button onClick={handleScan} variant="ghost" size="icon" className={className}>
+    <Button
+      onClick={handleScan}
+      variant="ghost"
+      size="icon"
+      className={className}
+    >
       <ScanLine className={`size-${size}`} />
     </Button>
   )

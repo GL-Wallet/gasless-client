@@ -1,6 +1,12 @@
 import type { UseFormReturn } from 'react-hook-form'
 import type { BatchInputFormValues } from '../Batch.typings'
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/shared/ui/form'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from '@/shared/ui/form'
 import { Textarea } from '@/shared/ui/textarea'
 
 interface BatchInputFormProps {

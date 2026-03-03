@@ -18,7 +18,9 @@ const MemoizedBatchLink = memo(BatchLink)
 
 export function HomePage() {
   const wallet = useWallet()
-  const fetchWalletBalances = useWalletStore(store => store.fetchWalletBalances)
+  const fetchWalletBalances = useWalletStore(
+    store => store.fetchWalletBalances,
+  )
 
   const handleUpdateBalance = useCallback(async () => {
     await fetchWalletBalances(wallet.address)

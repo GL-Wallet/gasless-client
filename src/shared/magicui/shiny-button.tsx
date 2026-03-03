@@ -60,10 +60,14 @@ const ShinyButton = React.forwardRef<HTMLButtonElement, ShinyButtonProps>(
         )}
       >
         <span
-          className={cn('relative block h-full text-sm uppercase tracking-wide', {
-            'text-[rgb(0,0,0,65%)] dark:font-light dark:text-[rgb(255,255,255,90%)]': !disabled,
-            'text-gray-600 dark:text-muted-foreground/70': disabled,
-          })}
+          className={cn(
+            'relative block h-full text-sm uppercase tracking-wide',
+            {
+              'text-[rgb(0,0,0,65%)] dark:font-light dark:text-[rgb(255,255,255,90%)]':
+                !disabled,
+              'text-gray-600 dark:text-muted-foreground/70': disabled,
+            },
+          )}
           style={{
             maskImage: `linear-gradient(-75deg,hsl(var(--primary)) calc(var(--x) + 20%),transparent calc(var(--x) + 30%),hsl(var(--primary)) calc(var(--x) + 100%))`,
           }}

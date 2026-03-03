@@ -13,7 +13,9 @@ interface AnimatedSubscribeButtonProps extends HTMLMotionProps<'button'> {
   timeout?: number
 }
 
-export const AnimatedSubscribeButton: React.FC<AnimatedSubscribeButtonProps> = ({
+export const AnimatedSubscribeButton: React.FC<
+  AnimatedSubscribeButtonProps
+> = ({
   buttonColor,
   subscribeStatus,
   buttonTextColor,

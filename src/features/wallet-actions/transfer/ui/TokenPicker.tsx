@@ -1,5 +1,10 @@
 import { AVAILABLE_TOKENS } from '@/shared/enums/tokens'
-import { Select, SelectContent, SelectItem, SelectTrigger } from '@/shared/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+} from '@/shared/ui/select'
 
 interface TokenPickerProps {
   value: string

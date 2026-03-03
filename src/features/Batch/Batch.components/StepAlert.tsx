@@ -20,7 +20,11 @@ import {
   ZapIcon, // Example for FeeLoading
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { EBatchStep, EStepStatus, EWorkflowStatus } from '../Batch.stores/store'
+import {
+  EBatchStep,
+  EStepStatus,
+  EWorkflowStatus,
+} from '../Batch.stores/store'
 
 interface StepAlertProps {
   titleKey: string
@@ -51,22 +55,28 @@ export function StepAlert({
   // Check if this is an insufficient fee error and we have details
   const actualBalance = errorDetails?.actualBalance
   const requiredFee = errorDetails?.requiredFee
-  const isInsufficientFeeError = actualBalance !== undefined
-    && requiredFee !== undefined
-    && errorDetails?.errorType === 'InsufficientFeeError'
+  const isInsufficientFeeError
+    = actualBalance !== undefined
+      && requiredFee !== undefined
+      && errorDetails?.errorType === 'InsufficientFeeError'
 
   // Use the appropriate translation key based on the step
-  const insufficientFeeKey = descriptionKey.includes('feeTransactionPreparation')
+  const insufficientFeeKey = descriptionKey.includes(
+    'feeTransactionPreparation',
+  )
     ? 'batch.steps.feeTransactionPreparation.error.insufficientFee.detailed'
     : 'batch.steps.feeTransactionPreparation.error.insufficientFee.detailed' // Can be reused for other steps
 
-  const description = isInsufficientFeeError && actualBalance !== undefined && requiredFee !== undefined
-    ? t(insufficientFeeKey, {
-      actualBalance,
-      requiredFee,
-      missing: (requiredFee - actualBalance).toFixed(2),
-    })
-    : t(descriptionKey)
+  const description
+    = isInsufficientFeeError
+      && actualBalance !== undefined
+      && requiredFee !== undefined
+      ? t(insufficientFeeKey, {
+          actualBalance,
+          requiredFee,
+          missing: (requiredFee - actualBalance).toFixed(2),
+        })
+      : t(descriptionKey)
 
   return (
     <Alert variant={variant} className={className}>
@@ -147,7 +157,8 @@ export const stepAlertContentMap: Record<
   [EBatchStep.TransactionConfirmation]: {
     [EStepStatus.WaitingForUserInput]: {
       titleKey: 'batch.steps.transactionConfirmation.waitingForUserInput.title',
-      descriptionKey: 'batch.steps.transactionConfirmation.waitingForUserInput.description',
+      descriptionKey:
+        'batch.steps.transactionConfirmation.waitingForUserInput.description',
       icon: FileCheckIcon,
     },
     [EStepStatus.Pending]: {
@@ -177,7 +188,8 @@ export const stepAlertContentMap: Record<
     },
     [EStepStatus.Pending]: {
       titleKey: 'batch.steps.feeTransactionPreparation.pending.title',
-      descriptionKey: 'batch.steps.feeTransactionPreparation.pending.description',
+      descriptionKey:
+        'batch.steps.feeTransactionPreparation.pending.description',
       icon: Settings2Icon,
       isLoading: true,
     },
@@ -189,7 +201,8 @@ export const stepAlertContentMap: Record<
     },
     [EStepStatus.Success]: {
       titleKey: 'batch.steps.feeTransactionPreparation.success.title',
-      descriptionKey: 'batch.steps.feeTransactionPreparation.success.description',
+      descriptionKey:
+        'batch.steps.feeTransactionPreparation.success.description',
       icon: CheckCircle2Icon,
     },
   },
@@ -245,7 +258,9 @@ export const stepAlertContentMap: Record<
   },
 }
 
-export const workflowAlertContentMap: Partial<Record<EWorkflowStatus, AlertContent>> = {
+export const workflowAlertContentMap: Partial<
+  Record<EWorkflowStatus, AlertContent>
+> = {
   [EWorkflowStatus.Succeeded]: {
     titleKey: 'batch.workflow.succeeded.title',
     descriptionKey: 'batch.workflow.succeeded.description',

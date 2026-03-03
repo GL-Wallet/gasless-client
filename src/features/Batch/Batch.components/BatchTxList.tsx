@@ -53,9 +53,7 @@ export function BatchTxListItem({ tx, withStatus }: TxListItemProps) {
           </span>
         </div>
         {tx.status && withStatus && (
-          <>
-            {StatusToIconMap[tx.status] ?? tx.status}
-          </>
+          <>{StatusToIconMap[tx.status] ?? tx.status}</>
         )}
       </AlertDescription>
     </Alert>

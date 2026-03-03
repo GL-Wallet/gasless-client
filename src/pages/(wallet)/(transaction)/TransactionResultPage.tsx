@@ -19,7 +19,12 @@ export function TransactionResultPage({ txid }: { txid: string }) {
     <div className="relative flex-1 flex flex-col items-center justify-center space-y-10">
       <div className="space-y-8">
         <h2 className="primary-gradient text-3xl font-medium">{title}</h2>
-        {isPending && <TransactionLink tronscanLink={tronscanLink} transactionLink={transactionLink} />}
+        {isPending && (
+          <TransactionLink
+            tronscanLink={tronscanLink}
+            transactionLink={transactionLink}
+          />
+        )}
       </div>
 
       <Link href={ROUTES.HOME} className="block">

@@ -12,7 +12,10 @@ export function BatchPage() {
 
   return (
     <div className="flex-1 flex flex-col gap-2">
-      <ResponsivePageHeader title={t('batch.list.title')} className="min-h-1/6" />
+      <ResponsivePageHeader
+        title={t('batch.list.title')}
+        className="min-h-1/6"
+      />
 
       <BatchList data={data} />
     </div>

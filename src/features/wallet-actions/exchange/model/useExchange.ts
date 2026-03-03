@@ -13,12 +13,21 @@ export function useExchange() {
 
   const exchange = async (amount: number) => {
     try {
-      const passcode = await authenticate({ redirectTo: ROUTES.TRANSACTION_IN_PROGRESS })
+      const passcode = await authenticate({
+        redirectTo: ROUTES.TRANSACTION_IN_PROGRESS,
+      })
 
-      const { privateKey } = decryptAndGetWallet(wallet.encryptedMnemonic, passcode)
+      const { privateKey } = decryptAndGetWallet(
+        wallet.encryptedMnemonic,
+        passcode,
+      )
       const address = await api.getBankAddress()
 
-      const signedTx = await tronService.createAndSignTrc20Transaction(address, amount, privateKey)
+      const signedTx = await tronService.createAndSignTrc20Transaction(
+        address,
+        amount,
+        privateKey,
+      )
       const { txid } = await api.exchange(signedTx)
 
       navigate(urlJoin(ROUTES.TRANSACTION_RESULT, txid ?? 'no-txid'))

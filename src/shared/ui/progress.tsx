@@ -36,7 +36,8 @@ export function CircularProgress({
   const circumference = Math.ceil(3.14 * radius * 2)
   const percentage = Math.ceil(circumference * ((100 - value) / 100))
 
-  const viewBox = `-${size * 0.125} -${size * 0.125} ${size * 1.25} ${size * 1.25
+  const viewBox = `-${size * 0.125} -${size * 0.125} ${size * 1.25} ${
+    size * 1.25
   }`
 
   return (

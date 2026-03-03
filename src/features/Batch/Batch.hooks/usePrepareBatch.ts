@@ -29,7 +29,10 @@ export function usePrepareBatch({ onSubmit }: Props) {
   const processBatchInput = (value: string) => {
     const lines = value.split('\n')
     const keyValuePairs = lines.map(line => line.split(/\s+/))
-    const parsedKeyValuePairs = keyValuePairs.map(([key, value]) => [key, Number(value?.replace(',', '.'))])
+    const parsedKeyValuePairs = keyValuePairs.map(([key, value]) => [
+      key,
+      Number(value?.replace(',', '.')),
+    ])
 
     const valid: TxLike[] = []
     const invalid: TxLikeInvalid[] = []
@@ -41,9 +44,7 @@ export function usePrepareBatch({ onSubmit }: Props) {
 
       const isValidAddress = TronWeb.isAddress(key)
       const isValidNumber
-        = typeof value === 'number'
-          && !Number.isNaN(value)
-          && value > 0
+        = typeof value === 'number' && !Number.isNaN(value) && value > 0
 
       if (isValidAddress && isValidNumber) {
         valid.push({

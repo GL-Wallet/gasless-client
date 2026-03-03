@@ -9,7 +9,13 @@ export const BatchTxDtoSchema = z.object({
 
 export const BatchDtoSchema = z.object({
   id: z.string(),
-  status: z.enum(['IDLE', 'PENDING', 'SUCCESS', 'FAILED', 'PARTIALLY_COMPLETED']),
+  status: z.enum([
+    'IDLE',
+    'PENDING',
+    'SUCCESS',
+    'FAILED',
+    'PARTIALLY_COMPLETED',
+  ]),
   txs: z.array(BatchTxDtoSchema),
 })
 

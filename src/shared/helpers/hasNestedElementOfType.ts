@@ -1,6 +1,9 @@
 import React from 'react'
 
-export function hasNestedElementOfType(children: React.ReactNode, types: any[]): boolean {
+export function hasNestedElementOfType(
+  children: React.ReactNode,
+  types: any[],
+): boolean {
   const typeDisplayNames = new Set(types.map(type => type.displayName))
 
   const checkChild = (child: React.ReactNode): boolean => {
@@ -17,13 +20,20 @@ export function hasNestedElementOfType(children: React.ReactNode, types: any[]):
     }
 
     if ((child.props as React.PropsWithChildren)?.children) {
-      if (React.Children.count((child.props as React.PropsWithChildren).children) > 0) {
+      if (
+        React.Children.count(
+          (child.props as React.PropsWithChildren).children,
+        ) > 0
+      ) {
         let hasMatch = false
-        React.Children.forEach((child.props as React.PropsWithChildren).children, (nestedChild) => {
-          if (checkChild(nestedChild)) {
-            hasMatch = true
-          }
-        })
+        React.Children.forEach(
+          (child.props as React.PropsWithChildren).children,
+          (nestedChild) => {
+            if (checkChild(nestedChild)) {
+              hasMatch = true
+            }
+          },
+        )
         return hasMatch
       }
     }

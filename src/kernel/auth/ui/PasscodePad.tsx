@@ -12,7 +12,12 @@ interface Props {
   handleBiometry?: () => void
 }
 
-export function PasscodePad({ passcode, isBiometryEnabled, setPasscode, handleBiometry }: Props) {
+export function PasscodePad({
+  passcode,
+  isBiometryEnabled,
+  setPasscode,
+  handleBiometry,
+}: Props) {
   const [enteredDigits, setEnteredDigits] = useState<number[]>([])
 
   const handleNumberClick = (n: number) => {

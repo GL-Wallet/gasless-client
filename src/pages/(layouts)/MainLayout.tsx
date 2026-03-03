@@ -9,7 +9,9 @@ export function MainLayout(props: PropsWithChildren) {
         </div>
       </div>
 
-      <main className="flex relative min-h-svh min-w-svw px-6 pt-4 pb-8">{props.children}</main>
+      <main className="flex relative min-h-svh min-w-svw px-6 pt-4 pb-8">
+        {props.children}
+      </main>
     </>
   )
 }

@@ -8,7 +8,12 @@ interface BoxRevealProps {
   duration?: number
 }
 
-export function BoxReveal({ children, width = 'fit-content', boxColor, duration }: BoxRevealProps) {
+export function BoxReveal({
+  children,
+  width = 'fit-content',
+  boxColor,
+  duration,
+}: BoxRevealProps) {
   const mainControls = useAnimation()
   const slideControls = useAnimation()
 

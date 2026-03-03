@@ -19,7 +19,11 @@ interface Props {
   onPasscodeSuccess: (newPasscode: string) => void
 }
 
-export function PasscodeRequired({ isBiometryEnabled, passcodeHash, onPasscodeSuccess }: Props) {
+export function PasscodeRequired({
+  isBiometryEnabled,
+  passcodeHash,
+  onPasscodeSuccess,
+}: Props) {
   const [enteredPasscode, setEnteredPasscode] = useState<Passcode>(null)
 
   const { authenticate } = useBiometry()
@@ -35,7 +39,7 @@ export function PasscodeRequired({ isBiometryEnabled, passcodeHash, onPasscodeSu
         onPasscodeSuccess(passcode)
       }
     })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffectOnce(requestBiometry)

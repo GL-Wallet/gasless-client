@@ -11,11 +11,20 @@ interface Props {
   icon?: ReactNode
 }
 
-export function LinkItem({ href, title, description, icon, className }: PropsWithClassname<Props>) {
+export function LinkItem({
+  href,
+  title,
+  description,
+  icon,
+  className,
+}: PropsWithClassname<Props>) {
   return (
     <Link
       href={href}
-      className={cn('flex items-center justify-between w-full pl-4 pr-2 py-2 border rounded-md', className)}
+      className={cn(
+        'flex items-center justify-between w-full pl-4 pr-2 py-2 border rounded-md',
+        className,
+      )}
     >
       <div className="flex items-center space-x-4">
         {icon}

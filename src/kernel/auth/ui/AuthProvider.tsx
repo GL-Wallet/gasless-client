@@ -12,18 +12,21 @@ import { useAuthStore } from '../model/store'
 import { getHashedPasscodeFromStorage } from '../utils/getHashedPasscodeFromStorage'
 import { saveHashedPasscodeToStorage } from '../utils/savePasscodeHash'
 
-const actions = ['setup', 'startup', 'required', 'update'].map(action => `/passcode-${action}`)
+const actions = ['setup', 'startup', 'required', 'update'].map(
+  action => `/passcode-${action}`,
+)
 
 export function AuthProvider({ children }: PropsWithChildren) {
   const setAuthStore = useAuthStore(store => store.set)
 
-  const { passcode, passcodeHash, requiresSetup, isAuthenticated, resetStore } = useAuthStore(store => ({
-    passcode: store.passcode,
-    passcodeHash: store.hashedPasscode,
-    requiresSetup: store.requiresSetup,
-    isAuthenticated: store.isAuthenticated,
-    resetStore: store.resetStore,
-  }))
+  const { passcode, passcodeHash, requiresSetup, isAuthenticated, resetStore }
+    = useAuthStore(store => ({
+      passcode: store.passcode,
+      passcodeHash: store.hashedPasscode,
+      requiresSetup: store.requiresSetup,
+      isAuthenticated: store.isAuthenticated,
+      resetStore: store.resetStore,
+    }))
 
   const authPromiseRef = useRef<AuthPromiseCallback>()
   const authConfigRef = useRef<AuthParams>({})
@@ -58,7 +61,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
         navigate(
           authConfigRef.current?.redirectTo
-          ?? (actions.includes(returnPathRef.current) ? ROUTES.HOME : returnPathRef.current),
+          ?? (actions.includes(returnPathRef.current)
+            ? ROUTES.HOME
+            : returnPathRef.current),
           { replace: true },
         )
         authPromiseRef.current?.(enteredPasscode)
@@ -98,7 +103,14 @@ export function AuthProvider({ children }: PropsWithChildren) {
       _passcodeHash: passcodeHash,
       _onPasscodeSuccess: handlePasscodeSuccess,
     }),
-    [authenticate, resetStore, passcode, isAuthenticated, passcodeHash, handlePasscodeSuccess],
+    [
+      authenticate,
+      resetStore,
+      passcode,
+      isAuthenticated,
+      passcodeHash,
+      handlePasscodeSuccess,
+    ],
   )
 
   // @ts-expect-error

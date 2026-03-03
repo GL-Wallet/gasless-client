@@ -1,4 +1,7 @@
-import { useCreateWallet, WalletCustomizationForm } from '@/features/wallet-setup'
+import {
+  useCreateWallet,
+  WalletCustomizationForm,
+} from '@/features/wallet-setup'
 import { useAuth } from '@/kernel/auth'
 
 import { ROUTES } from '@/shared/constants/routes'
@@ -16,7 +19,9 @@ export function WalletCustomizationPage() {
     if (!passcode)
       return
 
-    createWallet({ passcode, name: walletName }).then(() => navigate(ROUTES.SEED_PHRASE))
+    createWallet({ passcode, name: walletName }).then(() =>
+      navigate(ROUTES.SEED_PHRASE),
+    )
   }
 
   return (

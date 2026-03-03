@@ -20,7 +20,9 @@ export function SeedPhraseConfirmationPage() {
         description={t('wallet.setup.confirmSeedPhrase.description')}
       />
 
-      {seedPhrase && <SeedPhraseConfirmation seedPhrase={seedPhrase} className="mt-3" />}
+      {seedPhrase && (
+        <SeedPhraseConfirmation seedPhrase={seedPhrase} className="mt-3" />
+      )}
     </div>
   )
 }

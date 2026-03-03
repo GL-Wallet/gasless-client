@@ -25,7 +25,9 @@ export function WalletSetupPage() {
   }
 
   const handleImportWallet = () => {
-    authenticate({ actionType: 'setup' }).then(() => navigate(ROUTES.WALLET_IMPORT))
+    authenticate({ actionType: 'setup' }).then(() =>
+      navigate(ROUTES.WALLET_IMPORT),
+    )
   }
 
   const Comp = theme === 'light' ? LogoLight : LogoDark
@@ -41,7 +43,11 @@ export function WalletSetupPage() {
 
         {/* Buttons */}
         <div className="space-y-3">
-          <Button onClick={() => handleImportWallet()} className="w-full" variant="outline">
+          <Button
+            onClick={() => handleImportWallet()}
+            className="w-full"
+            variant="outline"
+          >
             {t('wallet.setup.import.button.import')}
           </Button>
 

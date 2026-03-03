@@ -13,8 +13,17 @@ import { useTranslation } from 'react-i18next'
 import { navigate } from 'wouter/use-browser-location'
 import { BatchSummary } from './Batch.components/BatchSummary'
 import { BatchTxList } from './Batch.components/BatchTxList'
-import { StepAlert, stepAlertContentMap, workflowAlertContentMap } from './Batch.components/StepAlert'
-import { EBatchStep, EStepStatus, EWorkflowStatus, useCreateBatchStore } from './Batch.stores/store'
+import {
+  StepAlert,
+  stepAlertContentMap,
+  workflowAlertContentMap,
+} from './Batch.components/StepAlert'
+import {
+  EBatchStep,
+  EStepStatus,
+  EWorkflowStatus,
+  useCreateBatchStore,
+} from './Batch.stores/store'
 
 interface BatchProps {
   id?: string | undefined
@@ -72,7 +81,10 @@ export function CreateBatch({ id, txs }: BatchProps) {
       const privateKey = getPrivateKey()
 
       if (privateKey) {
-        const balance = await tronService.fetchBalances(wallet.address, privateKey)
+        const balance = await tronService.fetchBalances(
+          wallet.address,
+          privateKey,
+        )
 
         if (balance.TRX < totalFee) {
           toast.error(t('batch.error.insufficientTRXBalance'))
@@ -105,7 +117,6 @@ export function CreateBatch({ id, txs }: BatchProps) {
 
   return (
     <div className="flex-1 flex flex-col justify-between space-y-8">
-
       {/* Initialization - Idle */}
       {[
         currentProcessingStep === EBatchStep.Initialization,
@@ -134,7 +145,10 @@ export function CreateBatch({ id, txs }: BatchProps) {
       ].every(Boolean) && (
         <>
           <StepAlert {...stepAlertContentMap.Initialization.error!} />
-          <Button type="button" onClick={() => retryStep(EBatchStep.Initialization)}>
+          <Button
+            type="button"
+            onClick={() => retryStep(EBatchStep.Initialization)}
+          >
             {t('batch.button.retry')}
           </Button>
         </>
@@ -157,7 +171,10 @@ export function CreateBatch({ id, txs }: BatchProps) {
       ].every(Boolean) && (
         <>
           <StepAlert {...stepAlertContentMap.FeeLoading.error!} />
-          <Button type="button" onClick={() => retryStep(EBatchStep.FeeLoading)}>
+          <Button
+            type="button"
+            onClick={() => retryStep(EBatchStep.FeeLoading)}
+          >
             {t('batch.button.retry')}
           </Button>
         </>
@@ -174,11 +191,16 @@ export function CreateBatch({ id, txs }: BatchProps) {
       ].every(Boolean) && (
         <>
           <div className="space-y-4">
-            <BatchTxList data={rawTransactions as BatchTypesDto.BatchTxDto[]} withStatus={false} />
+            <BatchTxList
+              data={rawTransactions as BatchTypesDto.BatchTxDto[]}
+              withStatus={false}
+            />
 
             <Alert>
               <AlertCircle className="h-4 w-4" />
-              <AlertTitle className="text-sm">{t('batch.fee.policy.title')}</AlertTitle>
+              <AlertTitle className="text-sm">
+                {t('batch.fee.policy.title')}
+              </AlertTitle>
               <AlertDescription className="text-xs">
                 {t('batch.fee.policy.description')}
               </AlertDescription>
@@ -191,13 +213,15 @@ export function CreateBatch({ id, txs }: BatchProps) {
               additionalFee={additionalFee}
               totalFee={totalFee}
             />
-
           </div>
 
           <ShinyButton
             text={t('batch.button.confirm')}
             onClick={handleSubmit}
-            disabled={isLoading || currentProcessingStep !== EBatchStep.TransactionConfirmation}
+            disabled={
+              isLoading
+              || currentProcessingStep !== EBatchStep.TransactionConfirmation
+            }
             className="w-full"
           />
         </>
@@ -210,7 +234,9 @@ export function CreateBatch({ id, txs }: BatchProps) {
       ].every(Boolean) && (
         <>
           <StepAlert {...stepAlertContentMap.TransactionPreparation.pending!} />
-          <CircleLoader progress={steps[EBatchStep.TransactionPreparation].progress} />
+          <CircleLoader
+            progress={steps[EBatchStep.TransactionPreparation].progress}
+          />
           <Button
             type="button"
             onClick={cancel}
@@ -218,7 +244,6 @@ export function CreateBatch({ id, txs }: BatchProps) {
           >
             {t('batch.button.cancel')}
           </Button>
-
         </>
       )}
 
@@ -229,7 +254,10 @@ export function CreateBatch({ id, txs }: BatchProps) {
       ].every(Boolean) && (
         <>
           <StepAlert {...stepAlertContentMap.TransactionPreparation.error!} />
-          <Button type="button" onClick={() => retryStep(EBatchStep.TransactionPreparation)}>
+          <Button
+            type="button"
+            onClick={() => retryStep(EBatchStep.TransactionPreparation)}
+          >
             {t('batch.button.retry')}
           </Button>
         </>
@@ -238,24 +266,33 @@ export function CreateBatch({ id, txs }: BatchProps) {
       {/* FeeTransactionPreparation - Pending */}
       {[
         currentProcessingStep === EBatchStep.FeeTransactionPreparation,
-        steps[EBatchStep.FeeTransactionPreparation].status === EStepStatus.Pending,
+        steps[EBatchStep.FeeTransactionPreparation].status
+        === EStepStatus.Pending,
       ].every(Boolean) && (
         <>
-          <StepAlert {...stepAlertContentMap.FeeTransactionPreparation.pending!} />
+          <StepAlert
+            {...stepAlertContentMap.FeeTransactionPreparation.pending!}
+          />
         </>
       )}
 
       {/* FeeTransactionPreparation - Error */}
       {[
         currentProcessingStep === EBatchStep.FeeTransactionPreparation,
-        steps[EBatchStep.FeeTransactionPreparation].status === EStepStatus.Error,
+        steps[EBatchStep.FeeTransactionPreparation].status
+        === EStepStatus.Error,
       ].every(Boolean) && (
         <>
           <StepAlert
             {...stepAlertContentMap.FeeTransactionPreparation.error!}
-            errorDetails={extractErrorDetails(steps[EBatchStep.FeeTransactionPreparation].error)}
+            errorDetails={extractErrorDetails(
+              steps[EBatchStep.FeeTransactionPreparation].error,
+            )}
           />
-          <Button type="button" onClick={() => retryStep(EBatchStep.FeeTransactionPreparation)}>
+          <Button
+            type="button"
+            onClick={() => retryStep(EBatchStep.FeeTransactionPreparation)}
+          >
             {t('batch.button.retry')}
           </Button>
         </>
@@ -279,26 +316,31 @@ export function CreateBatch({ id, txs }: BatchProps) {
         <>
           <StepAlert
             {...stepAlertContentMap.TransactionSending.error!}
-            errorDetails={extractErrorDetails(steps[EBatchStep.TransactionSending].error)}
+            errorDetails={extractErrorDetails(
+              steps[EBatchStep.TransactionSending].error,
+            )}
           />
-          <Button type="button" onClick={() => retryStep(EBatchStep.TransactionSending)}>
+          <Button
+            type="button"
+            onClick={() => retryStep(EBatchStep.TransactionSending)}
+          >
             {t('batch.button.retry')}
           </Button>
         </>
       )}
 
       {/* Workflow Status - Succeeded */}
-      {[
-        workflowStatus === EWorkflowStatus.Succeeded,
-      ].every(Boolean) && (
+      {[workflowStatus === EWorkflowStatus.Succeeded].every(Boolean) && (
         <>
           <StepAlert {...workflowAlertContentMap.succeeded!} />
-          <Button type="button" onClick={() => navigate(ROUTES.BATCH, { replace: true })}>
+          <Button
+            type="button"
+            onClick={() => navigate(ROUTES.BATCH, { replace: true })}
+          >
             {t('batch.button.overview')}
           </Button>
         </>
       )}
-
     </div>
   )
 }
@@ -328,24 +370,28 @@ export function CircleLoader({ progress }: { progress: number }) {
 /**
  * Extracts error details from API errors, specifically for InsufficientFeeError
  */
-function extractErrorDetails(error: any): {
-  actualBalance?: number
-  requiredFee?: number
-  errorType?: string
-} | undefined {
+function extractErrorDetails(error: any):
+  | {
+    actualBalance?: number
+    requiredFee?: number
+    errorType?: string
+  }
+  | undefined {
   if (!error)
     return undefined
 
   // Check if error is an AxiosError with response data
   const errorData = error?.response?.data || error?.data || error
-  const errorMessage = error?.message || errorData?.message || String(error || '')
+  const errorMessage
+    = error?.message || errorData?.message || String(error || '')
 
   // Check if it's an InsufficientFeeError
-  const isInsufficientFeeError = errorMessage.includes('InsufficientFeeError')
-    || errorMessage.includes('balance is less than required fee')
-    || errorMessage.includes('required fee minimum')
-    || errorData?.name === 'InsufficientFeeError'
-    || error?.name === 'InsufficientFeeError'
+  const isInsufficientFeeError
+    = errorMessage.includes('InsufficientFeeError')
+      || errorMessage.includes('balance is less than required fee')
+      || errorMessage.includes('required fee minimum')
+      || errorData?.name === 'InsufficientFeeError'
+      || error?.name === 'InsufficientFeeError'
 
   if (isInsufficientFeeError) {
     // Try to extract from error data (backend may send structured error)
@@ -356,7 +402,9 @@ function extractErrorDetails(error: any): {
     // Example: "User balance is less than required fee minimum (28)."
     if (actualBalance === undefined || requiredFee === undefined) {
       // Try to extract required fee from message (e.g., "minimum (28)")
-      const feeMatch = errorMessage.match(/minimum\s*\((\d+(?:\.\d*)?)\)|required\D*(\d+\.?\d*)/i)
+      const feeMatch = errorMessage.match(
+        /minimum\s*\((\d+(?:\.\d*)?)\)|required\D*(\d+\.?\d*)/i,
+      )
       if (feeMatch) {
         requiredFee = Number.parseFloat(feeMatch[1] || feeMatch[2])
       }
@@ -370,28 +418,43 @@ function extractErrorDetails(error: any): {
         }
         // Also check error data for actualBalance
         else if (errorData?.actualBalance !== undefined) {
-          actualBalance = typeof errorData.actualBalance === 'number'
-            ? errorData.actualBalance
-            : Number.parseFloat(errorData.actualBalance)
+          actualBalance
+            = typeof errorData.actualBalance === 'number'
+              ? errorData.actualBalance
+              : Number.parseFloat(errorData.actualBalance)
         }
       }
 
       // If we still don't have requiredFee, try to get it from error data
-      if (requiredFee === undefined && errorData?.expectedMinFee !== undefined) {
-        requiredFee = typeof errorData.expectedMinFee === 'number'
-          ? errorData.expectedMinFee
-          : Number.parseFloat(errorData.expectedMinFee)
+      if (
+        requiredFee === undefined
+        && errorData?.expectedMinFee !== undefined
+      ) {
+        requiredFee
+          = typeof errorData.expectedMinFee === 'number'
+            ? errorData.expectedMinFee
+            : Number.parseFloat(errorData.expectedMinFee)
       }
     }
     else {
       // Convert to numbers if they're strings
-      actualBalance = typeof actualBalance === 'number' ? actualBalance : Number.parseFloat(actualBalance)
-      requiredFee = typeof requiredFee === 'number' ? requiredFee : Number.parseFloat(requiredFee)
+      actualBalance
+        = typeof actualBalance === 'number'
+          ? actualBalance
+          : Number.parseFloat(actualBalance)
+      requiredFee
+        = typeof requiredFee === 'number'
+          ? requiredFee
+          : Number.parseFloat(requiredFee)
     }
 
     // Only return if we have both values
-    if (actualBalance !== undefined && !Number.isNaN(actualBalance)
-      && requiredFee !== undefined && !Number.isNaN(requiredFee)) {
+    if (
+      actualBalance !== undefined
+      && !Number.isNaN(actualBalance)
+      && requiredFee !== undefined
+      && !Number.isNaN(requiredFee)
+    ) {
       return {
         actualBalance,
         requiredFee,

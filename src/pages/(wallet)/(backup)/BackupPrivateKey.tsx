@@ -23,7 +23,11 @@ export function BackupPrivateKey() {
 
       <div className="w-full space-y-2">
         <CopyToClipboardButton value={privateKey!} />
-        <Button variant="outline" className="w-full" onClick={() => navigate(ROUTES.HOME)}>
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={() => navigate(ROUTES.HOME)}
+        >
           {t('setting.backup.button')}
         </Button>
       </div>

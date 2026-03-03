@@ -20,7 +20,12 @@ export function SwitchItem({
   className,
 }: PropsWithClassname<Props>) {
   return (
-    <div className={cn('flex items-center justify-between w-full pl-4 pr-2 py-4 border rounded-md', className)}>
+    <div
+      className={cn(
+        'flex items-center justify-between w-full pl-4 pr-2 py-4 border rounded-md',
+        className,
+      )}
+    >
       <div className="flex items-center space-x-4">
         {icon}
         <div className="flex flex-col">

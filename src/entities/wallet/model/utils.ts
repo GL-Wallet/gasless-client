@@ -12,7 +12,10 @@ export function getPrivateKey() {
   return decryptAndGetWallet(wallet.encryptedMnemonic, passcode).privateKey
 }
 
-export function getPrivateKeyFromPasscode(encryptedMnemonic: string, passcode: string) {
+export function getPrivateKeyFromPasscode(
+  encryptedMnemonic: string,
+  passcode: string,
+) {
   try {
     const walletData = decryptAndGetWallet(encryptedMnemonic, passcode)
     return walletData.privateKey

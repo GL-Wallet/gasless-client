@@ -12,12 +12,20 @@ interface Props {
   transactionLink: string
 }
 
-export function TransactionLink({ transactionLink, className }: PropsWithClassname<Props>) {
+export function TransactionLink({
+  transactionLink,
+  className,
+}: PropsWithClassname<Props>) {
   const utils = useUtils()
   const { t } = useTranslation()
 
   return (
-    <div className={cn('w-full flex items-center justify-between space-x-6', className)}>
+    <div
+      className={cn(
+        'w-full flex items-center justify-between space-x-6',
+        className,
+      )}
+    >
       <Button
         onClick={() => utils.shareURL(transactionLink)}
         variant="outline"

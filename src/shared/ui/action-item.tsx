@@ -8,9 +8,17 @@ interface Props {
   onClick?: () => void
 }
 
-export function ActionItem({ title, description, icon, onClick }: PropsWithClassname<Props>) {
+export function ActionItem({
+  title,
+  description,
+  icon,
+  onClick,
+}: PropsWithClassname<Props>) {
   return (
-    <div onClick={onClick} className="flex items-center justify-between w-full pl-4 pr-2 py-4 border rounded-md">
+    <div
+      onClick={onClick}
+      className="flex items-center justify-between w-full pl-4 pr-2 py-4 border rounded-md"
+    >
       <div className="flex items-center space-x-4">
         {icon}
         <div className="flex flex-col">

@@ -7,7 +7,12 @@ export class AxiosContracts {
     const validation = schema.safeParse(data)
 
     if (validation.error) {
-      throw new AxiosValidationError(undefined, undefined, undefined, validation.error.errors)
+      throw new AxiosValidationError(
+        undefined,
+        undefined,
+        undefined,
+        validation.error.errors,
+      )
     }
 
     return validation.data
@@ -18,7 +23,12 @@ export class AxiosContracts {
       const validation = schema.safeParse(response.data)
 
       if (validation.error) {
-        throw new AxiosValidationError(response.config, response.request, response, validation.error.errors)
+        throw new AxiosValidationError(
+          response.config,
+          response.request,
+          response,
+          validation.error.errors,
+        )
       }
 
       return validation.data as Data

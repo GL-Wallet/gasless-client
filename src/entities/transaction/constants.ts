@@ -17,4 +17,5 @@ export const TransactionDateOptions: Intl.DateTimeFormatOptions = {
   hour12: false,
 }
 
-export const TRONSCAN_TRANSACTION_BASE_URL = 'https://tronscan.org/#/transaction'
+export const TRONSCAN_TRANSACTION_BASE_URL
+  = 'https://tronscan.org/#/transaction'

@@ -15,7 +15,7 @@ export function useBiometry() {
     bm.then((biometryManager) => {
       if (biometryManager.accessGranted)
         setIsEnabled(true)
-    }).catch(() => { })
+    }).catch(() => {})
   }, [bm])
 
   const executeBiometryAction = useCallback(
@@ -35,17 +35,24 @@ export function useBiometry() {
   )
 
   const requestAccess = useCallback(
-    async ({ reason }: Options = {}) => executeBiometryAction('requestAccess', { reason }) as Promise<boolean | null>,
+    async ({ reason }: Options = {}) =>
+      executeBiometryAction('requestAccess', { reason }) as Promise<
+        boolean | null
+      >,
     [executeBiometryAction],
   )
 
   const authenticate = useCallback(
-    async ({ reason }: Options = {}) => executeBiometryAction('authenticate', { reason }) as Promise<string | null>,
+    async ({ reason }: Options = {}) =>
+      executeBiometryAction('authenticate', { reason }) as Promise<
+        string | null
+      >,
     [executeBiometryAction],
   )
 
   const updateToken = useCallback(
-    async (token: string | null) => executeBiometryAction('updateToken', { token }) as Promise<string | null>,
+    async (token: string | null) =>
+      executeBiometryAction('updateToken', { token }) as Promise<string | null>,
     [executeBiometryAction],
   )
 

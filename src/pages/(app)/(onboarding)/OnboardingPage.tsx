@@ -16,7 +16,9 @@ function FirstStory() {
   return (
     <div className="flex-1 flex flex-col pt-28 items-center space-y-8">
       <BoxReveal boxColor="#37373790" duration={0.5}>
-        <h1 className="text-4xl font-semibold primary-gradient">{t('onBoarding.story.first.title')}</h1>
+        <h1 className="text-4xl font-semibold primary-gradient">
+          {t('onBoarding.story.first.title')}
+        </h1>
       </BoxReveal>
       <BoxReveal boxColor="#37373790" duration={0.5}>
         <AnimatedShinyText className="inline-block pr-8 text-xl transition ease-out hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400">
@@ -53,7 +55,9 @@ function ThirdStory() {
   return (
     <div className="h-full w-full flex flex-col pt-28 space-y-8">
       <BoxReveal boxColor="#37373790" duration={0.5}>
-        <h1 className="text-3xl font-semibold primary-gradient">{t('onBoarding.story.third.title')}</h1>
+        <h1 className="text-3xl font-semibold primary-gradient">
+          {t('onBoarding.story.third.title')}
+        </h1>
       </BoxReveal>
       <BoxReveal boxColor="#37373790" duration={0.5}>
         <AnimatedShinyText className="inline-block pr-8 text-xl transition ease-out hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400">
@@ -70,7 +74,9 @@ function FourthStory() {
   return (
     <div className="h-full w-full flex flex-col pt-28 space-y-8">
       <BoxReveal boxColor="#37373790" duration={0.5}>
-        <h1 className="text-4xl font-semibold primary-gradient">{t('onBoarding.story.fourth.title')}</h1>
+        <h1 className="text-4xl font-semibold primary-gradient">
+          {t('onBoarding.story.fourth.title')}
+        </h1>
       </BoxReveal>
       <BoxReveal boxColor="#37373790" duration={0.5}>
         <AnimatedShinyText className="inline-block pr-8 text-xl transition ease-out hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400">
@@ -83,7 +89,9 @@ function FourthStory() {
 
 function FifthStory() {
   const wallet = useWallet()
-  const updateAppSettings = useAppSettingsStore(store => store.updateSettings)
+  const updateAppSettings = useAppSettingsStore(
+    store => store.updateSettings,
+  )
 
   const { t } = useTranslation()
 
@@ -98,7 +106,9 @@ function FifthStory() {
     <div className="h-full w-full flex flex-col justify-between pt-28">
       <div className="space-y-8">
         <BoxReveal boxColor="#37373790" duration={0.5}>
-          <h1 className="text-4xl font-semibold primary-gradient">{t('onBoarding.story.fifth.title')}</h1>
+          <h1 className="text-4xl font-semibold primary-gradient">
+            {t('onBoarding.story.fifth.title')}
+          </h1>
         </BoxReveal>
 
         <BoxReveal boxColor="#37373790" duration={0.5}>
@@ -108,7 +118,12 @@ function FifthStory() {
         </BoxReveal>
       </div>
 
-      <ShinyButton text={t('onBoarding.story.fifth.button')} onClick={handleContinue} className="w-full" style={{ zIndex: 1000 }} />
+      <ShinyButton
+        text={t('onBoarding.story.fifth.button')}
+        onClick={handleContinue}
+        className="w-full"
+        style={{ zIndex: 1000 }}
+      />
     </div>
   )
 }

@@ -45,7 +45,10 @@ export const TransactionList: React.FC<TransactionListProps> = ({ token }) => {
     const fetchAndSetTransactions = async () => {
       setIsLoading(true)
       try {
-        const fetchedTransactions = await fetchTransactionList(wallet.address, token)
+        const fetchedTransactions = await fetchTransactionList(
+          wallet.address,
+          token,
+        )
 
         setTransactions(fetchedTransactions)
       }
@@ -64,14 +67,19 @@ export const TransactionList: React.FC<TransactionListProps> = ({ token }) => {
   return (
     <div className="space-y-2 py-4">
       {isLoading
-        ? Array.from({ length: 7 }, (_, idx) => <Skeleton className="h-[74px] w-full rounded-sm" key={idx} />)
+        ? Array.from({ length: 7 }, (_, idx) => (
+            <Skeleton className="h-[74px] w-full rounded-sm" key={idx} />
+          ))
         : transactions.map((transaction, idx) => (
             <div
               className="w-full"
               onClick={() => handleSelectListItem(transaction)}
               key={idx}
             >
-              <TransactionListItem transaction={transaction} walletAddress={wallet.address} />
+              <TransactionListItem
+                transaction={transaction}
+                walletAddress={wallet.address}
+              />
             </div>
           ))}
 
