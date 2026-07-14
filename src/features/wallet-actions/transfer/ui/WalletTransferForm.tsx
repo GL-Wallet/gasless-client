@@ -1,13 +1,14 @@
 /* eslint-disable ts/no-use-before-define */
 import type { TransferInfoResponse } from '@/kernel/api'
-import type { Balances, TransactionID } from '@/kernel/tron/model/types'
+import type { Balances } from '@/kernel/tron/model/types'
 import type { UseFormReturn } from 'react-hook-form'
+import type { TransferOutcome } from '../model/useUsdtTransfer'
 import { useWallet } from '@/entities/wallet'
 import { api } from '@/kernel/api'
 import { useAuth } from '@/kernel/auth'
 import { ROUTES } from '@/shared/constants/routes'
-import { AVAILABLE_TOKENS } from '@/shared/enums/tokens'
 
+import { AVAILABLE_TOKENS } from '@/shared/enums/tokens'
 import ShinyButton from '@/shared/magicui/shiny-button'
 import { Alert, AlertDescription, AlertTitle } from '@/shared/ui/alert'
 import { useAlert } from '@/shared/ui/alert/Alert'
@@ -48,6 +49,15 @@ import { useTrxTransfer } from '../model/useTrxTransfer'
 import { useTrc20Transfer } from '../model/useUsdtTransfer'
 import { TokenPicker } from './TokenPicker'
 import { TrxPurchaseLink } from './TrxPurchaseLink'
+
+// Module-scoped in-flight guard, keyed by transfer intent (token→recipient→
+// amount). Unlike a component-local ref it survives the unmount/remount that the
+// passcode-auth navigation and the in-progress-screen navigation force, so a
+// back-navigation re-tap of Send cannot dispatch a second broadcast of the same
+// transfer while the first is still in flight. This is the client-side backstop
+// until the relay exposes an Idempotency-Key (which is the real fix, since the
+// standard-fee retry broadcasts directly on-chain, bypassing server dedup).
+const inFlightTransfers = new Set<string>()
 
 // Validation schema for form fields
 const tronAddressRegex = /^T[1-9A-HJ-NP-Za-km-z]{33}$/
@@ -174,18 +184,40 @@ export function WalletTransferForm(props: Props) {
         return
 
       try {
-        const transactionId = await handleProcessTransaction(
+        const outcome = await handleProcessTransaction(
           formValues.address,
           formValues.amount,
           passcode,
         )
-        navigateToTransactionResult(transactionId)
-        processTransferResult(
-          transactionId,
-          formValues.address,
-          formValues.amount,
-          passcode,
-        )
+
+        if (!outcome) {
+          navigateToTransactionResult(undefined)
+          return
+        }
+
+        if (outcome.status === 'success') {
+          navigateToTransactionResult(outcome.txid)
+          return
+        }
+
+        if (outcome.status === 'indeterminate') {
+          // The transfer may already have been broadcast on-chain. Do NOT offer
+          // a standard-fee retry — resending would double-debit the user.
+          navigateToTransactionResult(undefined)
+          toast.error(t('transfer.error.indeterminate'))
+          return
+        }
+
+        // status === 'rejected': the backend did not broadcast, so it is safe
+        // to offer a retry with the standard fee (USDT only).
+        navigateToTransactionResult(undefined)
+        if (token === AVAILABLE_TOKENS.USDT) {
+          processTransferResult(
+            formValues.address,
+            formValues.amount,
+            passcode,
+          )
+        }
       }
       catch (error) {
         console.error(`Transaction processing error:`, error)
@@ -195,43 +227,50 @@ export function WalletTransferForm(props: Props) {
   }
 
   const processTransferResult = (
-    txid: TransactionID | undefined,
     address: string,
     amount: number,
     passcode: string,
   ) => {
-    if (!txid && token === AVAILABLE_TOKENS.USDT) {
-      alert.setState({
-        title: t('transfer.error.alert.title'),
-        description: (
-          <span>
-            {t('transfer.error.alert.description')}
+    alert.setState({
+      title: t('transfer.error.alert.title'),
+      description: (
+        <span>
+          {t('transfer.error.alert.description')}
+          {' '}
+          <br />
+          <span className="text-md font-bold">
+            (~
+            {prevFee}
             {' '}
-            <br />
-            <span className="text-md font-bold">
-              (~
-              {prevFee}
-              {' '}
-              {AVAILABLE_TOKENS.TRX}
-              )
-            </span>
-            ?
+            {AVAILABLE_TOKENS.TRX}
+            )
           </span>
-        ),
-      })
-      alert.setIsOpen(true)
-      alert.setActions({
-        async handleContinue() {
-          const transactionId = await handleProcessTransaction(
-            address,
-            amount,
-            passcode,
-            false,
-          )
-          navigateToTransactionResult(transactionId)
-        },
-      })
-    }
+          ?
+        </span>
+      ),
+    })
+    alert.setIsOpen(true)
+    alert.setActions({
+      async handleContinue() {
+        // Retry with the standard (non-optimized) fee. Only reached when the
+        // optimized attempt was cleanly rejected (never broadcast).
+        const retry = await handleProcessTransaction(
+          address,
+          amount,
+          passcode,
+          false,
+        )
+
+        if (retry?.status === 'success') {
+          navigateToTransactionResult(retry.txid)
+          return
+        }
+
+        navigateToTransactionResult(undefined)
+        if (retry?.status === 'indeterminate')
+          toast.error(t('transfer.error.indeterminate'))
+      },
+    })
   }
 
   const handleProcessTransaction = useCallback(
@@ -240,31 +279,48 @@ export function WalletTransferForm(props: Props) {
       amount: number,
       passcode: string,
       optimization?: boolean,
-    ): Promise<string | undefined> => {
+    ): Promise<TransferOutcome | undefined> => {
       if (!transferInfo?.address || !transferInfo?.fee)
         return
 
-      switch (token) {
-        case AVAILABLE_TOKENS.USDT:
-          navigate(ROUTES.TRANSACTION_IN_PROGRESS)
+      // Block a duplicate dispatch of the SAME transfer (same token→recipient→
+      // amount) while one is already in flight. Survives remounts because the
+      // Set is module-scoped, so a back-nav re-tap cannot double-send.
+      const intentKey = `${token}:${address}:${amount}`
+      if (inFlightTransfers.has(intentKey))
+        return
+      inFlightTransfers.add(intentKey)
 
-          return await transferUsdt({
-            recipientAddress: address,
-            depositAddress: transferInfo.address,
-            transferAmount: amount,
-            transactionFee: transferInfo.fee,
-            userPasscode: passcode,
-            optimization: optimization ?? transferInfo.optimization,
-          })
-        case AVAILABLE_TOKENS.TRX:
-          return await transferTrx({
-            recipientAddress: address,
-            transferAmount: amount,
-            userPasscode: passcode,
-          })
-        default:
-          console.error(`Unsupported token: ${token}`)
-          return undefined
+      try {
+        switch (token) {
+          case AVAILABLE_TOKENS.USDT:
+            navigate(ROUTES.TRANSACTION_IN_PROGRESS)
+
+            return await transferUsdt({
+              recipientAddress: address,
+              depositAddress: transferInfo.address,
+              transferAmount: amount,
+              transactionFee: transferInfo.fee,
+              userPasscode: passcode,
+              optimization: optimization ?? transferInfo.optimization,
+            })
+          case AVAILABLE_TOKENS.TRX: {
+            const txid = await transferTrx({
+              recipientAddress: address,
+              transferAmount: amount,
+              userPasscode: passcode,
+            })
+            return txid
+              ? { status: 'success', txid }
+              : { status: 'rejected', error: new Error('TRX transfer failed') }
+          }
+          default:
+            console.error(`Unsupported token: ${token}`)
+            return undefined
+        }
+      }
+      finally {
+        inFlightTransfers.delete(intentKey)
       }
     },
     [token, transferInfo, transferTrx, transferUsdt],

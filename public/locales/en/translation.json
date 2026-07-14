@@ -106,7 +106,8 @@
       "alert": {
         "title": "Transaction Failed with Optimized Fee",
         "description": "We couldn’t process your transaction with the optimized fee. Would you like to try again with the standard fee?"
-      }
+      },
+      "indeterminate": "Couldn't confirm the transaction status. It may already have been sent — check your history before trying again."
     }
   },
   "batch": {
