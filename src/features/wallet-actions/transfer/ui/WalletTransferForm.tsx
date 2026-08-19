@@ -38,7 +38,7 @@ import { urlJoin } from '@/shared/utils/urlJoin'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery } from '@tanstack/react-query'
 import { CircleAlert, LucideArrowDown, Wallet2 } from 'lucide-react'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
@@ -96,6 +96,7 @@ export function WalletTransferForm(props: Props) {
 
   const form = useForm<FormFields>({
     resolver: zodResolver(formSchema),
+    mode: 'onChange',
     defaultValues: {
       address: '',
       amount: '' as unknown as number,
@@ -103,8 +104,26 @@ export function WalletTransferForm(props: Props) {
   })
 
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
+  const [isSigning, setIsSigning] = useState<boolean>(false)
   const [formValues, setFormValues] = useState<FormFields>()
   const address = form.watch('address')
+  const amount = form.watch('amount')
+
+  // validateTransaction sets manual (business-rule) errors on submit — e.g.
+  // insufficient balance or sending to your own address. These flip
+  // formState.isValid to false and would keep the Send button disabled. Clear
+  // them as soon as the user edits the offending field so the button recovers
+  // deterministically. Only 'manual' errors are cleared, so zod schema errors
+  // (invalid address / non-positive amount) keep showing normally.
+  useEffect(() => {
+    if (form.getFieldState('address').error?.type === 'manual')
+      form.clearErrors('address')
+  }, [address, form])
+
+  useEffect(() => {
+    if (form.getFieldState('amount').error?.type === 'manual')
+      form.clearErrors('amount')
+  }, [amount, form])
 
   const { data: transferInfo } = useQuery({
     queryKey: ['transferInfo', address],
@@ -161,7 +180,7 @@ export function WalletTransferForm(props: Props) {
         return false
       }
 
-      form.clearErrors('amount')
+      form.clearErrors(['amount', 'address'])
       return true
     },
     [form, isUsdtToken, t, token, transferInfo?.fee, wallet],
@@ -178,8 +197,13 @@ export function WalletTransferForm(props: Props) {
   )
 
   const handleAuthenticateAndSign = async () => {
-    const passcode = await authenticate()
-    if (passcode) {
+    if (isSigning)
+      return
+    setIsSigning(true)
+    try {
+      const passcode = await authenticate()
+      if (!passcode)
+        return
       if (!formValues?.address || !formValues.amount)
         return
 
@@ -223,6 +247,9 @@ export function WalletTransferForm(props: Props) {
         console.error(`Transaction processing error:`, error)
         navigateToTransactionResult(undefined)
       }
+    }
+    finally {
+      setIsSigning(false)
     }
   }
 
@@ -419,6 +446,7 @@ export function WalletTransferForm(props: Props) {
           className="dark:text-white bg-secondary/80 dark:border-neutral-500"
           variant="outline"
           type="submit"
+          disabled={!form.formState.isValid}
         >
           {t('transfer.button.send')}
         </Button>
@@ -430,6 +458,10 @@ export function WalletTransferForm(props: Props) {
           values={formValues}
           walletAddress={wallet.address}
           onSign={handleAuthenticateAndSign}
+          isSigning={isSigning}
+          // USDT needs the relay fee/deposit address before a sign can succeed;
+          // TRX transfers do not depend on transferInfo.
+          canSign={!isUsdtToken || !!transferInfo?.fee}
         />
       </form>
     </Form>
@@ -569,7 +601,18 @@ const TransactionDrawer: React.FC<{
   values?: FormFields
   walletAddress: string
   onSign: () => void
-}> = ({ token, isOpen, onClose, values, walletAddress, onSign }) => {
+  isSigning: boolean
+  canSign: boolean
+}> = ({
+  token,
+  isOpen,
+  onClose,
+  values,
+  walletAddress,
+  onSign,
+  isSigning,
+  canSign,
+}) => {
   const { t } = useTranslation()
 
   return (
@@ -597,7 +640,11 @@ const TransactionDrawer: React.FC<{
           </div>
         </div>
         <DrawerFooter className="space-y-2 mt-10">
-          <ShinyButton text={t('transfer.button.sign')} onClick={onSign} />
+          <ShinyButton
+            text={t('transfer.button.sign')}
+            onClick={onSign}
+            disabled={isSigning || !canSign}
+          />
           <DrawerClose asChild>
             <Button variant="outline" onClick={onClose}>
               {t('transfer.button.reject')}
