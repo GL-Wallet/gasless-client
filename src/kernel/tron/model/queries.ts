@@ -1,11 +1,13 @@
-import { TRONGRID_BASE_API_URL } from '@/shared/constants'
+import { TRONGRID_BASE_API_URL, TRONGRID_HEADERS } from '@/shared/constants'
 
 import axios from 'axios'
 
 export async function getTrxBalance(address: string): Promise<number> {
   try {
     const res = (
-      await axios.get(`${TRONGRID_BASE_API_URL}/accounts/${address}`)
+      await axios.get(`${TRONGRID_BASE_API_URL}/accounts/${address}`, {
+        headers: TRONGRID_HEADERS,
+      })
     ).data.data?.at(0)
 
     const trxBalance = res.balance / 1e6

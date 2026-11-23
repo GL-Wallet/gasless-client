@@ -1,7 +1,8 @@
 import type { AVAILABLE_TOKENS } from '@/shared/enums/tokens'
 
 import type { Transaction, TrxResponse, UsdtResponse } from './types'
-import { TRONGRID_BASE_API_URL } from '@/shared/constants'
+import { USDT_CONTRACT_ADDRESS } from '@/kernel/tron/config'
+import { TRONGRID_BASE_API_URL, TRONGRID_HEADERS } from '@/shared/constants'
 
 import axios from 'axios'
 import { extractTransactionData } from './utils'
@@ -25,7 +26,13 @@ export async function fetchTransactionList(
 ): Promise<Transaction[]> {
   const url = buildUrl(address, tokenType)
   const { data } = await axios.get<{ data: unknown }>(url, {
-    params: { limit, ...params },
+    headers: TRONGRID_HEADERS,
+    params: {
+      limit,
+      ...params,
+      // Without this filter any TRC-20 (including spam tokens) is listed as USDT.
+      ...(tokenType === 'USDT' && { contract_address: USDT_CONTRACT_ADDRESS }),
+    },
   })
   const transactions = data.data as (TrxResponse | UsdtResponse)[]
 
